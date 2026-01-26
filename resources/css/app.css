@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Housing Calculator Input Styling */
+.housing-input {
+    background-color: rgb(30 41 59) !important; /* slate-800 */
+    color: rgb(241 245 249) !important; /* slate-100 */
+    border-color: rgb(51 65 85) !important; /* slate-700 */
+}
+
+.housing-input::placeholder {
+    color: rgb(100 116 139) !important; /* slate-500 */
+}
+
+.housing-input:focus {
+    background-color: rgb(30 41 59) !important;
+    color: rgb(241 245 249) !important;
+    border-color: rgb(16 185 129) !important; /* emerald-500 */
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Currency symbol styling */
+#currency-symbol {
+    color: rgb(148 163 184) !important; /* slate-400 */
+    font-weight: 500;
+}
+
+/* Currency info styling */
+#currency-info {
+    transition: opacity 0.3s ease;
+}
