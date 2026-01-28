@@ -15,7 +15,12 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->email === 'hasantak99@gmail.com') {
+        $adminEmails = [
+            'hasantak99@gmail.com',
+            'admin99@decidelab.com'
+        ];
+
+        if (auth()->check() && in_array(auth()->user()->email, $adminEmails)) {
             return $next($request);
         }
 

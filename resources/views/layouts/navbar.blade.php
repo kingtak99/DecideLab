@@ -71,7 +71,10 @@
                     <span class="arrow">▾</span>
                 </button>
                 <div class="dropdown-menu">
-                    @if(auth()->user()->email === 'hasantak99@gmail.com')
+                    @php
+                        $adminEmails = ['hasantak99@gmail.com', 'admin99@decidelab.com'];
+                    @endphp
+                    @if(in_array(auth()->user()->email, $adminEmails))
                         <a href="{{ route('admin.dashboard') }}">{{ __('messages.admin_dashboard') ?? 'Admin Dashboard' }}</a>
                         <a href="{{ route('analytics.dashboard') }}">📊 Analytics Dashboard</a>
                         <a href="{{ route('analytics.detected-bots') }}">🤖 Detected Bots</a>
