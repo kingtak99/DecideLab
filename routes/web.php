@@ -204,4 +204,26 @@ Route::get('/debug/visitors', function () {
     ])->toArray());
 });
 
+// Debug statistics route
+Route::get('/debug/stats', function () {
+    $total = \App\Models\Visitor::count();
+    $unique_ips = \App\Models\Visitor::distinct('ip_address')->count('ip_address');
+    $with_country = \App\Models\Visitor::where('country', '!=', 'Unknown')
+        ->where('country', '!=', null)
+        ->count();
+    $today = \App\Models\Visitor::whereDate('visited_at', today())->count();
+    $today_unique = \App\Models\Visitor::whereDate('visited_at', today())
+        ->distinct('ip_address')
+        ->count('ip_address');
+    
+    return response()->json([
+        'total_records' => $total,
+        'unique_ips' => $unique_ips,
+        'with_country' => $with_country,
+        'today_total' => $today,
+        'today_unique_ips' => $today_unique,
+        'success_rate' => $total > 0 ? round(($with_country / $total) * 100, 2) . '%' : '0%',
+    ]);
+});
+
 require __DIR__ . '/auth.php';
