@@ -19,6 +19,16 @@ class TrackVisitors
         // Get the real IP (handle proxies and proxied requests)
         $ip = $this->getRealIP($request);
         
+        // Debug logging - log all IPs for troubleshooting
+        \Log::debug('TrackVisitors middleware', [
+            'detected_ip' => $ip,
+            'remote_addr' => $request->server('REMOTE_ADDR'),
+            'x_forwarded_for' => $request->server('HTTP_X_FORWARDED_FOR'),
+            'cf_connecting_ip' => $request->server('HTTP_CF_CONNECTING_IP'),
+            'user_agent' => substr($request->userAgent() ?? '', 0, 100),
+            'path' => $request->path(),
+        ]);
+        
         // In development, use a test IP for localhost to test geolocation
         if (config('app.debug') && ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '::1'))) {
             // Use a test IP that resolves to a real country
@@ -48,6 +58,11 @@ class TrackVisitors
             
             if ($existingVisitor) {
                 // Same visitor within 24 hours - just update the last visit time
+                \Log::debug('Updating existing visitor', [
+                    'ip' => $ip,
+                    'last_visited' => $existingVisitor->visited_at,
+                ]);
+                
                 $existingVisitor->update([
                     'visited_at' => now(),
                     'url' => $request->path() ?? '/',
@@ -68,6 +83,12 @@ class TrackVisitors
             // New visitor or 24+ hours have passed - create new record
             $country = $this->getCountryFromIP($ip);
             
+            \Log::debug('Country detection result', [
+                'ip' => $ip,
+                'country' => $country['country'] ?? 'Unknown',
+                'code' => $country['code'] ?? 'XX',
+            ]);
+            
             $visitorData = [
                 'ip_address' => $ip,
                 'user_agent' => $userAgent ?? 'Unknown',
@@ -83,7 +104,16 @@ class TrackVisitors
                 'is_bot' => 0,
             ];
 
-            Visitor::create($visitorData);
+            \Log::debug('About to create visitor record', [
+                'data' => $visitorData,
+            ]);
+            
+            $created = Visitor::create($visitorData);
+            
+            \Log::debug('Visitor record created successfully', [
+                'id' => $created->id,
+                'ip' => $created->ip_address,
+            ]);
             
             // Always log for production debugging
             \Log::info('New visitor tracked', [
