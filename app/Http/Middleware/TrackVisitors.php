@@ -39,10 +39,34 @@ class TrackVisitors
         }
 
         try {
-            // Get country from IP (with fallback chain: ip-api.com → ipapi.co → local)
+            // Check if this IP already visited in the last 24 hours
+            $existingVisitor = Visitor::where('ip_address', $ip)
+                ->where('visited_at', '>=', now()->subHours(24))
+                ->latest('visited_at')
+                ->first();
+            
+            if ($existingVisitor) {
+                // Same visitor within 24 hours - just update the last visit time
+                $existingVisitor->update([
+                    'visited_at' => now(),
+                    'url' => $request->path() ?? '/',
+                    'page_title' => $request->header('referer') ? 'Referred' : 'Direct',
+                    'referrer' => $request->header('referer'),
+                ]);
+                
+                if (config('app.debug')) {
+                    \Log::info('Visitor updated (same visitor within 24h)', [
+                        'ip' => $ip,
+                        'last_visited' => $existingVisitor->visited_at,
+                    ]);
+                }
+                
+                return $next($request);
+            }
+            
+            // New visitor or 24+ hours have passed - create new record
             $country = $this->getCountryFromIP($ip);
             
-            // Log every visit with complete tracking data
             $visitorData = [
                 'ip_address' => $ip,
                 'user_agent' => $userAgent ?? 'Unknown',
@@ -62,7 +86,7 @@ class TrackVisitors
             
             // Log success for debugging
             if (config('app.debug')) {
-                \Log::info('Visitor tracked', [
+                \Log::info('New visitor tracked', [
                     'ip' => $ip,
                     'country' => $country['country'] ?? 'Unknown',
                     'user_agent' => substr($userAgent ?? '', 0, 50),
