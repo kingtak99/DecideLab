@@ -181,7 +181,7 @@ Route::get('/countries-data-sources', function () {
 })->name('footer.countries-data-sources');
 
 // 📊 Analytics Routes - Admin Only
-Route::middleware(['auth', 'isAdmin'])->group(function () {
+Route::prefix('{locale}')->where(['locale' => 'en|ar'])->middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/analytics/dashboard', [\App\Http\Controllers\AnalyticsController::class, 'dashboard'])
         ->name('analytics.dashboard');
     Route::get('/analytics/bots', [\App\Http\Controllers\AnalyticsController::class, 'detectedBots'])

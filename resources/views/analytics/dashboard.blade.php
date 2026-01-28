@@ -228,7 +228,7 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <a href="{{ route('analytics.detected-bots') }}" class="btn btn-primary">
+        <a href="{{ route('analytics.detected-bots', ['locale' => session('locale', 'ar')]) }}" class="btn btn-primary">
             🤖 عرض البوتس المكتشفة
         </a>
         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">

@@ -76,8 +76,8 @@
                     @endphp
                     @if(in_array(auth()->user()->email, $adminEmails))
                         <a href="{{ route('admin.dashboard') }}">{{ __('messages.admin_dashboard') ?? 'Admin Dashboard' }}</a>
-                        <a href="{{ route('analytics.dashboard') }}">📊 Analytics Dashboard</a>
-                        <a href="{{ route('analytics.detected-bots') }}">🤖 Detected Bots</a>
+                        <a href="{{ route('analytics.dashboard', ['locale' => session('locale', 'ar')]) }}">📊 Analytics Dashboard</a>
+                        <a href="{{ route('analytics.detected-bots', ['locale' => session('locale', 'ar')]) }}">🤖 Detected Bots</a>
                         <hr style="margin: 5px 0; border: none; border-top: 1px solid #ddd;">
                     @endif
                     <a href="{{ route('profile.edit') }}">{{ __('messages.profile') }}</a>
