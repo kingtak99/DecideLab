@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -35,12 +36,25 @@ return new class extends Migration
             if (!Schema::hasColumn('visitors', 'referrer')) {
                 $table->string('referrer')->nullable()->after('page_title');
             }
-            
-            // Indices for performance
-            if (!Schema::hasIndexKey('visitors', 'visitors_country_index')) {
+        });
+
+        // Add indices safely
+        $this->addIndicesIfNotExist();
+    }
+
+    /**
+     * Add indices if they don't exist
+     */
+    private function addIndicesIfNotExist(): void
+    {
+        $indexes = DB::select("SHOW INDEX FROM `visitors` WHERE Key_name IN ('visitors_country_index', 'visitors_session_id_index')");
+        $existingIndexes = collect($indexes)->pluck('Key_name')->toArray();
+
+        Schema::table('visitors', function (Blueprint $table) use ($existingIndexes) {
+            if (!in_array('visitors_country_index', $existingIndexes)) {
                 $table->index('country');
             }
-            if (!Schema::hasIndexKey('visitors', 'visitors_session_id_index')) {
+            if (!in_array('visitors_session_id_index', $existingIndexes)) {
                 $table->index('session_id');
             }
         });
@@ -52,13 +66,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('visitors', function (Blueprint $table) {
-            if (Schema::hasIndexKey('visitors', 'visitors_country_index')) {
-                $table->dropIndex('visitors_country_index');
-            }
-            if (Schema::hasIndexKey('visitors', 'visitors_session_id_index')) {
-                $table->dropIndex('visitors_session_id_index');
-            }
+            // Drop indices
+            $table->dropIndexIfExists('visitors_country_index');
+            $table->dropIndexIfExists('visitors_session_id_index');
             
+            // Drop columns
             if (Schema::hasColumn('visitors', 'country')) {
                 $table->dropColumn('country');
             }
