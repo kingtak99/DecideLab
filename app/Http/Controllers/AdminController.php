@@ -11,7 +11,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         // Check if user is admin
-        if (auth()->user()->email !== 'hasantak99@gmail.com') {
+        if (auth()->user()->email !== 'hasantak99@gmail.com' && auth()->user()->email !== 'admin99@decidelab.com') {
             abort(403, 'Unauthorized');
         }
 
