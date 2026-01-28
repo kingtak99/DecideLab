@@ -27,7 +27,8 @@ return new class extends Migration
             // Indices for performance
             $table->index('country');
             $table->index('session_id');
-            $table->index('url');
+            // Don't index 'url' since it's a TEXT column - use prefix instead if needed
+            // $table->index(['url(255)']); // Only if absolutely necessary
         });
     }
 
@@ -39,7 +40,6 @@ return new class extends Migration
         Schema::table('visitors', function (Blueprint $table) {
             $table->dropIndex(['country']);
             $table->dropIndex(['session_id']);
-            $table->dropIndex(['url']);
             
             $table->dropColumn(['country', 'country_code', 'session_id', 'session_duration', 'page_title', 'referrer']);
         });
