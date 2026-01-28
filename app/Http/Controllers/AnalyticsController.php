@@ -56,14 +56,48 @@ class AnalyticsController extends Controller
             ->limit(10)
             ->get();
 
-        // 🌍 أعلى الدول (حسب IP)
-        $topCountries = Visitor::humanOnly()
+        // 🔄 Unique visitors per page
+        $visitorsByPage = Visitor::humanOnly()
             ->thisMonth()
-            ->selectRaw('ip_address, COUNT(*) as visits')
-            ->groupBy('ip_address')
-            ->orderByDesc('visits')
-            ->limit(10)
+            ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
+            ->groupBy('url')
+            ->orderByDesc('unique_count')
+            ->limit(5)
             ->get();
+
+        // ⏱️ Session duration stats
+        $sessionStats = Visitor::humanOnly()
+            ->thisMonth()
+            ->whereNotNull('session_duration')
+            ->selectRaw('AVG(session_duration) as avg_duration, MAX(session_duration) as max_duration, MIN(session_duration) as min_duration')
+            ->first();
+
+        // 🌍 دول الزوار
+        $countryStats = Visitor::humanOnly()
+            ->thisMonth()
+            ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
+            ->whereNotNull('country')
+            ->where('country', '!=', 'Unknown')
+            ->groupBy('country', 'country_code')
+            ->orderByDesc('visitors')
+            ->limit(15)
+            ->get();
+
+        // 📊 Data for Chart.js
+        $chartData = [
+            'pages' => [
+                'labels' => $topPages->pluck('url')->toArray(),
+                'data' => $topPages->pluck('visits')->toArray(),
+            ],
+            'countries' => [
+                'labels' => $countryStats->pluck('country')->toArray(),
+                'data' => $countryStats->pluck('visitors')->toArray(),
+            ],
+            'visitors_by_page' => [
+                'labels' => $visitorsByPage->pluck('url')->toArray(),
+                'data' => $visitorsByPage->pluck('unique_count')->toArray(),
+            ],
+        ];
 
         return view('analytics.dashboard', compact(
             'humanToday',
@@ -71,7 +105,10 @@ class AnalyticsController extends Controller
             'botToday',
             'botMonth',
             'topPages',
-            'topCountries',
+            'countryStats',
+            'sessionStats',
+            'visitorsByPage',
+            'chartData',
         ));
     }
 

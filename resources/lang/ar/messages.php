@@ -18,7 +18,7 @@ return [
 
     // Hero Section
     'hero_title' => 'جرّب القرار',
-    'hero_subtitle' => 'قبل ما تعيش عواقبه',
+    'hero_subtitle' => 'قبل أن تعيش عواقبه',
     'hero_description' => 'DecideLab هو مختبر القرارات المالية.<br>نحاكي القروض، الوظائف، السكن، ونمط الحياة بالأرقام والزمن — مش بالكلام.',
     'start_simulation' => '🚀 ابدأ المحاكاة',
     'explore_tools' => '👀 استكشف الأدوات',
