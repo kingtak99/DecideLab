@@ -15,6 +15,12 @@ class Visitor extends Model
         'user_id',
         'is_bot',
         'visited_at',
+        'country',
+        'country_code',
+        'session_id',
+        'session_duration',
+        'page_title',
+        'referrer',
     ];
 
     protected $dates = ['visited_at'];

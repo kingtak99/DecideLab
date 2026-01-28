@@ -32,10 +32,10 @@ class TrackVisitors
         }
 
         try {
-            // Get country from IP (with fallback)
+            // Get country from IP (with fallback chain: ip-api.com → ipapi.co → local)
             $country = $this->getCountryFromIP($ip);
             
-            // Always log the visit with advanced tracking
+            // Log every visit with complete tracking data
             $visitorData = [
                 'ip_address' => $ip,
                 'user_agent' => $userAgent ?? 'Unknown',
@@ -52,9 +52,21 @@ class TrackVisitors
             ];
 
             Visitor::create($visitorData);
+            
+            // Log success for debugging
+            if (config('app.debug')) {
+                \Log::info('Visitor tracked', [
+                    'ip' => $ip,
+                    'country' => $country['country'] ?? 'Unknown',
+                    'user_agent' => substr($userAgent ?? '', 0, 50),
+                ]);
+            }
         } catch (\Exception $e) {
             // Log error but don't break the request
-            \Log::error('Visitor tracking failed: ' . $e->getMessage());
+            \Log::error('Visitor tracking failed: ' . $e->getMessage(), [
+                'ip' => $ip,
+                'trace' => $e->getTraceAsString()
+            ]);
         }
 
         return $next($request);
@@ -130,14 +142,25 @@ class TrackVisitors
     private function getCountryFromIPAPI($ip)
     {
         try {
-            $context = stream_context_create([
-                'http' => [
-                    'timeout' => 3,
-                    'method' => 'GET'
-                ]
-            ]);
-            
-            $response = @file_get_contents("http://ip-api.com/json/{$ip}", false, $context);
+            // Use curl if available, otherwise file_get_contents
+            if (function_exists('curl_init')) {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "http://ip-api.com/json/{$ip}");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+                
+                $response = curl_exec($ch);
+                curl_close($ch);
+            } else {
+                $context = stream_context_create([
+                    'http' => [
+                        'timeout' => 3,
+                        'method' => 'GET'
+                    ]
+                ]);
+                $response = @file_get_contents("http://ip-api.com/json/{$ip}", false, $context);
+            }
             
             if ($response) {
                 $data = json_decode($response, true);
@@ -161,14 +184,31 @@ class TrackVisitors
     private function getCountryFromIPAPICo($ip)
     {
         try {
-            $context = stream_context_create([
-                'http' => [
-                    'timeout' => 3,
-                    'method' => 'GET'
-                ]
-            ]);
-            
-            $response = @file_get_contents("https://ipapi.co/{$ip}/json/", false, $context);
+            // Use curl if available, otherwise file_get_contents
+            if (function_exists('curl_init')) {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "https://ipapi.co/{$ip}/json/");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                
+                $response = curl_exec($ch);
+                curl_close($ch);
+            } else {
+                $context = stream_context_create([
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    ],
+                    'http' => [
+                        'timeout' => 3,
+                        'method' => 'GET'
+                    ]
+                ]);
+                $response = @file_get_contents("https://ipapi.co/{$ip}/json/", false, $context);
+            }
             
             if ($response) {
                 $data = json_decode($response, true);
@@ -188,23 +228,16 @@ class TrackVisitors
 
     /**
      * Get country using GeoIP database as final fallback
+     * 
+     * TODO: For production, implement MaxMind GeoIP2 library:
+     * composer require geoip2/geoip2
      */
     private function getCountryFromGeoIP($ip)
     {
-        // Common IP ranges for major countries (simple fallback)
-        // This is a basic approach - for production use a proper GeoIP database
+        // This is a placeholder for proper GeoIP implementation
+        // Currently, we rely on the API-based methods above
+        // In production, use MaxMind GeoIP2 or similar for reliability
         
-        $ipNum = ip2long($ip);
-        if ($ipNum === false) {
-            return null;
-        }
-
-        // Basic IP ranges (simplified - in production use MaxMind or similar)
-        $ranges = [
-            // Example ranges - these are placeholders
-            // For production, implement proper GeoIP2 library
-        ];
-
         return null;
     }
 }

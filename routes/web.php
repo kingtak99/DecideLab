@@ -192,4 +192,16 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->middleware(['auth', 'is
 Route::get('/api/stats', [\App\Http\Controllers\AnalyticsController::class, 'apiStats'])
     ->name('api.stats');
 
+// Temporary debug route
+Route::get('/debug/visitors', function () {
+    $visitors = \App\Models\Visitor::latest()->limit(10)->get();
+    return response()->json($visitors->map(fn($v) => [
+        'ip' => $v->ip_address,
+        'country' => $v->country ?? 'NULL',
+        'code' => $v->country_code ?? 'NULL',
+        'user_agent' => substr($v->user_agent, 0, 50),
+        'visited_at' => $v->visited_at
+    ])->toArray());
+});
+
 require __DIR__ . '/auth.php';
