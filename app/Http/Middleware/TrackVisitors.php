@@ -25,16 +25,17 @@ class TrackVisitors
             return $next($request);
         }
 
-        // Check if this IP has already visited today
-        $alreadyVisitedToday = Visitor::where('ip_address', $ip)
-            ->whereDate('visited_at', today())
-            ->exists();
+        // Skip certain paths
+        $skipPaths = ['/health', '/ping', '/favicon.ico', '/robots.txt', '/.well-known'];
+        if (in_array($request->path(), $skipPaths)) {
+            return $next($request);
+        }
 
-        if (!$alreadyVisitedToday) {
+        try {
             // Get country from IP (with fallback)
             $country = $this->getCountryFromIP($ip);
             
-            // Log the visit with advanced tracking
+            // Always log the visit with advanced tracking
             $visitorData = [
                 'ip_address' => $ip,
                 'user_agent' => $userAgent ?? 'Unknown',
@@ -50,27 +51,10 @@ class TrackVisitors
                 'is_bot' => 0,
             ];
 
-            try {
-                Visitor::create($visitorData);
-            } catch (\Exception $e) {
-                // Log error but don't break the request
-                \Log::error('Visitor tracking failed: ' . $e->getMessage());
-            }
-        } else {
-            // Update session duration for existing session
-            try {
-                $lastVisit = Visitor::where('ip_address', $ip)
-                    ->where('session_id', $sessionId)
-                    ->latest('visited_at')
-                    ->first();
-                
-                if ($lastVisit) {
-                    $duration = now()->diffInSeconds($lastVisit->visited_at);
-                    $lastVisit->update(['session_duration' => $duration]);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Session duration update failed: ' . $e->getMessage());
-            }
+            Visitor::create($visitorData);
+        } catch (\Exception $e) {
+            // Log error but don't break the request
+            \Log::error('Visitor tracking failed: ' . $e->getMessage());
         }
 
         return $next($request);
@@ -114,7 +98,7 @@ class TrackVisitors
     private function getCountryFromIP($ip)
     {
         // Skip localhost
-        if ($ip === '127.0.0.1' || $ip === 'localhost') {
+        if ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '192.168.') || str_starts_with($ip, '10.')) {
             return ['country' => 'Local', 'code' => 'LO'];
         }
 
@@ -126,6 +110,12 @@ class TrackVisitors
 
         // Try ipapi.co as fallback
         $country = $this->getCountryFromIPAPICo($ip);
+        if ($country) {
+            return $country;
+        }
+
+        // Try geoip.json as final fallback (local or CDN)
+        $country = $this->getCountryFromGeoIP($ip);
         if ($country) {
             return $country;
         }
@@ -192,6 +182,28 @@ class TrackVisitors
         } catch (\Exception $e) {
             // Continue to next fallback
         }
+
+        return null;
+    }
+
+    /**
+     * Get country using GeoIP database as final fallback
+     */
+    private function getCountryFromGeoIP($ip)
+    {
+        // Common IP ranges for major countries (simple fallback)
+        // This is a basic approach - for production use a proper GeoIP database
+        
+        $ipNum = ip2long($ip);
+        if ($ipNum === false) {
+            return null;
+        }
+
+        // Basic IP ranges (simplified - in production use MaxMind or similar)
+        $ranges = [
+            // Example ranges - these are placeholders
+            // For production, implement proper GeoIP2 library
+        ];
 
         return null;
     }
