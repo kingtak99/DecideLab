@@ -17,6 +17,13 @@ class TrackVisitors
     public function handle(Request $request, Closure $next): Response
     {
         $ip = $request->ip();
+        
+        // In development, use a test IP for localhost to test geolocation
+        if (config('app.debug') && ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '::1'))) {
+            // Use a test IP that resolves to a real country
+            $ip = '8.8.8.8'; // Google Public DNS - USA
+        }
+        
         $userAgent = $request->userAgent();
         $sessionId = session()->getId();
 
@@ -109,9 +116,12 @@ class TrackVisitors
      */
     private function getCountryFromIP($ip)
     {
-        // Skip localhost
-        if ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '192.168.') || str_starts_with($ip, '10.')) {
-            return ['country' => 'Local', 'code' => 'LO'];
+        // Skip private IPs in production
+        // In development, try to get country data anyway
+        if (!config('app.debug')) {
+            if ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '192.168.') || str_starts_with($ip, '10.')) {
+                return ['country' => 'Local', 'code' => 'LO'];
+            }
         }
 
         // Try ip-api.com with timeout
