@@ -50,17 +50,30 @@ class TrackVisitors
         }
 
         try {
-            // Check if this IP already visited in the last 24 hours
+            // Create a device fingerprint based on IP + User-Agent combo
+            // This allows different devices on same network to be tracked separately
+            $userAgentHash = hash('sha256', $userAgent ?? '');
+            $deviceFingerprint = "{$ip}_{$userAgentHash}";
+            
+            // Check if this DEVICE (IP + User-Agent combo) already visited in the last 24 hours
             $existingVisitor = Visitor::where('ip_address', $ip)
+                ->where('user_agent', $userAgent)
                 ->where('visited_at', '>=', now()->subHours(24))
                 ->latest('visited_at')
                 ->first();
             
             if ($existingVisitor) {
-                // Same visitor within 24 hours - just update the last visit time
+                // Same device within 24 hours - just update the last visit time
+
                 \Log::debug('Updating existing visitor', [
                     'ip' => $ip,
                     'last_visited' => $existingVisitor->visited_at,
+                ]);
+                
+                \Log::debug('Device fingerprint check', [
+                    'device_fp' => $deviceFingerprint,
+                    'ip' => $ip,
+                    'user_agent' => substr($userAgent ?? '', 0, 80),
                 ]);
                 
                 $existingVisitor->update([
