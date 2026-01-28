@@ -13,22 +13,36 @@ return new class extends Migration
     {
         Schema::table('visitors', function (Blueprint $table) {
             // Country detection
-            $table->string('country')->nullable()->after('user_agent');
-            $table->string('country_code')->nullable()->after('country');
+            if (!Schema::hasColumn('visitors', 'country')) {
+                $table->string('country')->nullable()->after('user_agent');
+            }
+            if (!Schema::hasColumn('visitors', 'country_code')) {
+                $table->string('country_code')->nullable()->after('country');
+            }
             
             // Session tracking
-            $table->string('session_id')->nullable()->after('country_code');
-            $table->unsignedInteger('session_duration')->default(0)->after('session_id'); // in seconds
+            if (!Schema::hasColumn('visitors', 'session_id')) {
+                $table->string('session_id')->nullable()->after('country_code');
+            }
+            if (!Schema::hasColumn('visitors', 'session_duration')) {
+                $table->unsignedInteger('session_duration')->default(0)->after('session_id'); // in seconds
+            }
             
             // Page-level tracking
-            $table->string('page_title')->nullable()->after('url');
-            $table->string('referrer')->nullable()->after('page_title');
+            if (!Schema::hasColumn('visitors', 'page_title')) {
+                $table->string('page_title')->nullable()->after('url');
+            }
+            if (!Schema::hasColumn('visitors', 'referrer')) {
+                $table->string('referrer')->nullable()->after('page_title');
+            }
             
             // Indices for performance
-            $table->index('country');
-            $table->index('session_id');
-            // Don't index 'url' since it's a TEXT column - use prefix instead if needed
-            // $table->index(['url(255)']); // Only if absolutely necessary
+            if (!Schema::hasIndexKey('visitors', 'visitors_country_index')) {
+                $table->index('country');
+            }
+            if (!Schema::hasIndexKey('visitors', 'visitors_session_id_index')) {
+                $table->index('session_id');
+            }
         });
     }
 
@@ -38,10 +52,31 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('visitors', function (Blueprint $table) {
-            $table->dropIndex(['country']);
-            $table->dropIndex(['session_id']);
+            if (Schema::hasIndexKey('visitors', 'visitors_country_index')) {
+                $table->dropIndex('visitors_country_index');
+            }
+            if (Schema::hasIndexKey('visitors', 'visitors_session_id_index')) {
+                $table->dropIndex('visitors_session_id_index');
+            }
             
-            $table->dropColumn(['country', 'country_code', 'session_id', 'session_duration', 'page_title', 'referrer']);
+            if (Schema::hasColumn('visitors', 'country')) {
+                $table->dropColumn('country');
+            }
+            if (Schema::hasColumn('visitors', 'country_code')) {
+                $table->dropColumn('country_code');
+            }
+            if (Schema::hasColumn('visitors', 'session_id')) {
+                $table->dropColumn('session_id');
+            }
+            if (Schema::hasColumn('visitors', 'session_duration')) {
+                $table->dropColumn('session_duration');
+            }
+            if (Schema::hasColumn('visitors', 'page_title')) {
+                $table->dropColumn('page_title');
+            }
+            if (Schema::hasColumn('visitors', 'referrer')) {
+                $table->dropColumn('referrer');
+            }
         });
     }
 };
