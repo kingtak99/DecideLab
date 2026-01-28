@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(\App\Http\Middleware\SetLocale::class);
         $middleware->web(\App\Http\Middleware\TrackVisitors::class);
         
+        // Register named middleware
+        $middleware->alias([
+            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
+        
         // Exclude CSRF for email check route
         $middleware->validateCsrfTokens(except: [
             'check-email',

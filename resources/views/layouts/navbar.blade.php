@@ -73,6 +73,9 @@
                 <div class="dropdown-menu">
                     @if(auth()->user()->email === 'hasantak99@gmail.com')
                         <a href="{{ route('admin.dashboard') }}">{{ __('messages.admin_dashboard') ?? 'Admin Dashboard' }}</a>
+                        <a href="{{ route('analytics.dashboard') }}">📊 Analytics Dashboard</a>
+                        <a href="{{ route('analytics.detected-bots') }}">🤖 Detected Bots</a>
+                        <hr style="margin: 5px 0; border: none; border-top: 1px solid #ddd;">
                     @endif
                     <a href="{{ route('profile.edit') }}">{{ __('messages.profile') }}</a>
 

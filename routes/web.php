@@ -180,4 +180,16 @@ Route::get('/countries-data-sources', function () {
     return redirect("/{$locale}/countries-data-sources");
 })->name('footer.countries-data-sources');
 
+// 📊 Analytics Routes - Admin Only
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/analytics/dashboard', [\App\Http\Controllers\AnalyticsController::class, 'dashboard'])
+        ->name('analytics.dashboard');
+    Route::get('/analytics/bots', [\App\Http\Controllers\AnalyticsController::class, 'detectedBots'])
+        ->name('analytics.detected-bots');
+});
+
+// 📊 API Routes
+Route::get('/api/stats', [\App\Http\Controllers\AnalyticsController::class, 'apiStats'])
+    ->name('api.stats');
+
 require __DIR__ . '/auth.php';
