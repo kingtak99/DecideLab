@@ -16,7 +16,8 @@ class TrackVisitors
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $ip = $request->ip();
+        // Get the real IP (handle proxies and proxied requests)
+        $ip = $this->getRealIP($request);
         
         // In development, use a test IP for localhost to test geolocation
         if (config('app.debug') && ($ip === '127.0.0.1' || $ip === 'localhost' || str_starts_with($ip, '::1'))) {
@@ -84,18 +85,18 @@ class TrackVisitors
 
             Visitor::create($visitorData);
             
-            // Log success for debugging
-            if (config('app.debug')) {
-                \Log::info('New visitor tracked', [
-                    'ip' => $ip,
-                    'country' => $country['country'] ?? 'Unknown',
-                    'user_agent' => substr($userAgent ?? '', 0, 50),
-                ]);
-            }
+            // Always log for production debugging
+            \Log::info('New visitor tracked', [
+                'ip' => $ip,
+                'country' => $country['country'] ?? 'Unknown',
+                'user_agent' => substr($userAgent ?? '', 0, 50),
+                'url' => $request->path(),
+            ]);
         } catch (\Exception $e) {
-            // Log error but don't break the request
+            // Always log errors for production debugging
             \Log::error('Visitor tracking failed: ' . $e->getMessage(), [
                 'ip' => $ip,
+                'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
         }
@@ -293,5 +294,32 @@ class TrackVisitors
         }
         
         return null;
+    }
+
+    /**
+     * Get the real IP address of the client
+     * Handles proxies and CloudFront / AWS ALB
+     */
+    private function getRealIP($request)
+    {
+        // Check for IP from CloudFront or AWS ALB
+        if ($request->server('HTTP_CF_CONNECTING_IP')) {
+            return $request->server('HTTP_CF_CONNECTING_IP');
+        }
+        
+        // Check for IP from X-Forwarded-For header (proxies)
+        if ($request->server('HTTP_X_FORWARDED_FOR')) {
+            // X-Forwarded-For can contain multiple IPs, get the first one
+            $ips = explode(',', $request->server('HTTP_X_FORWARDED_FOR'));
+            return trim($ips[0]);
+        }
+        
+        // Check for X-Real-IP header
+        if ($request->server('HTTP_X_REAL_IP')) {
+            return $request->server('HTTP_X_REAL_IP');
+        }
+        
+        // Fallback to Laravel's built-in IP method
+        return $request->ip();
     }
 }
