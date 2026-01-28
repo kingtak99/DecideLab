@@ -8,6 +8,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $app = require_once __DIR__ . '/bootstrap/app.php';
 
 use App\Models\Visitor;
+use Illuminate\Support\Carbon;
 
 $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
@@ -39,7 +40,7 @@ if ($recent->isEmpty()) {
 } else {
     echo "Latest 5 visitors:\n";
     foreach ($recent as $i => $v) {
-        $time = $v->visited_at->format('Y-m-d H:i:s');
+        $time = is_string($v->visited_at) ? $v->visited_at : $v->visited_at->format('Y-m-d H:i:s');
         echo ($i+1) . ". IP: {$v->ip_address} | Country: {$v->country} | Time: {$time}\n";
     }
 }
