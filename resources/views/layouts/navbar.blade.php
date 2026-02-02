@@ -114,19 +114,21 @@
         <div class="dropdown">
             <button class="drop-btn" id="language-btn">
                 @if (app()->getLocale() === 'ar')
-                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> {{ __('messages.arabic') }}
+                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> --}}
+                     {{ __('messages.arabic') }}
                 @else
-                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }}
+                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> --}}
+                     {{ __('messages.english') }}
                 @endif
             </button>
             <div class="dropdown-menu">
                 <a href="/lang/en" class="language-link {{ app()->getLocale() === 'en' ? 'active' : '' }}"
                     data-lang="en">
-                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }} --}}
+                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }}
                 </a>
                 <a href="/lang/ar" class="language-link {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
                     data-lang="ar">
-                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }} --}}
+                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }}
                 </a>
             </div>
         </div>
