@@ -89,7 +89,83 @@ class AnalyticsController extends Controller
             ->limit(15)
             ->get();
 
-        // 📊 Data for Chart.js
+        // Quick / Incomplete visits (humanOnly but failed behavioral checks) — today
+        $quickTodayCount = Visitor::humanOnly()
+            ->today()
+            ->where(function ($q) {
+                $q->where('session_duration', '<', 5)
+                  ->where('page_views', '<', 2)
+                  ->where('has_scroll', false)
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
+            })
+            ->distinct('ip_address')
+            ->count('ip_address');
+
+        // Per-country breakdown for quick visits (to show where quick traffic comes from)
+        $quickCountryStats = Visitor::humanOnly()
+            ->today()
+            ->where(function ($q) {
+                $q->where('session_duration', '<', 5)
+                  ->where('page_views', '<', 2)
+                  ->where('has_scroll', false)
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
+                  ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
+            })
+            ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
+            ->whereNotNull('country')
+            ->where('country', '!=', 'Unknown')
+            ->groupBy('country', 'country_code')
+            ->orderByDesc('visitors')
+            ->get();
+
+        // Raw (unfiltered) metrics for comparison / toggle
+        $rawToday = [
+            'total_visits' => Visitor::today()->count(),
+            'unique_visitors' => Visitor::today()->distinct('ip_address')->count('ip_address'),
+            'with_account' => Visitor::today()->whereNotNull('user_id')->count(),
+        ];
+
+        $rawTopPages = Visitor::today()
+            ->selectRaw('url, COUNT(*) as visits')
+            ->groupBy('url')
+            ->orderByDesc('visits')
+            ->limit(10)
+            ->get();
+
+        $rawVisitorsByPage = Visitor::today()
+            ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
+            ->groupBy('url')
+            ->orderByDesc('unique_count')
+            ->limit(5)
+            ->get();
+
+        $rawCountryStats = Visitor::today()
+            ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
+            ->whereNotNull('country')
+            ->where('country', '!=', 'Unknown')
+            ->groupBy('country', 'country_code')
+            ->orderByDesc('visitors')
+            ->get();
+
+        $rawChartData = [
+            'pages' => [
+                'labels' => $rawTopPages->pluck('url')->toArray(),
+                'data' => $rawTopPages->pluck('visits')->toArray(),
+            ],
+            'countries' => [
+                'labels' => $rawCountryStats->pluck('country')->toArray(),
+                'data' => $rawCountryStats->pluck('visitors')->toArray(),
+            ],
+            'visitors_by_page' => [
+                'labels' => $rawVisitorsByPage->pluck('url')->toArray(),
+                'data' => $rawVisitorsByPage->pluck('unique_count')->toArray(),
+            ],
+        ];
+
+        // 📊 Data for Chart.js (trusted)
         $chartData = [
             'pages' => [
                 'labels' => $topPages->pluck('url')->toArray(),
@@ -110,6 +186,13 @@ class AnalyticsController extends Controller
             'humanMonth',
             'socialToday',
             'socialMonth',
+            'quickTodayCount',
+            'quickCountryStats',
+            'rawToday',
+            'rawTopPages',
+            'rawCountryStats',
+            'rawVisitorsByPage',
+            'rawChartData',
             'botToday',
             'botMonth',
             'topPages',

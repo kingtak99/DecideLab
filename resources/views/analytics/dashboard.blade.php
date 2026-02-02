@@ -13,6 +13,16 @@
         الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95. كما تُطبّق الآن قواعد سلوكية: تحسب الزيارة إن تحقّق أحد الشروط: <code>session_duration &gt;= 5s</code>، أو <code>page_views &gt;= 2</code>، أو <code>has_scroll</code> = true، أو أن تكون زيارة من Facebook In-App (Social).
     </div>
 
+    <!-- Mode Toggle: Human-Qualified vs Raw -->
+    <div style="margin:10px 0; display:flex; gap:8px; align-items:center;">
+        <div style="font-size:0.95rem; color:#374151;">عرض:</div>
+        <div class="mode-toggle" style="display:flex; gap:8px;">
+            <button id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 زوار مرجَّحون بشريًا</button>
+            <button id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 كل الزيارات (Raw)</button>
+        </div>
+        <div style="margin-left:auto; font-size:0.9rem; color:#6b7280;">Toggle يشغّل عرض Raw/Qualified بدون تغيير المنطق</div>
+    </div>
+
     <!-- Stats Cards Row 1 - Humans Today -->
     <div class="stats-grid">
         <!-- اليوم - الزيارات -->
@@ -39,9 +49,43 @@
             <div class="card-footer">
                 <span class="badge info">ترافيك اجتماعي</span>
             </div>
+        </div>
+
+        <!-- اليوم - Quick / Incomplete visits -->
+        <div class="stat-card quick-card" title="زيارات لم تحقق شروط التفاعل (وقت، صفحات، تمرير). تُعرض لأغراض تشخيصية فقط ولا تُحسب كزوار بشريين">
+            <div class="card-icon">⚠️</div>
+            <div class="card-content">
+                <h3>زيارات سريعة (غير مكتملة) <small style="color:#92400e; font-weight:600;">🛈</small></h3>
+                <p class="stat-number">{{ $quickTodayCount ?? 0 }}</p>
+                <p class="stat-label">زيارات إن لم تُكتمل سلوكياً</p>
             </div>
             <div class="card-footer">
-                <span class="badge success">✓ حقيقي</span>
+                <span class="badge warn">⚠️ تحقق يدوي</span>
+            </div>
+        </div>
+
+        <!-- RAW Stats (hidden by default, shown when Mode=Raw) -->
+        <div class="stat-card mode-raw" style="display:none;">
+            <div class="card-icon">📊</div>
+            <div class="card-content">
+                <h3>إجمالي الزيارات (Raw)</h3>
+                <p class="stat-number">{{ $rawToday['total_visits'] ?? 0 }}</p>
+                <p class="stat-label">كل الزيارات (غير مُصفّاة)</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge secondary">Raw</span>
+            </div>
+        </div>
+
+        <div class="stat-card mode-raw" style="display:none;">
+            <div class="card-icon">🌐</div>
+            <div class="card-content">
+                <h3>زوار فريدين (Raw)</h3>
+                <p class="stat-number">{{ $rawToday['unique_visitors'] ?? 0 }}</p>
+                <p class="stat-label">IP addresses مختلفة</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge secondary">Raw</span>
             </div>
         </div>
 
@@ -233,6 +277,55 @@
                 </tbody>
             </table>
         </div>
+
+        @if(isset($quickCountryStats) && $quickCountryStats->isNotEmpty())
+            <div class="table-wrapper quick-table" style="margin-top:12px;">
+                <h4 style="margin-bottom:6px;">⚠️ دول زيارات سريعة (غير مكتملة)</h4>
+                <table class="countries-table small">
+                    <thead>
+                        <tr>
+                            <th>الدولة</th>
+                            <th>الكود</th>
+                            <th>زيارات سريعة (زوار فريدين)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($quickCountryStats as $qc)
+                            <tr>
+                                <td>{{ $qc->country }}</td>
+                                <td><span class="country-badge">{{ $qc->country_code }}</span></td>
+                                <td>{{ $qc->visitors }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        <!-- RAW countries (shown only when mode=raw) -->
+        @if(isset($rawCountryStats) && $rawCountryStats->count() > 0)
+            <div class="table-wrapper mode-raw" style="margin-top:12px; display:none;">
+                <h4 style="margin-bottom:6px;">📊 توزيع الدول (Raw)</h4>
+                <table class="countries-table small">
+                    <thead>
+                        <tr>
+                            <th>الدولة</th>
+                            <th>الكود</th>
+                            <th>زوار فريدين (Raw)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($rawCountryStats as $rc)
+                            <tr>
+                                <td>{{ $rc->country }}</td>
+                                <td><span class="country-badge">{{ $rc->country_code }}</span></td>
+                                <td>{{ $rc->visitors }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
     @else
     <div class="countries-section">
@@ -605,90 +698,107 @@ document.addEventListener('DOMContentLoaded', function() {
         'rgba(245, 158, 11, 0.8)',
     ];
 
-    // Top Pages Chart
-    @if($chartData['pages']['labels'])
-    new Chart(document.getElementById('topPagesChart'), {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode($chartData['pages']['labels']) !!},
-            datasets: [{
-                label: 'عدد الزيارات',
-                data: {!! json_encode($chartData['pages']['data']) !!},
-                backgroundColor: colors[0],
-                borderRadius: 6,
-            }]
+    // Prepare data containers for human & raw charts
+    const humanChartData = {
+        pages: {
+            labels: {!! json_encode($chartData['pages']['labels'] ?? []) !!},
+            data: {!! json_encode($chartData['pages']['data'] ?? []) !!}
         },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: { beginAtZero: true }
-            }
+        visitors_by_page: {
+            labels: {!! json_encode($chartData['visitors_by_page']['labels'] ?? []) !!},
+            data: {!! json_encode($chartData['visitors_by_page']['data'] ?? []) !!}
+        },
+        countries: {
+            labels: {!! json_encode($chartData['countries']['labels'] ?? []) !!},
+            data: {!! json_encode($chartData['countries']['data'] ?? []) !!}
         }
-    });
-    @endif
+    };
 
-    // Visitors Per Page Chart
-    @if($chartData['visitors_by_page']['labels'])
-    new Chart(document.getElementById('visitorsPerPageChart'), {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode($chartData['visitors_by_page']['labels']) !!},
-            datasets: [{
-                label: 'زوار فريدين',
-                data: {!! json_encode($chartData['visitors_by_page']['data']) !!},
-                backgroundColor: colors[1],
-                borderRadius: 6,
-            }]
+    const rawChartData = {
+        pages: {
+            labels: {!! json_encode($rawChartData['pages']['labels'] ?? []) !!},
+            data: {!! json_encode($rawChartData['pages']['data'] ?? []) !!}
         },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: { beginAtZero: true }
-            }
+        visitors_by_page: {
+            labels: {!! json_encode($rawChartData['visitors_by_page']['labels'] ?? []) !!},
+            data: {!! json_encode($rawChartData['visitors_by_page']['data'] ?? []) !!}
+        },
+        countries: {
+            labels: {!! json_encode($rawChartData['countries']['labels'] ?? []) !!},
+            data: {!! json_encode($rawChartData['countries']['data'] ?? []) !!}
         }
-    });
-    @endif
+    };
 
-    // Countries Chart
-    @if($chartData['countries']['labels'])
-    new Chart(document.getElementById('countriesChart'), {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($chartData['countries']['labels']) !!},
-            datasets: [{
-                data: {!! json_encode($chartData['countries']['data']) !!},
-                backgroundColor: [
-                    'rgba(102, 126, 234, 0.8)',
-                    'rgba(118, 75, 162, 0.8)',
-                    'rgba(16, 185, 129, 0.8)',
-                    'rgba(59, 130, 246, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(239, 68, 68, 0.8)',
-                    'rgba(139, 92, 246, 0.8)',
-                    'rgba(14, 165, 233, 0.8)',
-                ],
-                borderRadius: 4,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    rtl: true,
-                }
-            }
+    // Helper: create chart or update existing
+    function createBarChart(ctx, labels, data, color) {
+        return new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: [{ label: '', data: data, backgroundColor: color, borderRadius: 6 }] },
+            options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+        });
+    }
+
+    function updateChart(chart, labels, data) {
+        if (!chart) return null;
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        chart.update();
+        return chart;
+    }
+
+    // Chart references
+    let topPagesChart = null;
+    let visitorsPerPageChart = null;
+    let countriesChart = null;
+
+    // Initialize with human data if available
+    if (humanChartData.pages.labels.length) {
+        topPagesChart = createBarChart(document.getElementById('topPagesChart'), humanChartData.pages.labels, humanChartData.pages.data, colors[0]);
+    }
+    if (humanChartData.visitors_by_page.labels.length) {
+        visitorsPerPageChart = createBarChart(document.getElementById('visitorsPerPageChart'), humanChartData.visitors_by_page.labels, humanChartData.visitors_by_page.data, colors[1]);
+    }
+    if (humanChartData.countries.labels.length) {
+        countriesChart = new Chart(document.getElementById('countriesChart'), {
+            type: 'doughnut',
+            data: { labels: humanChartData.countries.labels, datasets: [{ data: humanChartData.countries.data, backgroundColor: [ 'rgba(102, 126, 234, 0.8)','rgba(118, 75, 162, 0.8)','rgba(16, 185, 129, 0.8)','rgba(59, 130, 246, 0.8)','rgba(245, 158, 11, 0.8)','rgba(239, 68, 68, 0.8)','rgba(139, 92, 246, 0.8)','rgba(14, 165, 233, 0.8)'], borderRadius: 4 }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', rtl: true } } }
+        });
+    }
+
+    // Mode toggle behavior
+    function setMode(mode) {
+        const humanEls = document.querySelectorAll('.mode-human');
+        const rawEls = document.querySelectorAll('.mode-raw');
+
+        humanEls.forEach(el => el.style.display = (mode === 'human') ? '' : 'none');
+        rawEls.forEach(el => el.style.display = (mode === 'raw') ? '' : 'none');
+
+        // Update charts
+        if (mode === 'raw') {
+            if (topPagesChart) updateChart(topPagesChart, rawChartData.pages.labels, rawChartData.pages.data);
+            else if (rawChartData.pages.labels.length) topPagesChart = createBarChart(document.getElementById('topPagesChart'), rawChartData.pages.labels, rawChartData.pages.data, colors[0]);
+
+            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, rawChartData.visitors_by_page.labels, rawChartData.visitors_by_page.data);
+            else if (rawChartData.visitors_by_page.labels.length) visitorsPerPageChart = createBarChart(document.getElementById('visitorsPerPageChart'), rawChartData.visitors_by_page.labels, rawChartData.visitors_by_page.data, colors[1]);
+
+            if (countriesChart) updateChart(countriesChart, rawChartData.countries.labels, rawChartData.countries.data);
+        } else {
+            if (topPagesChart) updateChart(topPagesChart, humanChartData.pages.labels, humanChartData.pages.data);
+            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, humanChartData.visitors_by_page.labels, humanChartData.visitors_by_page.data);
+            if (countriesChart) updateChart(countriesChart, humanChartData.countries.labels, humanChartData.countries.data);
         }
-    });
-    @endif
+    }
+
+    // Hook toggle buttons
+    const modeHumanBtn = document.getElementById('modeHumanBtn');
+    const modeRawBtn = document.getElementById('modeRawBtn');
+
+    modeHumanBtn.addEventListener('click', function() { setMode('human'); modeHumanBtn.classList.add('btn-primary'); modeRawBtn.classList.remove('btn-primary'); modeRawBtn.classList.add('btn-secondary'); });
+    modeRawBtn.addEventListener('click', function() { setMode('raw'); modeRawBtn.classList.add('btn-primary'); modeHumanBtn.classList.remove('btn-primary'); modeHumanBtn.classList.add('btn-secondary'); });
+
+    // Default mode
+    setMode('human');
 });
 </script>
 
