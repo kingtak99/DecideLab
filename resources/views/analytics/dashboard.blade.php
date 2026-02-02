@@ -542,7 +542,7 @@
 }
 
 .table-wrapper {
-    background: white;
+    background: rgb(50, 50, 50);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -572,7 +572,7 @@
 }
 
 .countries-table tbody tr:hover {
-    background-color: #f9fafb;
+    background-color: gray;
 }
 
 .country-badge {
