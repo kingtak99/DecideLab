@@ -33,13 +33,14 @@
 }
 
 /* Two-part logo: full text for larger screens, short 'DL' for phones */
-.logo .logo-full { display: inline; }
-.logo .logo-short { display: none; }
+.logo .logo-full { display: inline-block; }
+.logo .logo-short { display: none !important; }
 
 @media (max-width: 600px) {
     .logo { font-size: 1.05rem; }
-    .logo .logo-full { display: none; }
-    .logo .logo-short { display: inline; font-weight: 800; }
+    /* Force opposite visibility on small screens to override other styles */
+    .logo .logo-full { display: none !important; }
+    .logo .logo-short { display: inline-block !important; font-weight: 800; }
 }
 
 .nav-left {
