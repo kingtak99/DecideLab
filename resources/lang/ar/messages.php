@@ -97,7 +97,7 @@ return [
     'biggest_time_leaks' => 'أكبر تسريبات وقتك',
 
     // Shock Section
-    'shock_title' => '⏳ وقتك ما يكذب',
+    'shock_title' => '⏳ وقتك لا يكذب',
     'shock_description' => '23.2 سنة من حياتك<br>8,459 يوم من حياتك<br>202,870 ساعة من حياتك<br>شوف كم من حياتك بتضيع.',
     'shock_button' => '😬 كشف صدمة حياتي',
 
