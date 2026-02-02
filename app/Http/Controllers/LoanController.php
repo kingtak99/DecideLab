@@ -23,7 +23,8 @@ class LoanController extends Controller
             'property_value' => 'required|numeric|min:10000',
             'down_payment' => 'required|numeric|min:0|max:50',
             'loan_term' => 'required|integer|min:5|max:30',
-            'custom_rate' => 'nullable|numeric|min:0|max:20',
+            'use_custom_rate' => 'nullable|boolean',
+            'custom_rate' => 'nullable|numeric|min:0.1|max:20',
             'monthly_rent' => 'nullable|numeric|min:0',
             'rent_increase_rate' => 'nullable|numeric|min:0|max:10',
             'property_appreciation' => 'nullable|numeric|min:0|max:15',
@@ -48,7 +49,21 @@ class LoanController extends Controller
         $downPaymentAmount = $propertyValue * ($downPaymentPercent / 100);
         $loanAmount = $propertyValue - $downPaymentAmount;
 
-        $interestRate = $request->custom_rate ?? $loanProfile->interest_rate;
+        // Use custom rate if a valid custom_rate value is provided (even if checkbox not checked). This allows typing a value to override the default immediately.
+        $defaultRate = $loanProfile->interest_rate;
+        $hasCustomValue = isset($request->custom_rate) && trim((string)$request->custom_rate) !== '' && (float)$request->custom_rate > 0;
+        $useCustom = $hasCustomValue;
+        $interestRate = $useCustom ? (float)$request->custom_rate : $defaultRate;
+
+        \Log::info('Housing Loan Calculation', [
+            'custom_rate_input' => $request->custom_rate,
+            'use_custom_flag' => $request->boolean('use_custom_rate'),
+            'has_custom_value' => $hasCustomValue,
+            'use_custom' => $useCustom,
+            'default_rate' => $defaultRate,
+            'final_interest_rate' => $interestRate
+        ]);
+
         $monthlyRate = $interestRate / 100 / 12;
         $numPayments = $loanYears * 12;
 
@@ -106,6 +121,8 @@ class LoanController extends Controller
             'total_interest' => round($totalPayment - $loanAmount, 2),
             'currency' => $country->currency_code,
             'interest_rate' => $interestRate,
+            'used_custom_rate' => (bool)$useCustom,
+            'interest_rate_source' => $useCustom ? 'custom' : 'default',
             'interest_system' => $this->getInterestSystemName($loanProfile->interest_system),
             'property_value' => $propertyValue,
             'down_payment' => $downPaymentPercent,

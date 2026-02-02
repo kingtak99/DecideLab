@@ -93,7 +93,14 @@
                                 <label for="interest_rate" class="block text-sm font-medium text-slate-300 mb-2">
                                     📈 {{ __('messages.interest_rate') }}
                                 </label>
-                                <input type="number" id="interest_rate" name="interest_rate" step="0.1" min="0" max="50" readonly class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-not-allowed" value="{{ $currentCountry ? $currentCountry->interest_rate : 5.0 }}" placeholder="5.0">
+                                <input type="number" id="interest_rate" name="interest_rate" step="0.1" min="0" max="50" class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="{{ $currentCountry ? $currentCountry->interest_rate : 5.0 }}" placeholder="5.0">
+                                <input type="hidden" id="use_custom_rate" name="use_custom_rate" value="0">
+                                <div id="custom-rate-note" class="mt-2 text-sm text-indigo-400">
+                                    {{ __('messages.custom_rate_help') }}
+                                </div>
+                                <div id="custom-rate-pending" class="mt-2 text-sm text-amber-400 hidden">
+                                    {{ __('messages.custom_rate_pending') }}
+                                </div>
                             </div>
 
                             <!-- Monthly Income -->
@@ -173,6 +180,20 @@
             const currentRate = @json($currentCountry ? $currentCountry->interest_rate : 5.0);
             currencyDisplays.forEach(display => display.textContent = currentCurrency);
             interestRateInput.value = currentRate;
+            const useCustomRateHidden = document.getElementById('use_custom_rate');
+
+            // When user types a custom rate, just set the hidden flag; do NOT auto-submit — user must click Calculate
+            interestRateInput.addEventListener('input', function() {
+                const val = parseFloat(this.value);
+                const pendingEl = document.getElementById('custom-rate-pending');
+                if (!isNaN(val) && val >= 0 && val <= 50 && val !== parseFloat(currentRate)) {
+                    useCustomRateHidden.value = '1';
+                    if (pendingEl) pendingEl.classList.remove('hidden');
+                } else {
+                    useCustomRateHidden.value = '0';
+                    if (pendingEl) pendingEl.classList.add('hidden');
+                }
+            });
 
             // Listen for country changes from navbar
             window.addEventListener('countryChanged', function(e) {
@@ -183,12 +204,29 @@
                 }
                 if (newCountry && newCountry.interest_rate) {
                     interestRateInput.value = newCountry.interest_rate;
+                    useCustomRateHidden.value = '0';
                 }
             });
 
             // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+
+                // Ensure use_custom_rate is set based on interest input
+                const enteredRate = parseFloat(interestRateInput.value);
+                if (!isNaN(enteredRate) && enteredRate >= 0 && enteredRate <= 50 && enteredRate !== parseFloat(currentRate)) {
+                    useCustomRateHidden.value = '1';
+                } else {
+                    useCustomRateHidden.value = '0';
+                }
+
+                // If using custom rate, make sure it's valid and present
+                if (useCustomRateHidden.value === '1') {
+                    if (interestRateInput.value === '' || isNaN(enteredRate)) {
+                        alert('{{ __('messages.custom_rate_required') }}');
+                        return;
+                    }
+                }
 
                 const formData = new FormData(this);
 
@@ -258,28 +296,63 @@
                     zoneBorderColor = 'border-red-500';
                 }
 
+                // Helper functions for localized year/month labels
+                function formatYears(n) {
+                    n = parseInt(n) || 0;
+                    const unit = (n === 1) ? __('year_singular') : __('year_plural');
+                    return `${n} ${unit}`;
+                }
+                function formatMonths(n) {
+                    n = parseInt(n) || 0;
+                    if (n === 0) return `0 ${__('month_singular')}`; // prefer singular for 0 as per Arabic UX preference
+                    const unit = (n === 1) ? __('month_singular') : __('month_plural');
+                    return `${n} ${unit}`;
+                }
+
+                // Currency localization and formatting helper
+                function currencyName(code) {
+                    // Localized currency names (add more mappings as needed)
+                    const map = {
+                        'JOD': { 'ar': 'دينار أردني', 'en': 'JOD' }
+                    };
+                    const loc = "{{ $locale }}" || 'en';
+                    if (map[code] && map[code][loc]) return map[code][loc];
+                    return code;
+                }
+
+                function formatMoney(value, code) {
+                    const num = Number(value) || 0;
+                    const loc = "{{ $locale }}" === 'ar' ? 'ar-EG' : 'en-US';
+                    const formatted = num.toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    return `${formatted} ${currencyName(code)}`;
+                }
+
                 resultsContent.innerHTML = `
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-slate-800 p-4 rounded-xl">
                             <div class="text-sm text-slate-400">${__('total_paid')}</div>
-                            <div class="text-2xl font-bold text-white">${data.total_paid} ${currency}</div>
+                            <div class="text-2xl font-bold text-white">${formatMoney(data.total_paid, currency)}</div>
                         </div>
                         <div class="bg-slate-800 p-4 rounded-xl">
                             <div class="text-sm text-slate-400">${__('total_interest')}</div>
-                            <div class="text-2xl font-bold text-red-400">${data.total_interest} ${currency}</div>
+                            <div class="text-2xl font-bold text-red-400">${formatMoney(data.total_interest, currency)}</div>
                         </div>
                         <div class="bg-slate-800 p-4 rounded-xl">
-                            <div class="text-sm text-slate-400" title="Base monthly payment from loan terms">${__('monthly_payment')}</div>
-                            <div class="text-2xl font-bold text-indigo-400">${data.monthly_payment} ${currency}</div>
+                            <div class="text-sm text-slate-400" title="${__('monthly_payment')}">${__('monthly_payment')}</div>
+                            <div class="text-2xl font-bold text-indigo-400">${formatMoney(data.monthly_payment, currency)}</div>
                         </div>
                         <div class="bg-slate-800 p-4 rounded-xl">
-                            <div class="text-sm text-slate-400" title="Total amount paid each month (base + extra payments)">${__('effective_monthly_payment')}</div>
-                            <div class="text-2xl font-bold text-green-400">${data.effective_monthly_payment} ${currency}</div>
+                            <div class="text-sm text-slate-400" title="${__('effective_monthly_payment')}">${__('effective_monthly_payment')}</div>
+                            <div class="text-2xl font-bold text-green-400">${formatMoney(data.effective_monthly_payment, currency)}</div>
                         </div>
                         <div class="bg-slate-800 p-4 rounded-xl">
                             <div class="text-sm text-slate-400">${__('years_of_life')}</div>
-                            <div class="text-2xl font-bold text-yellow-400">${data.years_of_life} years</div>
+                            <div class="text-2xl font-bold text-yellow-400">${formatYears(data.years_of_life)}</div>
                         </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="text-sm text-slate-400">{{ __('messages.interest_rate_applied') }}: <span class="text-white font-semibold">${data.interest_rate}%</span> ${data.used_custom_rate ? '({{ __('messages.custom_rate_applied') }})' : '({{ __('messages.default_rate_used') }})'}</div>
                     </div>
 
                     <div class="mt-6">
@@ -292,7 +365,7 @@
                     <div class="mt-6">
                         <div class="bg-slate-800 p-4 rounded-xl">
                             <div class="text-sm text-slate-400" title="${__('suffocating_months_explanation')}">${__('suffocating_months')}</div>
-                            <div class="text-2xl font-bold text-red-400">${data.suffocating_months} months</div>
+                            <div class="text-2xl font-bold text-red-400">${formatMonths(data.suffocating_months)}</div>
                         </div>
                     </div>
 
@@ -308,6 +381,7 @@
                             ${data.income_percentage > 0 ? `
                             <div class="bg-slate-800 p-4 rounded-xl border-l-4 ${zoneBorderColor}">
                                 <div class="${zoneTextColor} font-semibold">${paymentRatioMessage}</div>
+                                <div class="text-xs text-slate-400 mt-2">${__('payment_ratio_thresholds')}</div>
                             </div>
                             ` : ''}
                         </div>
@@ -329,7 +403,8 @@
                     comparisonFormData.append('monthly_income', formData.get('monthly_income'));
                     comparisonFormData.append('extra_payments', '0'); // No extra payments
                     comparisonFormData.append('finance_model', formData.get('finance_model'));
-
+                    comparisonFormData.append('interest_rate', formData.get('interest_rate') || '');
+                    comparisonFormData.append('use_custom_rate', formData.get('use_custom_rate') || '0');
                     fetch('{{ route("loan.simulation.calculate", ["locale" => $locale]) }}', {
                         method: 'POST',
                         body: comparisonFormData,
@@ -344,20 +419,20 @@
 
                         // Dynamic text for singular/plural
                         const yearText = yearsSaved === 1 ? __('year_saved') : __('years_saved');
-                        const yearValue = yearsSaved === 1 ? 'year' : 'years';
+                        const yearValue = yearsSaved === 1 ? __('year_singular') : __('year_plural');
 
                         document.getElementById('comparison-section').innerHTML = `
                             <h3 class="text-xl font-bold text-white mb-4">${__('comparison_with_extra')}</h3>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div class="bg-slate-700 p-4 rounded-xl">
                                     <div class="text-sm text-slate-400">${__('without_extra_payments')}</div>
-                                    <div class="text-lg font-semibold text-slate-300">${comparisonData.total_interest} ${currency} interest</div>
-                                    <div class="text-sm text-slate-400">${comparisonData.years_of_life} years</div>
+                                    <div class="text-lg font-semibold text-slate-300">${comparisonData.total_interest} ${currency} ${__('total_interest')}</div>
+                                    <div class="text-sm text-slate-400">${formatYears(comparisonData.years_of_life)}</div>
                                 </div>
                                 <div class="bg-green-900 p-4 rounded-xl">
                                     <div class="text-sm text-green-400">${__('with_extra_payments')}</div>
-                                    <div class="text-lg font-semibold text-green-300">${data.total_interest} ${currency} interest</div>
-                                    <div class="text-sm text-green-400">${data.years_of_life} years</div>
+                                    <div class="text-lg font-semibold text-green-300">${data.total_interest} ${currency} ${__('total_interest')}</div>
+                                    <div class="text-sm text-green-400">${formatYears(data.years_of_life)}</div>
                                 </div>
                                 <div class="bg-blue-900 p-4 rounded-xl">
                                     <div class="text-sm text-blue-400">${__('interest_saved')}: ${interestSaved} ${currency}</div>
@@ -401,13 +476,23 @@
             payment_ratio_stress: "{{ __('messages.payment_ratio_stress') }}",
             payment_ratio_high_risk: "{{ __('messages.payment_ratio_high_risk') }}",
             payment_ratio_not_feasible: "{{ __('messages.payment_ratio_not_feasible') }}",
+            payment_ratio_thresholds: "{{ __('messages.payment_ratio_thresholds') }}",
             effective_monthly_payment: "{{ __('messages.effective_monthly_payment') }}",
             comparison_with_extra: "{{ __('messages.comparison_with_extra') }}",
             without_extra_payments: "{{ __('messages.without_extra_payments') }}",
             with_extra_payments: "{{ __('messages.with_extra_payments') }}",
             interest_saved: "{{ __('messages.interest_saved') }}",
             years_saved: "{{ __('messages.years_saved') }}",
-            year_saved: "{{ __('messages.year_saved') }}"
+            year_saved: "{{ __('messages.year_saved') }}",
+            year_singular: "{{ __('messages.year_singular') }}",
+            year_plural: "{{ __('messages.year_plural') }}",
+            month_singular: "{{ __('messages.month_singular') }}",
+            month_plural: "{{ __('messages.month_plural') }}",
+            custom_rate_help: "{{ __('messages.custom_rate_help') }}",
+            custom_rate_applied: "{{ __('messages.custom_rate_applied') }}",
+            default_rate_used: "{{ __('messages.default_rate_used') }}",
+            default_rate: "{{ __('messages.default_rate') }}",
+            custom_rate_required: "{{ __('messages.custom_rate_required') }}"
         };
 
         // JavaScript function equivalent to Laravel's __()

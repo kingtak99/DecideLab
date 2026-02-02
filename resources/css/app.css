@@ -24,6 +24,14 @@ html {
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
 }
 
+.housing-input:disabled {
+    background-color: rgb(30 41 59 / 0.5) !important;
+    color: rgb(241 245 249 / 0.5) !important;
+    border-color: rgb(51 65 85 / 0.5) !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
 /* Currency symbol styling */
 #currency-symbol {
     color: rgb(148 163 184) !important; /* slate-400 */

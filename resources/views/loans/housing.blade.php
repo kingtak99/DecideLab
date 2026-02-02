@@ -16,11 +16,9 @@
                 </div>
 
                 <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-                    🏠 <span
-                        data-key="housing-calculator-title">{!! __('messages.housing_calculator_title') ?? 'Housing Decision Calculator' !!}</span>
+                    🏠 <span data-key="housing-calculator-title">{!! __('messages.housing_calculator_title') ?? 'Housing Decision Calculator' !!}</span>
                     <span class="text-emerald-400 block mt-2 text-3xl md:text-4xl">
-                        <span
-                            data-key="housing-calculator-subtitle">{!! __('messages.housing_calculator_subtitle') ?? 'Rent vs Buy Analysis' !!}</span>
+                        <span data-key="housing-calculator-subtitle">{!! __('messages.housing_calculator_subtitle') ?? 'Rent vs Buy Analysis' !!}</span>
                     </span>
                 </h1>
 
@@ -50,6 +48,7 @@
                                         🌍 <span data-key="country">{{ __('messages.country') ?? 'Country' }}</span>
                                     </label>
                                     <input type="hidden" name="country_id" id="country_id_hidden">
+                                    <input type="hidden" name="use_custom_rate" id="use_custom_rate_hidden" value="0">
                                     <select id="country_id" name="country_id_display"
                                         class="housing-input w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-100 transition-all duration-300"
                                         disabled
@@ -130,23 +129,34 @@
                                         class="housing-input w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-slate-600"
                                         value="25" inputmode="numeric">
                                     <div class="mt-1 text-xs text-slate-400">
-                                        <span data-key="range">{{ __('messages.range') ?? 'Range' }}</span>: <span id="loan-term-range-numbers">5-30</span> <span data-key="years">{{ __('messages.years') ?? 'years' }}</span>
+                                        <span data-key="range">{{ __('messages.range') ?? 'Range' }}</span>: <span
+                                            id="loan-term-range-numbers">5-30</span> <span
+                                            data-key="years">{{ __('messages.years') ?? 'years' }}</span>
                                     </div>
                                 </div>
 
                                 <!-- Interest Rate Override (Optional) -->
                                 <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
                                     <label for="custom_rate"
-                                        class="flex items-center text-sm font-medium text-slate-300 mb-2">
+                                        class="flex items-center text-sm font-medium text-slate-300 mb-3">
                                         <input type="checkbox" id="use_custom_rate" class="mr-2 accent-emerald-500">
                                         📊 <span
                                             data-key="custom-interest-rate">{{ __('messages.custom_interest_rate') ?? 'Use Custom Interest Rate' }}</span>
                                     </label>
-                                    <input type="text" id="custom_rate" name="custom_rate"
-                                        class="housing-input w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-slate-600"
-                                        placeholder="4.5" inputmode="decimal" disabled>
-                                    <div class="mt-1 text-xs text-slate-400" data-key="override-default-rate">
+                                    <div class="mb-3 p-2 bg-slate-700/30 rounded-lg border border-slate-600/30">
+                                        <div class="text-xs text-slate-400 mb-1">
+                                            {{ __('messages.default_rate') ?? 'Default Rate' }}</div>
+                                        <div class="text-sm font-semibold text-emerald-400" id="default-rate-display">5%
+                                        </div>
+                                    </div>
+                                    <input type="number" id="custom_rate" name="custom_rate"
+                                        class="housing-input w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        placeholder="4.5" min="1" max="20" inputmode="decimal">
+                                    <div class="mt-2 text-xs text-slate-400" data-key="override-default-rate">
                                         {{ __('messages.override_default_rate') ?? 'Override the default interest rate for this country' }}
+                                    </div>
+                                    <div id="custom-rate-note" class="mt-1 text-xs text-emerald-400">
+                                        {{ __('messages.custom_rate_help') ?? 'Leave empty to use the default rate for the selected country. Provide a value to override and use a custom interest rate in calculations.' }}
                                     </div>
                                 </div>
 
@@ -193,6 +203,7 @@
                                         <div class="text-sm text-slate-400 mb-1" data-key="interest-rate">
                                             {{ __('messages.interest_rate') ?? 'Interest Rate' }}</div>
                                         <div class="text-2xl font-bold text-purple-400" id="interest-rate">0%</div>
+                                        <div id="interest-rate-note" class="text-xs text-slate-400 mt-1"></div>
                                     </div>
 
                                     <div class="bg-slate-800/50 rounded-xl p-4">
@@ -205,7 +216,9 @@
                                 <div class="mt-6 p-4 bg-slate-800/30 rounded-xl">
                                     <div class="text-sm text-slate-400 mb-2" data-key="interest-system">
                                         {{ __('messages.interest_system') ?? 'Interest System' }}</div>
-                                    <div class="text-lg font-semibold text-white" id="interest-system" title="{{ __('messages.flat_rate_tooltip') ?? 'Flat rate interest is calculated on the original loan amount.' }}">-</div>
+                                    <div class="text-lg font-semibold text-white" id="interest-system"
+                                        title="{{ __('messages.flat_rate_tooltip') ?? 'Flat rate interest is calculated on the original loan amount.' }}">
+                                        -</div>
                                 </div>
                             </div>
 
@@ -251,7 +264,8 @@
                                 <div id="comparison-output" class="mt-6 space-y-4 hidden">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div class="bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                                            <div class="text-sm text-green-400 mb-1" title="Net cost after property appreciation">
+                                            <div class="text-sm text-green-400 mb-1"
+                                                title="Net cost after property appreciation">
                                                 {{ __('messages.buying_cost') ?? 'Buying Cost' }}</div>
                                             <div class="text-xl font-bold text-green-400" id="buying-cost">$0</div>
                                             <div class="text-xs text-green-300/70 mt-1">Net cost after appreciation</div>
@@ -319,6 +333,7 @@
                     'range' => __('messages.range'),
                     'custom_interest_rate' => __('messages.custom_interest_rate'),
                     'override_default_rate' => __('messages.override_default_rate'),
+                    'default_rate' => __('messages.default_rate'),
                     'calculate' => __('messages.calculate'),
                     'loan_details' => __('messages.loan_details'),
                     'monthly_payment' => __('messages.monthly_payment'),
@@ -335,6 +350,9 @@
                     'recommendation' => __('messages.recommendation'),
                     'renting_recommended_full' => __('messages.renting_recommended_full') ?? 'Renting is recommended, Buying isn\'t recommended',
                     'buying_recommended_full' => __('messages.buying_recommended_full') ?? 'Buying is recommended, Renting isn\'t recommended',
+                    'custom_rate_help' => __('messages.custom_rate_help') ?? 'Leave empty to use the default rate for the selected country. Provide a value to override and use a custom interest rate in calculations.',
+                    'custom_rate_applied' => __('messages.custom_rate_applied') ?? 'Custom rate applied',
+                    'default_rate_used' => __('messages.default_rate_used') ?? 'Using default country rate',
                 ]); ?>;
 
                 const currentLang = document.documentElement.lang || 'en';
@@ -348,7 +366,24 @@
                 const loanTermInput = document.getElementById('loan_years');
                 const loanTermRangeNumbers = document.getElementById('loan-term-range-numbers');
                 const useCustomRateCheckbox = document.getElementById('use_custom_rate');
+                const useCustomRateHidden = document.getElementById('use_custom_rate_hidden');
                 const customRateInput = document.getElementById('custom_rate');
+                document.getElementById('custom_rate').addEventListener('change', updateCountrySettings);
+
+                // Keep hidden flag in sync with checkbox
+                function syncUseCustomHidden() {
+                    if (useCustomRateHidden) {
+                        useCustomRateHidden.value = useCustomRateCheckbox.checked ? '1' : '0';
+                    }
+                }
+
+                useCustomRateCheckbox.addEventListener('change', syncUseCustomHidden);
+                // initialize hidden value
+                syncUseCustomHidden();
+
+                // DO NOT set disabled here - let toggle handler manage it
+                //console.log('useCustomRateCheckbox:', useCustomRateCheckbox);
+                //console.log('customRateInput:', customRateInput);
 
                 // Arabic to English numeral mapping
                 const arabicToEnglish = {
@@ -389,8 +424,8 @@
                         const currentLocationData = await currentLocationResponse.json();
 
                         if (currentLocationData.country) {
-                            console.log('Initializing housing calculator with country from navbar:',
-                                currentLocationData.country);
+                            //console.log('Initializing housing calculator with country from navbar:',
+                            // currentLocationData.country);
                             const countryOption = Array.from(countrySelect.options).find(option =>
                                 option.value == currentLocationData.country.id
                             );
@@ -401,7 +436,7 @@
                             }
                         }
                     } catch (error) {
-                        console.log('Could not initialize from navbar, using default');
+                        //console.log('Could not initialize from navbar, using default');
                     }
                 }
 
@@ -419,13 +454,13 @@
 
                         if (currentLocationData.country && countrySelect.value != currentLocationData
                             .country.id) {
-                            console.log('🔄 Periodic sync: Updating country from', countrySelect.value,
-                                'to', currentLocationData.country.id);
+                            //console.log('🔄 Periodic sync: Updating country from', countrySelect.value,
+                            // 'to', currentLocationData.country.id);
                             countrySelect.value = currentLocationData.country.id;
                             countryIdHidden.value = currentLocationData.country.id;
                             updateCountrySettings();
                         } else {
-                            console.log('🔄 Periodic sync: Country already matches or no country data');
+                            //console.log('🔄 Periodic sync: Country already matches or no country data');
                         }
                     } catch (error) {
                         console.error('🔄 Periodic sync error:', error);
@@ -435,12 +470,12 @@
                 // Initialize country selector on page load
                 async function initializeCountrySelector() {
                     try {
-                        console.log('🏠 Initializing country selector...');
+                        //console.log('🏠 Initializing country selector...');
                         const currentLocationResponse = await fetch('{{ route('location.current') }}');
                         const currentLocationData = await currentLocationResponse.json();
 
                         if (currentLocationData.country) {
-                            console.log('🏠 Setting initial country to:', currentLocationData.country);
+                            //console.log('🏠 Setting initial country to:', currentLocationData.country);
                             countrySelect.value = currentLocationData.country.id;
                             countryIdHidden.value = currentLocationData.country.id;
                             updateCountrySettings();
@@ -457,7 +492,7 @@
 
                 // Also listen for navbar initialization event
                 window.addEventListener('navbarReady', function() {
-                    console.log('🏠 Received navbarReady event, re-initializing country selector...');
+                    //console.log('🏠 Received navbarReady event, re-initializing country selector...');
                     initializeCountrySelector();
                 });
 
@@ -482,10 +517,19 @@
                     const currencyCode = selectedOption.getAttribute('data-currency') || '$';
                     const currencyNameEn = selectedOption.getAttribute('data-currency-name-en') || 'US Dollar';
                     const currencyNameAr = selectedOption.getAttribute('data-currency-name-ar') || 'دولار أمريكي';
-                    const interestRate = selectedOption.getAttribute('data-interest-rate') || '5';
+                    let interestRate = selectedOption.getAttribute('data-interest-rate') || '5';
                     const interestSystem = selectedOption.getAttribute('data-interest-system') || 'flat';
                     const minYears = selectedOption.getAttribute('data-min-years') || '5';
                     const maxYears = selectedOption.getAttribute('data-max-years') || '30';
+                    let rate = Number(customRateInput.value);
+
+                    // if (!isNaN(rate) && rate > 0) {
+                    //     interestRate = rate;
+                    // }
+
+                    console.log("interestRate", interestRate);
+                    console.log("customRateInput", customRateInput.value);
+
 
                     // Smooth currency transition
                     currencySymbolSpan.style.opacity = '0';
@@ -518,6 +562,16 @@
 
                     // Update custom rate placeholder with country's default rate
                     customRateInput.placeholder = interestRate;
+
+                    // Display default rate in the UI
+                    const defaultRateDisplay = document.getElementById('default-rate-display');
+                    if (defaultRateDisplay) {
+                        defaultRateDisplay.textContent = interestRate + '%';
+                    }
+
+                    // Keep the custom-rate help note in sync with translations
+                    const customRateNote = document.getElementById('custom-rate-note');
+                    if (customRateNote) customRateNote.textContent = translations.custom_rate_help;
 
                     updateDownPaymentAmount();
                 }
@@ -580,10 +634,28 @@
                     const currencyCode = countrySelect.options[countrySelect.selectedIndex]?.getAttribute(
                         'data-currency') || '$';
                     downPaymentAmountSpan.textContent = currencyCode + ' ' + downPaymentAmount.toLocaleString();
+
+                    // Keep the displayed loan amount in sync (live update)
+                    updateLoanAmount();
+                }
+
+                // Live-update the displayed loan amount (property value - down payment)
+                function updateLoanAmount() {
+                    const propertyValue = processNumericInput(propertyValueInput);
+                    const downPaymentPercent = processNumericInput(downPaymentInput);
+                    const downPaymentAmount = (propertyValue * downPaymentPercent / 100);
+                    const loanAmount = Math.max(0, propertyValue - downPaymentAmount);
+                    const currencyCode = countrySelect.options[countrySelect.selectedIndex]?.getAttribute(
+                        'data-currency') || '$';
+
+                    const loanAmountEl = document.getElementById('loan-amount');
+                    if (loanAmountEl) {
+                        loanAmountEl.textContent = currencyCode + ' ' + Math.round(loanAmount).toLocaleString();
+                    }
                 }
 
                 // Input event handlers for numeric inputs
-                [propertyValueInput, downPaymentInput, loanTermInput, customRateInput].forEach(input => {
+                [propertyValueInput, downPaymentInput, loanTermInput].forEach(input => {
                     input.addEventListener('input', function() {
                         processNumericInput(this);
                         if (this === propertyValueInput || this === downPaymentInput) {
@@ -609,12 +681,62 @@
                     });
                 });
 
-                // Toggle custom rate input
-                useCustomRateCheckbox.addEventListener('change', function() {
-                    customRateInput.disabled = !this.checked;
-                    if (!this.checked) {
+                // Toggle custom rate input - SIMPLE (NO DISABLING)
+                //console.log('Setting up custom rate toggle...');
+
+                // Define toggle function - DO NOT disable input
+                function toggleCustomRateInput() {
+                    const isChecked = useCustomRateCheckbox.checked;
+                    //console.log('Toggle called - checkbox checked:', isChecked);
+
+                    if (isChecked) {
+                        customRateInput.focus();
+                        //console.log('✅ Input focused for editing');
+                    } else {
                         customRateInput.value = '';
+                        //console.log('❌ Input cleared');
                     }
+                }
+
+                // Set up listeners
+                if (useCustomRateCheckbox && customRateInput) {
+                    // Set initial state
+                    toggleCustomRateInput();
+
+                    // Listen to changes
+                    useCustomRateCheckbox.addEventListener('change', toggleCustomRateInput);
+                    useCustomRateCheckbox.addEventListener('click', function() {
+                        // Slight delay to ensure the checkbox state is updated
+                        setTimeout(toggleCustomRateInput, 0);
+                    });
+
+                    //console.log('✅ Toggle handlers attached successfully');
+                } else {
+                    console.error('❌ Failed to find elements:', {
+                        useCustomRateCheckbox,
+                        customRateInput
+                    });
+                }
+
+                // Auto-recalculate when custom rate changes
+                customRateInput.addEventListener('change', function() {
+                    const v = this.value.trim();
+                    const rate = parseFloat(v);
+                    // If user provided a valid custom value, submit automatically (checkbox optional)
+                    if (v !== '' && !isNaN(rate) && rate > 0) {
+                        form.dispatchEvent(new Event('submit'));
+                        return;
+                    }
+
+                    // If checkbox is checked but input cleared, show validation (handled on submit)
+                    if (useCustomRateCheckbox.checked && v === '') {
+                        showError('{{ __('messages.custom_rate_required') ?? 'Please enter a custom interest rate or uncheck the option.' }}');
+                    }
+                });
+
+                customRateInput.addEventListener('input', function() {
+                    // Real-time validation of custom rate input
+                    processNumericInput(this);
                 });
 
                 // Form submission
@@ -649,16 +771,72 @@
                         return;
                     }
 
+                    // Validate custom rate if present or if checkbox is checked
+                    const rawCustom = customRateInput.value.trim();
+
+                    // If user entered a custom rate (even if checkbox not checked), validate it
+                    if (rawCustom !== '') {
+                        const customRate = processNumericInput(customRateInput);
+                        if (customRate <= 0) {
+                            showError(
+                                '{{ __('messages.interest_rate_positive') ?? 'Interest rate must be greater than 0' }}'
+                            );
+                            customRateInput.focus();
+                            return;
+                        }
+                    }
+
+                    // If checkbox is checked but input is empty, require input or uncheck
+                    if (useCustomRateCheckbox.checked && rawCustom === '') {
+                        showError(
+                            '{{ __('messages.custom_rate_required') ?? 'Please enter a custom interest rate or uncheck the option.' }}'
+                        );
+                        customRateInput.focus();
+                        return;
+                    }
+
                     showLoading();
+
+                    // ⭐ CRITICAL: Get custom rate BEFORE creating FormData
+                    const customRateValue = customRateInput.value.trim();
+                    const useCustomRate = useCustomRateCheckbox.checked;
+
+                    // Ensure hidden flag is correct (keeps parity with checkbox)
+                    if (useCustomRateHidden) {
+                        useCustomRateHidden.value = useCustomRate ? '1' : '0';
+                    }
 
                     const formData = new FormData(this);
 
-                    // Only include custom_rate if checkbox is checked
-                    const useCustomRateCheckbox = document.getElementById('use_custom_rate');
-                    if (!useCustomRateCheckbox.checked) {
-                        // Remove custom_rate from form data if checkbox is not checked
+                    // If user entered a custom rate value (non-empty and valid) we will send it and set use_custom_rate=1
+                    if (customRateValue !== '' && customRateValue !== '0') {
+                        const rateAsNumber = parseFloat(customRateValue);
+                        if (!isNaN(rateAsNumber) && rateAsNumber > 0) {
+                            formData.set('custom_rate', rateAsNumber.toString());
+                            formData.set('use_custom_rate', '1');
+                        } else {
+                            // Invalid value -> don't send custom
+                            console.warn('⚠️ Invalid custom rate value:', customRateValue);
+                            formData.delete('custom_rate');
+                            formData.set('use_custom_rate', '0');
+                        }
+                    } else if (useCustomRate) {
+                        // Checkbox is checked but input empty (should be prevented by validation earlier), fall back to default
                         formData.delete('custom_rate');
+                        formData.set('use_custom_rate', '0');
+                    } else {
+                        // Neither input nor checkbox -> default rate
+                        formData.delete('custom_rate');
+                        formData.set('use_custom_rate', '0');
                     }
+
+                    // Log all form data
+                    //console.log('📤 Form data being sent:');
+                    for (let [key, value] of formData.entries()) {
+                        //console.log(`  ${key}: "${value}"`);
+                    }
+                    //console.log('📤 Final custom_rate in FormData:', formData.get('custom_rate'));
+                    //console.log('📤 Has custom_rate?', formData.has('custom_rate'));
 
                     fetch("{{ route('loan.housing.calculate', ['locale' => $locale]) }}", {
                             method: 'POST',
@@ -671,7 +849,8 @@
                         .then(response => {
                             if (!response.ok) {
                                 return response.json().then(err => {
-                                    const errorMessage = err.message || (err.errors ? Object.values(err.errors).flat().join(', ') : 'Validation error');
+                                    const errorMessage = err.message || (err.errors ? Object.values(
+                                        err.errors).flat().join(', ') : 'Validation error');
                                     throw new Error(errorMessage);
                                 });
                             }
@@ -689,7 +868,9 @@
                         })
                         .catch(error => {
                             hideLoading();
-                            showError(error.message || '{{ __('messages.network_error') ?? 'Network error. Please try again.' }}');
+                            showError(error.message ||
+                                '{{ __('messages.network_error') ?? 'Network error. Please try again.' }}'
+                            );
                             console.error('Error:', error);
                         });
                 });
@@ -707,12 +888,13 @@
                     if (monthlyPayment === 0 || monthlyRent === 0) {
                         alert(
                             '{{ __('messages.enter_loan_and_rent') ?? 'Please calculate loan first and enter monthly rent.' }}'
-                            );
+                        );
                         return;
                     }
 
                     // Get down payment
-                    const downPaymentPercent = parseFloat(document.getElementById('down_payment_percent').value) || 20;
+                    const downPaymentPercent = parseFloat(document.getElementById('down_payment_percent')
+                        .value) || 20;
                     const downPaymentAmount = propertyValue * (downPaymentPercent / 100);
 
                     // Calculate costs
@@ -723,7 +905,8 @@
 
                     // Simple appreciation calculation (property value increase)
                     const futureValue = propertyValue * Math.pow(1 + appreciationRate / 100, loanYears);
-                    const netBuyingCost = totalBuyingCost - (futureValue - propertyValue); // Subtract appreciation
+                    const netBuyingCost = totalBuyingCost - (futureValue -
+                        propertyValue); // Subtract appreciation
 
                     const currencyCode = countrySelect.options[countrySelect.selectedIndex]?.getAttribute(
                         'data-currency') || '$';
@@ -735,17 +918,18 @@
 
                     // Recommendation based on net buying cost vs total renting cost
                     const costDifference = Math.abs(netBuyingCost - totalRentCost);
-                    const savings = netBuyingCost < totalRentCost ? totalRentCost - netBuyingCost : netBuyingCost - totalRentCost;
+                    const savings = netBuyingCost < totalRentCost ? totalRentCost - netBuyingCost :
+                        netBuyingCost - totalRentCost;
 
                     let recommendation;
                     if (netBuyingCost < totalRentCost) {
-                        recommendation = currentLang === 'ar'
-                            ? `الشراء أفضل بخسارة ${Math.round(savings).toLocaleString()} ${currencyCode} على ${loanYears} سنوات`
-                            : `Buying saves ${currencyCode} ${Math.round(savings).toLocaleString()} over ${loanYears} years`;
+                        recommendation = currentLang === 'ar' ?
+                            `الشراء أفضل بخسارة ${Math.round(savings).toLocaleString()} ${currencyCode} على ${loanYears} سنوات` :
+                            `Buying saves ${currencyCode} ${Math.round(savings).toLocaleString()} over ${loanYears} years`;
                     } else {
-                        recommendation = currentLang === 'ar'
-                            ? `الإيجار أفضل بخسارة ${Math.round(savings).toLocaleString()} ${currencyCode} على ${loanYears} سنوات`
-                            : `Renting saves ${currencyCode} ${Math.round(savings).toLocaleString()} over ${loanYears} years`;
+                        recommendation = currentLang === 'ar' ?
+                            `الإيجار أفضل بخسارة ${Math.round(savings).toLocaleString()} ${currencyCode} على ${loanYears} سنوات` :
+                            `Renting saves ${currencyCode} ${Math.round(savings).toLocaleString()} over ${loanYears} years`;
                     }
 
                     document.getElementById('recommendation').textContent = recommendation;
@@ -757,12 +941,37 @@
                     const currencyCode = data.currency || countrySelect.options[countrySelect.selectedIndex]
                         ?.getAttribute('data-currency') || '$';
 
+                    //console.log('📊 Displaying results with interest rate:', data.interest_rate);
+                    //console.log('📊 Custom checkbox checked:', useCustomRateCheckbox.checked);
+                    //console.log('📊 Custom input value:', customRateInput.value);
+
                     // Animate results display
                     document.getElementById('monthly-payment').textContent = currencyCode + ' ' + data.monthly_payment
                         .toLocaleString();
                     document.getElementById('total-payment').textContent = currencyCode + ' ' + data.total_payment
                         .toLocaleString();
-                    document.getElementById('interest-rate').textContent = data.interest_rate + '%';
+
+                    // Use the backend-provided interest_rate and used_custom_rate flag for accuracy
+                    const finalRate = Number(data.interest_rate);
+
+                    // Update interest rate display
+                    const interestRateEl = document.getElementById('interest-rate');
+                    interestRateEl.textContent = finalRate + '%';
+
+                    // Update note under interest rate based on backend flag
+                    const interestRateNoteEl = document.getElementById('interest-rate-note');
+                    const usedCustom = data.used_custom_rate === true || data.used_custom_rate === '1' || data.interest_rate_source === 'custom';
+
+                    if (usedCustom) {
+                        interestRateNoteEl.textContent = translations.custom_rate_applied || 'Custom rate applied';
+                        interestRateNoteEl.classList.remove('text-slate-400');
+                        interestRateNoteEl.classList.add('text-emerald-400');
+                    } else {
+                        interestRateNoteEl.textContent = translations.default_rate_used || 'Using default country rate';
+                        interestRateNoteEl.classList.remove('text-emerald-400');
+                        interestRateNoteEl.classList.add('text-slate-400');
+                    }
+
                     document.getElementById('loan-amount').textContent = currencyCode + ' ' + data.loan_amount
                         .toLocaleString();
                     document.getElementById('interest-system').textContent = data.interest_system;
@@ -824,6 +1033,10 @@
 
                     // Update down payment amount display
                     updateDownPaymentAmount();
+
+                    // Update custom-rate help note to match current language
+                    const customRateNote = document.getElementById('custom-rate-note');
+                    if (customRateNote) customRateNote.textContent = translations.custom_rate_help;
 
                     // Update country select options text
                     updateCountrySelectOptions(currentLang);
@@ -969,28 +1182,28 @@
 
                 // Listen for country changes from navbar
                 window.addEventListener('countryChanged', function(e) {
-                    console.log('🏠 Housing calculator received countryChanged event:', e.detail);
+                    //console.log('🏠 Housing calculator received countryChanged event:', e.detail);
                     const newCountryId = e.detail.countryId;
                     const currentValue = countrySelect.value;
-                    console.log('🏠 Current countrySelect.value:', currentValue, 'New countryId:',
-                        newCountryId);
+                    //console.log('🏠 Current countrySelect.value:', currentValue, 'New countryId:',
+                    // newCountryId);
 
                     if (currentValue !== newCountryId.toString()) {
-                        console.log('🏠 Updating country selector from', currentValue, 'to', newCountryId);
+                        //console.log('🏠 Updating country selector from', currentValue, 'to', newCountryId);
                         countrySelect.value = newCountryId;
                         countryIdHidden.value = newCountryId;
                         updateCountrySettings();
                         showNotification('Country updated from navbar', 'success');
                     } else {
-                        console.log('🏠 Country already matches, no update needed');
+                        //console.log('🏠 Country already matches, no update needed');
                     }
                 });
 
                 // Listen for language changes from navbar
                 window.addEventListener('languageChanged', function(e) {
-                    console.log('🏠 Housing calculator received languageChanged event:', e.detail);
+                    //console.log('🏠 Housing calculator received languageChanged event:', e.detail);
                     const newLang = e.detail.language;
-                    console.log('🏠 Updating language to:', newLang);
+                    //console.log('🏠 Updating language to:', newLang);
                     updateLanguageSpecificElements();
                     showNotification('Language updated', 'success');
                 });

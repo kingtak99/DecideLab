@@ -39,7 +39,13 @@ class LoanSimulationController extends Controller
             $country = Country::findOrFail($countryId);
             $loanAmount = $request->loan_amount;
             $durationYears = $request->duration_years;
-            $interestRate = $request->interest_rate ?? $country->interest_rate;
+
+            // Determine whether a custom interest rate was provided (typed value overrides default)
+            $hasCustomValue = $request->filled('interest_rate') && is_numeric($request->interest_rate);
+            $usedCustomRate = $hasCustomValue;
+            $interestRate = $hasCustomValue ? $request->interest_rate : $country->interest_rate;
+            $interestRateSource = $hasCustomValue ? 'custom' : 'default';
+
             $monthlyIncome = $request->monthly_income ?? 0;
             $extraPayments = $request->extra_payments ?? 0;
             $loanType = $request->loan_type ?? 'personal'; // Always default to personal
@@ -52,6 +58,16 @@ class LoanSimulationController extends Controller
 
             $monthlyRate = $interestRate / 100 / 12;
             $numPayments = $durationYears * 12;
+
+            // Debug log: inputs and computed rates
+            Log::debug('LoanSimulation: inputs and rate', [
+                'request_interest' => $request->interest_rate ?? null,
+                'hasCustomValue' => $hasCustomValue,
+                'interestRateUsed' => $interestRate,
+                'monthlyRate' => $monthlyRate,
+                'loanAmount' => $loanAmount,
+                'durationYears' => $durationYears,
+            ]);
 
             // Calculate monthly payment (base payment without extra payments)
             if ($monthlyRate > 0) {
@@ -116,8 +132,8 @@ class LoanSimulationController extends Controller
             // Percentage of income (use effective monthly payment)
             $incomePercentage = $monthlyIncome > 0 ? ($effectiveMonthlyPayment / $monthlyIncome) * 100 : 0;
 
-            // Months financially suffocating (assuming >40% of income is suffocating, 30-40% is stressful)
-            $suffocatingMonths = $incomePercentage > 40 ? $actualMonths : 0;
+            // Months financially suffocating (now: >=45% of income considered suffocating; 30-40% is stressful)
+            $suffocatingMonths = $incomePercentage >= 45 ? $actualMonths : 0;
 
             // Insights
             $interestPercentage = $loanAmount > 0 ? ($totalInterest / $loanAmount) * 100 : 0;
@@ -140,6 +156,15 @@ class LoanSimulationController extends Controller
 
             $firstYearInterestPercentage = $firstYearPayments > 0 ? ($firstYearInterest / $firstYearPayments) * 100 : 0;
 
+            // Log final outputs for debugging
+            Log::debug('LoanSimulation: final results', [
+                'interestRateUsed' => $interestRate,
+                'monthly_payment' => round($monthlyPayment, 2),
+                'total_interest' => round($totalInterest, 2),
+                'total_paid' => round($totalPaid, 2),
+                'used_custom_rate' => $usedCustomRate,
+            ]);
+
             return response()->json([
                 'total_paid' => round($totalPaid, 2),
                 'total_interest' => round($totalInterest, 2),
@@ -151,6 +176,9 @@ class LoanSimulationController extends Controller
                 'interest_percentage' => round($interestPercentage, 1),
                 'first_year_interest_percentage' => round($firstYearInterestPercentage, 1),
                 'currency' => $country->currency_code,
+                'interest_rate' => round($interestRate, 2),
+                'used_custom_rate' => $usedCustomRate,
+                'interest_rate_source' => $interestRateSource,
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation error in loan calculation', [
