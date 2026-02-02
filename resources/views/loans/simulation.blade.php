@@ -93,8 +93,8 @@
                                 <label for="interest_rate" class="block text-sm font-medium text-slate-300 mb-2">
                                     📈 {{ __('messages.interest_rate') }}
                                 </label>
-                                <input type="number" id="interest_rate" name="interest_rate" step="0.1" min="0" max="50" class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="{{ $currentCountry ? $currentCountry->interest_rate : 5.0 }}" placeholder="5.0">
-                                <input type="hidden" id="use_custom_rate" name="use_custom_rate" value="0">
+                                <input type="number" id="interest_rate" name="interest_rate" step="0.1" min="1" max="20" class="w-full px-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent" value="{{ $currentCountry ? $currentCountry->interest_rate : 5.0 }}" placeholder="5.0">
+                                <input type="hidden" id="use_custom_rate" name="use_custom_rate"  value="0">
                                 <div id="custom-rate-note" class="mt-2 text-sm text-indigo-400">
                                     {{ __('messages.custom_rate_help') }}
                                 </div>
