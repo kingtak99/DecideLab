@@ -13,15 +13,27 @@
         الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95. كما تُطبّق الآن قواعد سلوكية: تحسب الزيارة إن تحقّق أحد الشروط: <code>session_duration &gt;= 5s</code>، أو <code>page_views &gt;= 2</code>، أو <code>has_scroll</code> = true، أو أن تكون زيارة من Facebook In-App (Social).
     </div>
 
-    <!-- Mode Toggle: Human-Qualified vs Raw -->
-    <div style="margin:10px 0; display:flex; gap:8px; align-items:center;">
-        <div style="font-size:0.95rem; color:#374151;">عرض:</div>
-        <div class="mode-toggle" style="display:flex; gap:8px;">
-            <button id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 زوار مرجَّحون بشريًا</button>
-            <button id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 كل الزيارات (Raw)</button>
+    <!-- Mode Toggle: Human-Qualified vs Raw and Date Range -->
+    <form method="get" action="" style="display:flex; gap:8px; align-items:center; margin:10px 0;">
+        <div style="font-size:0.95rem; color:#374151; display:flex; gap:8px; align-items:center;">
+            <div>عرض:</div>
+            <div class="mode-toggle" style="display:flex; gap:8px;">
+                <button type="button" id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 زوار مرجَّحون بشريًا</button>
+                <button type="button" id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 كل الزيارات (Raw)</button>
+            </div>
         </div>
+
+        <div style="display:flex; gap:8px; align-items:center; margin-left:12px;">
+            <label style="font-size:0.9rem; color:#374151;">من</label>
+            <input type="date" name="start_date" value="{{ request('start_date', now()->format('Y-m-d')) }}" />
+            <label style="font-size:0.9rem; color:#374151;">إلى</label>
+            <input type="date" name="end_date" value="{{ request('end_date', now()->format('Y-m-d')) }}" />
+            <button type="submit" class="btn-primary" style="padding:6px 10px;">تطبيق</button>
+            <a href="{{ route('analytics.dashboard') }}" class="btn-secondary" style="padding:6px 10px;">إعادة</a>
+        </div>
+
         <div style="margin-left:auto; font-size:0.9rem; color:#6b7280;">Toggle يشغّل عرض Raw/Qualified بدون تغيير المنطق</div>
-    </div>
+    </form>
 
     <!-- Stats Cards Row 1 - Humans Today -->
     <div class="stats-grid">
@@ -29,9 +41,9 @@
         <div class="stat-card human-card">
             <div class="card-icon">👤</div>
             <div class="card-content">
-                <h3>الزيارات اليوم</h3>
+                <h3>الزيارات (النطاق المحدد)</h3>
                 <p class="stat-number">{{ $humanToday['total_visits'] }}</p>
-                <p class="stat-label">زوار مرجَّحون بشريًا (بعد تحليل السلوك)</p>
+                <p class="stat-label">زوار مرجَّحون بشريًا ({{ request('start_date', now()->format('Y-m-d')) }} → {{ request('end_date', now()->format('Y-m-d')) }})</p>
             </div>
             <div class="card-footer">
                 <span class="badge success">✓ حقيقي</span>
@@ -70,7 +82,7 @@
             <div class="card-content">
                 <h3>إجمالي الزيارات (Raw)</h3>
                 <p class="stat-number">{{ $rawToday['total_visits'] ?? 0 }}</p>
-                <p class="stat-label">كل الزيارات (غير مُصفّاة)</p>
+                <p class="stat-label">كل الزيارات (غير مُصفّاة) ({{ request('start_date', now()->format('Y-m-d')) }} → {{ request('end_date', now()->format('Y-m-d')) }})</p>
             </div>
             <div class="card-footer">
                 <span class="badge secondary">Raw</span>
@@ -603,7 +615,7 @@
 
 .percentage {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: #e9e9e9;
     font-weight: 600;
 }
 

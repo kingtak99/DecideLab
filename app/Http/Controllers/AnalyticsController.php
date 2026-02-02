@@ -10,20 +10,24 @@ class AnalyticsController extends Controller
     /**
      * 📊 عرض لوحة التحكم مع إحصائيات نظيفة
      */
-    public function dashboard(): View
+    public function dashboard(\Illuminate\Http\Request $request): View
     {
-        // 👤 إحصائيات الزوار الموثوقين (اليوم)
-        $trustedTodayStats = Visitor::trustedOnly()->today()->get();
+        // Parse date range from query params (defaults to today)
+        $start = $request->query('start_date') ? \Carbon\Carbon::parse($request->query('start_date'))->startOfDay() : now()->startOfDay();
+        $end = $request->query('end_date') ? \Carbon\Carbon::parse($request->query('end_date'))->endOfDay() : now()->endOfDay();
+
+        // 👤 إحصائيات الزوار الموثوقين (نطاق التاريخ المحدد)
+        $trustedTodayStats = Visitor::trustedOnly()->whereBetween('visited_at', [$start, $end])->get();
         $humanToday = [
             'total_visits' => $trustedTodayStats->count(),
             'unique_visitors' => $trustedTodayStats->unique('ip_address')->count(),
             'with_account' => $trustedTodayStats->whereNotNull('user_id')->count(),
         ];
 
-        // Social traffic (FB in-app) — show separately
-        $socialToday = Visitor::social()->today()->distinct('ip_address')->count('ip_address');
+        // Social traffic (FB in-app) — show separately (within date range)
+        $socialToday = Visitor::social()->whereBetween('visited_at', [$start, $end])->distinct('ip_address')->count('ip_address');
 
-        // 👤 إحصائيات الزوار الموثوقين (هذا الشهر)
+        // 👤 إحصائيات الزوار الموثوقين (هذا الشهر) — تبقى متاحة للمقارنة
         $trustedMonthStats = Visitor::trustedOnly()->thisMonth()->get();
         $humanMonth = [
             'total_visits' => $trustedMonthStats->count(),
@@ -33,6 +37,10 @@ class AnalyticsController extends Controller
 
         // Social traffic (FB in-app) — monthly
         $socialMonth = Visitor::social()->thisMonth()->distinct('ip_address')->count('ip_address');
+
+        // --- Range-aware queries for quick/raw/top pages/countries ---
+        $rangeStart = $start;
+        $rangeEnd = $end;
 
         // 🤖 إحصائيات البوتس (اليوم)
         $botTodayStats = Visitor::botsOnly()->today()->get();
@@ -89,9 +97,9 @@ class AnalyticsController extends Controller
             ->limit(15)
             ->get();
 
-        // Quick / Incomplete visits (humanOnly but failed behavioral checks) — today
+        // Quick / Incomplete visits (humanOnly but failed behavioral checks) — within selected range
         $quickTodayCount = Visitor::humanOnly()
-            ->today()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->where(function ($q) {
                 $q->where('session_duration', '<', 5)
                   ->where('page_views', '<', 2)
@@ -105,7 +113,7 @@ class AnalyticsController extends Controller
 
         // Per-country breakdown for quick visits (to show where quick traffic comes from)
         $quickCountryStats = Visitor::humanOnly()
-            ->today()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->where(function ($q) {
                 $q->where('session_duration', '<', 5)
                   ->where('page_views', '<', 2)
@@ -123,26 +131,26 @@ class AnalyticsController extends Controller
 
         // Raw (unfiltered) metrics for comparison / toggle
         $rawToday = [
-            'total_visits' => Visitor::today()->count(),
-            'unique_visitors' => Visitor::today()->distinct('ip_address')->count('ip_address'),
-            'with_account' => Visitor::today()->whereNotNull('user_id')->count(),
+            'total_visits' => Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])->count(),
+            'unique_visitors' => Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])->distinct('ip_address')->count('ip_address'),
+            'with_account' => Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])->whereNotNull('user_id')->count(),
         ];
 
-        $rawTopPages = Visitor::today()
+        $rawTopPages = Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('url, COUNT(*) as visits')
             ->groupBy('url')
             ->orderByDesc('visits')
             ->limit(10)
             ->get();
 
-        $rawVisitorsByPage = Visitor::today()
+        $rawVisitorsByPage = Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
             ->groupBy('url')
             ->orderByDesc('unique_count')
             ->limit(5)
             ->get();
 
-        $rawCountryStats = Visitor::today()
+        $rawCountryStats = Visitor::whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
             ->whereNotNull('country')
             ->where('country', '!=', 'Unknown')
