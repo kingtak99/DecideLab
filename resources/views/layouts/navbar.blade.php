@@ -11,7 +11,10 @@
     </style>
 
     <div class="nav-left">
-        <a href="{{ url('/') }}" class="logo">DecideLab</a>
+        <a href="{{ url('/') }}" class="logo" title="DecideLab">
+            <span class="logo-full">DecideLab</span>
+            <span class="logo-short" aria-hidden="true">DL</span>
+        </a>
 
         <ul class="nav-links">
             <li>

@@ -29,6 +29,17 @@
     font-weight: 700;
     color: var(--light);
     text-decoration: none;
+    white-space: nowrap;
+}
+
+/* Two-part logo: full text for larger screens, short 'DL' for phones */
+.logo .logo-full { display: inline; }
+.logo .logo-short { display: none; }
+
+@media (max-width: 600px) {
+    .logo { font-size: 1.05rem; }
+    .logo .logo-full { display: none; }
+    .logo .logo-short { display: inline; font-weight: 800; }
 }
 
 .nav-left {
