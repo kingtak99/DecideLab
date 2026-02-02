@@ -110,49 +110,14 @@
 
 
     <div class="nav-right">
-        <!-- Language -->
-        <div class="dropdown">
-            <button class="drop-btn" id="language-btn">
-                @if (app()->getLocale() === 'ar')
-                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> --}}
-                     {{ __('messages.arabic') }}
-                @else
-                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> --}}
-                     {{ __('messages.english') }}
-                @endif
-            </button>
-            <div class="dropdown-menu">
-                <a href="/lang/en" class="language-link {{ app()->getLocale() === 'en' ? 'active' : '' }}"
-                    data-lang="en">
-                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }}
-                </a>
-                <a href="/lang/ar" class="language-link {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
-                    data-lang="ar">
-                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }}
-                </a>
-            </div>
-        </div>
 
-        <!-- Country -->
-        <div class="dropdown location-dropdown">
-            <button class="drop-btn" id="location-btn">
-                <img id="current-flag" src="" alt="" class="flag" style="display: none;">
-                {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
-                <span class="arrow">▾</span>
-            </button>
-            <div class="dropdown-menu location-menu">
-                <div class="search-container">
-                    <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
-                </div>
-                <div id="countries-list" class="countries-list">
-                    <!-- Countries will be loaded here -->
-                </div>
-            </div>
-        </div>
+
+
 
         @guest
             <a href="{{ route('login') }}" style="font-size: 10px;" class="btn btn-login">{{ __('messages.login') }}</a>
-            <a href="{{ route('register') }}" style="font-size: 10px;" class="btn btn-register">{{ __('messages.register') }}</a>
+            <a href="{{ route('register') }}" style="font-size: 10px;"
+                class="btn btn-register">{{ __('messages.register') }}</a>
         @endguest
 
         @auth
@@ -183,8 +148,45 @@
                 </div>
             </div>
         @endauth
+        <!-- Language -->
+        <div class="dropdown">
+            <button class="drop-btn" id="language-btn">
+                @if (app()->getLocale() === 'ar')
+                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> --}}
+                    {{ __('messages.arabic') }}
+                @else
+                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> --}}
+                    {{ __('messages.english') }}
+                @endif
+            </button>
+            <div class="dropdown-menu">
+                <a href="/lang/en" class="language-link {{ app()->getLocale() === 'en' ? 'active' : '' }}"
+                    data-lang="en">
+                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }}
+                </a>
+                <a href="/lang/ar" class="language-link {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
+                    data-lang="ar">
+                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }}
+                </a>
+            </div>
+        </div>
     </div>
-
+    <!-- Country -->
+    <div class="dropdown location-dropdown">
+        <button class="drop-btn" id="location-btn">
+            <img id="current-flag" src="" alt="" class="flag" style="display: none;">
+            {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
+            <span class="arrow">▾</span>
+        </button>
+        <div class="dropdown-menu location-menu">
+            <div class="search-container">
+                <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
+            </div>
+            <div id="countries-list" class="countries-list">
+                <!-- Countries will be loaded here -->
+            </div>
+        </div>
+    </div>
     <!-- Mobile toggle -->
     <div class="burger" id="burger">
         <span></span>
