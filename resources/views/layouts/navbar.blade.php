@@ -149,8 +149,8 @@
         </div>
 
         @guest
-            <a href="{{ route('login') }}" class="btn btn-login">{{ __('messages.login') }}</a>
-            <a href="{{ route('register') }}" class="btn btn-register">{{ __('messages.register') }}</a>
+            <a href="{{ route('login') }}" style="font-size: 10px;" class="btn btn-login">{{ __('messages.login') }}</a>
+            <a href="{{ route('register') }}" style="font-size: 10px;" class="btn btn-register">{{ __('messages.register') }}</a>
         @endguest
 
         @auth
