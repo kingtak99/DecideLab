@@ -29,7 +29,7 @@
             <label style="font-size:0.9rem; color:#374151;">إلى</label>
             <input type="date" name="end_date" value="{{ request('end_date', now()->format('Y-m-d')) }}" />
             <button type="submit" class="btn-primary" style="padding:6px 10px;">تطبيق</button>
-            <a href="{{ route('analytics.dashboard') }}" class="btn-secondary" style="padding:6px 10px;">إعادة</a>
+            <a href="{{ route('analytics.dashboard', ['locale' => app()->getLocale()]) }}" class="btn-secondary" style="padding:6px 10px;">إعادة</a>
         </div>
 
         <div style="margin-left:auto; font-size:0.9rem; color:#6b7280;">Toggle يشغّل عرض Raw/Qualified بدون تغيير المنطق</div>
