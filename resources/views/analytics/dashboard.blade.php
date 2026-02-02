@@ -25,9 +25,9 @@
 
         <div style="display:flex; gap:8px; align-items:center; margin-left:12px;">
             <label style="font-size:0.9rem; color:#374151;">من</label>
-            <input type="date" name="start_date" value="{{ request('start_date', now()->format('Y-m-d')) }}" />
+            <input type="date" name="start_date" style="color: gray;" value="{{ request('start_date', now()->format('Y-m-d')) }}" />
             <label style="font-size:0.9rem; color:#374151;">إلى</label>
-            <input type="date" name="end_date" value="{{ request('end_date', now()->format('Y-m-d')) }}" />
+            <input type="date" name="end_date" style="color: gray;" value="{{ request('end_date', now()->format('Y-m-d')) }}" />
             <button type="submit" class="btn-primary" style="padding:6px 10px;">تطبيق</button>
             <a href="{{ route('analytics.dashboard', ['locale' => app()->getLocale()]) }}" class="btn-secondary" style="padding:6px 10px;">إعادة</a>
         </div>
