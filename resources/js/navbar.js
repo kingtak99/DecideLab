@@ -288,3 +288,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+/* Logo responsive fix: If a CSS rule elsewhere overrides display, use inline styles on load/resize to guarantee only one logo variant is shown */
+function debounce(fn, wait) {
+    let t;
+    return function (...args) {
+        clearTimeout(t);
+        t = setTimeout(() => fn.apply(this, args), wait);
+    };
+}
+
+function updateLogoForViewport() {
+    const full = document.querySelector('.logo .logo-full');
+    const short = document.querySelector('.logo .logo-short');
+    if (!full || !short) return;
+
+    if (window.innerWidth <= 600) {
+        full.style.display = 'none';
+        full.setAttribute('aria-hidden', 'true');
+        short.style.display = 'inline-block';
+        short.setAttribute('aria-hidden', 'false');
+    } else {
+        full.style.display = 'inline-block';
+        full.setAttribute('aria-hidden', 'false');
+        short.style.display = 'none';
+        short.setAttribute('aria-hidden', 'true');
+    }
+}
+
+// Run on initial load and on resize
+document.addEventListener('DOMContentLoaded', updateLogoForViewport);
+window.addEventListener('resize', debounce(updateLogoForViewport, 120));
