@@ -13,6 +13,20 @@
             <li><a href="{{ route('job.change.simulation', ['locale' => session('locale', 'ar')]) }}">{{ __('messages.job_change_nav') }}</a></li>
            
             <li><a href="{{ route('life.shock.simulation', ['locale' => session('locale', 'ar')]) }}">{{ __('messages.life_shock_nav') }}</a></li>
+
+            <!-- Mobile-only actions (shown inside the mobile menu to avoid overlap) -->
+            <li class="mobile-actions">
+                @guest
+                    <a href="{{ route('login') }}" class="btn btn-login mobile-btn">{{ __('messages.login') }}</a>
+                    <a href="{{ route('register') }}" class="btn btn-register mobile-btn">{{ __('messages.register') }}</a>
+                @else
+                    <a href="{{ route('profile.edit') }}" class="mobile-link">{{ Auth::user()->name }}</a>
+                    <form method="POST" action="{{ route('logout') }}" style="margin-top:8px;">
+                        @csrf
+                        <button type="submit" class="btn btn-login mobile-btn">{{ __('messages.logout') }}</button>
+                    </form>
+                @endguest
+            </li>
         </ul>
 
     </div>

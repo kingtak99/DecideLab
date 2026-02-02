@@ -408,7 +408,8 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* smaller min width so cards fit better on phones */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
     margin-bottom: 20px;
 }
@@ -420,6 +421,19 @@
     border-left: 4px solid #667eea;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* prevent children from overflowing visual card */
+    overflow: hidden;
+    min-height: 100px;
+}
+
+.stat-number {
+    margin: 0;
+    /* responsive size and allow breaking long values */
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 800;
+    color: #1f2937;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .stat-card:hover {

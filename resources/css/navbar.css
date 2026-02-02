@@ -227,7 +227,9 @@
         margin: -10px;
     }
 
+    /* Hide right-side inline controls on mobile to prevent overlap; we show mobile equivalents inside .nav-links */
     .nav-right {
+        display: none;
         gap: 10px;
     }
 
@@ -240,6 +242,28 @@
 
     .drop-btn {
         font-size: 14px;
+    }
+
+    /* Mobile-only actions placed inside .nav-links */
+    .mobile-actions {
+        display: block;
+        padding-top: 10px;
+        width: 100%;
+    }
+
+    .mobile-actions .mobile-btn {
+        display: block;
+        width: 100%;
+        margin: 6px 0;
+        text-align: center;
+    }
+
+    /* Allow buttons to shrink if needed inside small containers */
+    .btn {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .burger {
@@ -257,7 +281,7 @@
     .burger.active span:nth-child(3) {
         transform: rotate(-45deg) translate(7px, -6px);
     }
-}
+} 
 
 @media (max-width: 600px) {
     .navbar {
