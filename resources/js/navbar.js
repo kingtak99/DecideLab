@@ -303,7 +303,7 @@ function updateLogoForViewport() {
     const short = document.querySelector('.logo .logo-short');
     if (!full || !short) return;
 
-    if (window.innerWidth <= 600) {
+    if (window.innerWidth <= 900) {
         full.style.display = 'none';
         full.setAttribute('aria-hidden', 'true');
         short.style.display = 'inline-block';

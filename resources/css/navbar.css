@@ -36,12 +36,12 @@
 .logo .logo-full { display: inline-block; }
 .logo .logo-short { display: none !important; }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
     .logo { font-size: 1.05rem; }
     /* Force opposite visibility on small screens to override other styles */
     .logo .logo-full { display: none !important; }
     .logo .logo-short { display: inline-block !important; font-weight: 800; }
-}
+} 
 
 .nav-left {
     display: flex;
