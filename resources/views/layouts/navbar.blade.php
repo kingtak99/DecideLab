@@ -122,11 +122,11 @@
             <div class="dropdown-menu">
                 <a href="/lang/en" class="language-link {{ app()->getLocale() === 'en' ? 'active' : '' }}"
                     data-lang="en">
-                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }}
+                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> {{ __('messages.english') }} --}}
                 </a>
                 <a href="/lang/ar" class="language-link {{ app()->getLocale() === 'ar' ? 'active' : '' }}"
                     data-lang="ar">
-                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }}
+                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Arabic"> {{ __('messages.arabic') }} --}}
                 </a>
             </div>
         </div>
@@ -135,7 +135,7 @@
         <div class="dropdown location-dropdown">
             <button class="drop-btn" id="location-btn">
                 <img id="current-flag" src="" alt="" class="flag" style="display: none;">
-                <span id="current-country">{{ __('messages.jordan') }}</span>
+                {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
                 <span class="arrow">▾</span>
             </button>
             <div class="dropdown-menu location-menu">
