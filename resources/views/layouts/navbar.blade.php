@@ -170,23 +170,24 @@
                 </a>
             </div>
         </div>
-    </div>
-    <!-- Country -->
-    <div class="dropdown location-dropdown">
-        <button class="drop-btn" id="location-btn">
-            <img id="current-flag" src="" alt="" class="flag" style="display: none;">
-            {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
-            <span class="arrow">▾</span>
-        </button>
-        <div class="dropdown-menu location-menu">
-            <div class="search-container">
-                <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
-            </div>
-            <div id="countries-list" class="countries-list">
-                <!-- Countries will be loaded here -->
+        <!-- Country -->
+        <div class="dropdown location-dropdown">
+            <button class="drop-btn" id="location-btn">
+                <img id="current-flag" src="" alt="" class="flag" style="display: none;">
+                {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
+                <span class="arrow">▾</span>
+            </button>
+            <div class="dropdown-menu location-menu">
+                <div class="search-container">
+                    <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
+                </div>
+                <div id="countries-list" class="countries-list">
+                    <!-- Countries will be loaded here -->
+                </div>
             </div>
         </div>
     </div>
+
     <!-- Mobile toggle -->
     <div class="burger" id="burger">
         <span></span>
