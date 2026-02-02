@@ -12,8 +12,9 @@
 
     <div class="nav-left">
         <a href="{{ url('/') }}" class="logo" title="DecideLab">
-            <span class="logo-full">DecideLab</span>
-            <span class="logo-short" aria-hidden="true">DL</span>
+            <span class="logo-full" style="display:inline-block;">DecideLab</span>
+            <!-- Hidden by default via inline style; JS will enable on small viewports -->
+            <span class="logo-short" aria-hidden="true" style="display:none;">DL</span>
         </a>
 
         <ul class="nav-links">
