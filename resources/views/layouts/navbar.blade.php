@@ -152,10 +152,10 @@
         <div class="dropdown">
             <button class="drop-btn" id="language-btn">
                 @if (app()->getLocale() === 'ar')
-                    {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> --}}
+                    <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia">
                     {{ __('messages.arabic') }}
                 @else
-                    {{-- <img src="https://flagcdn.com/gb.svg" class="flag" alt="English"> --}}
+                    <img src="https://flagcdn.com/gb.svg" class="flag" alt="English">
                     {{ __('messages.english') }}
                 @endif
             </button>
