@@ -21,7 +21,24 @@
             <div class="card-content">
                 <h3>الزيارات اليوم</h3>
                 <p class="stat-number">{{ $humanToday['total_visits'] }}</p>
-                <p class="stat-label">زائر فقط (بدون بوتس)</p>
+                <p class="stat-label">زوار حقيقيون (بعد تحليل السلوك)</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge success">✓ حقيقي</span>
+            </div>
+        </div>
+
+        <!-- اليوم - Social (FB in-app) -->
+        <div class="stat-card social-card">
+            <div class="card-icon">🔗</div>
+            <div class="card-content">
+                <h3>Social اليوم</h3>
+                <p class="stat-number">{{ $socialToday ?? 0 }}</p>
+                <p class="stat-label">Facebook In-App</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge info">ترافيك اجتماعي</span>
+            </div>
             </div>
             <div class="card-footer">
                 <span class="badge success">✓ حقيقي</span>

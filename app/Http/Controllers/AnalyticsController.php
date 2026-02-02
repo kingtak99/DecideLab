@@ -12,21 +12,27 @@ class AnalyticsController extends Controller
      */
     public function dashboard(): View
     {
-        // 👤 إحصائيات الزوار الحقيقيين (اليوم)
-        $humanTodayStats = Visitor::humanOnly()->today()->get();
+        // 👤 إحصائيات الزوار الموثوقين (اليوم)
+        $trustedTodayStats = Visitor::trustedOnly()->today()->get();
         $humanToday = [
-            'total_visits' => $humanTodayStats->count(),
-            'unique_visitors' => $humanTodayStats->unique('ip_address')->count(),
-            'with_account' => $humanTodayStats->whereNotNull('user_id')->count(),
+            'total_visits' => $trustedTodayStats->count(),
+            'unique_visitors' => $trustedTodayStats->unique('ip_address')->count(),
+            'with_account' => $trustedTodayStats->whereNotNull('user_id')->count(),
         ];
 
-        // 👤 إحصائيات الزوار الحقيقيين (هذا الشهر)
-        $humanMonthStats = Visitor::humanOnly()->thisMonth()->get();
+        // Social traffic (FB in-app) — show separately
+        $socialToday = Visitor::social()->today()->distinct('ip_address')->count('ip_address');
+
+        // 👤 إحصائيات الزوار الموثوقين (هذا الشهر)
+        $trustedMonthStats = Visitor::trustedOnly()->thisMonth()->get();
         $humanMonth = [
-            'total_visits' => $humanMonthStats->count(),
-            'unique_visitors' => $humanMonthStats->unique('ip_address')->count(),
-            'with_account' => $humanMonthStats->whereNotNull('user_id')->count(),
+            'total_visits' => $trustedMonthStats->count(),
+            'unique_visitors' => $trustedMonthStats->unique('ip_address')->count(),
+            'with_account' => $trustedMonthStats->whereNotNull('user_id')->count(),
         ];
+
+        // Social traffic (FB in-app) — monthly
+        $socialMonth = Visitor::social()->thisMonth()->distinct('ip_address')->count('ip_address');
 
         // 🤖 إحصائيات البوتس (اليوم)
         $botTodayStats = Visitor::botsOnly()->today()->get();
@@ -47,8 +53,8 @@ class AnalyticsController extends Controller
             'unique_bots' => $botMonthStats->unique('ip_address')->count(),
         ];
 
-        // 📈 أعلى الصفحات بين الزوار الحقيقيين
-        $topPages = Visitor::humanOnly()
+        // 📈 أعلى الصفحات بين الزوار الموثوقين
+        $topPages = Visitor::trustedOnly()
             ->thisMonth()
             ->selectRaw('url, COUNT(*) as visits')
             ->groupBy('url')
@@ -56,8 +62,8 @@ class AnalyticsController extends Controller
             ->limit(10)
             ->get();
 
-        // 🔄 Unique visitors per page
-        $visitorsByPage = Visitor::humanOnly()
+        // 🔄 Unique visitors per page (trusted)
+        $visitorsByPage = Visitor::trustedOnly()
             ->thisMonth()
             ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
             ->groupBy('url')
@@ -65,15 +71,15 @@ class AnalyticsController extends Controller
             ->limit(5)
             ->get();
 
-        // ⏱️ Session duration stats
-        $sessionStats = Visitor::humanOnly()
+        // ⏱️ Session duration stats (trusted)
+        $sessionStats = Visitor::trustedOnly()
             ->thisMonth()
             ->whereNotNull('session_duration')
             ->selectRaw('AVG(session_duration) as avg_duration, MAX(session_duration) as max_duration, MIN(session_duration) as min_duration')
             ->first();
 
-        // 🌍 دول الزوار
-        $countryStats = Visitor::humanOnly()
+        // 🌍 دول الزوار (trusted)
+        $countryStats = Visitor::trustedOnly()
             ->thisMonth()
             ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
             ->whereNotNull('country')
@@ -102,6 +108,8 @@ class AnalyticsController extends Controller
         return view('analytics.dashboard', compact(
             'humanToday',
             'humanMonth',
+            'socialToday',
+            'socialMonth',
             'botToday',
             'botMonth',
             'topPages',

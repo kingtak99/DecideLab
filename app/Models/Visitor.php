@@ -64,6 +64,45 @@ class Visitor extends Model
         return $query->where('is_bot', true);
     }
 
+    /**
+     * 🔒 Trusted visitors — stricter behavioral filtering
+     * Use this for dashboard numbers to reduce false-positives from clever automated traffic.
+     */
+    public function scopeTrustedOnly(Builder $query): Builder
+    {
+        // Start from humanOnly() filters
+        $query = $this->scopeHumanOnly($query);
+
+        // Exclude common programmatic UAs (axios, generic headless, bulk Ubuntu+Firefox patterns)
+        $query = $query
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%axios/%'")
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%axios %'")
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%headless%'")
+            // exclude Ubuntu + Firefox bulk crawlers
+            ->whereRaw("NOT (LOWER(user_agent) LIKE '%ubuntu%' AND LOWER(user_agent) LIKE '%firefox%')");
+
+        // Additional IP ranges discovered as bot farms / proxies
+        $extraPrefixes = ['91.231.89.', '192.175.111.', '64.15.129.'];
+        foreach ($extraPrefixes as $p) {
+            $query = $query->where('ip_address', 'NOT LIKE', $p . '%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * 🔗 Social traffic (e.g., Facebook in-app browser) — keep separate for tagging/inspection
+     */
+    public function scopeSocial(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->whereRaw("LOWER(user_agent) LIKE '%fb_iab%'")
+              ->orWhereRaw("LOWER(user_agent) LIKE '%fbav%'")
+              ->orWhereRaw("LOWER(user_agent) LIKE '%facebook/ios%'")
+              ->orWhereRaw("LOWER(user_agent) LIKE '%facebook%iab%'");
+        });
+    }
+
     public function scopeToday(Builder $query): Builder
     {
         return $query->whereDate('visited_at', now());
