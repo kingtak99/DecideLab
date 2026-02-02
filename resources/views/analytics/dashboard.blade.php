@@ -8,6 +8,11 @@
         <p>Analytics Dashboard - نظام تتبع الزوار والبوتس</p>
     </div>
 
+    <div class="filter-note" style="margin:10px 0;padding:8px;border-left:4px solid #3b82f6;background:#f0f9ff;color:#0f172a;">
+        <strong>ملاحظة:</strong>
+        الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95.
+    </div>
+
     <!-- Stats Cards Row 1 - Humans Today -->
     <div class="stats-grid">
         <!-- اليوم - الزيارات -->

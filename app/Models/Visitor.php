@@ -36,7 +36,27 @@ class Visitor extends Model
     // ✅ Query Scopes للفلترة الذكية
     public function scopeHumanOnly(Builder $query): Builder
     {
-        return $query->where('is_bot', false);
+        // Start with not flagged as bot
+        $query = $query->where('is_bot', false);
+
+        // 1) Exclude visits which have empty referrer in DB — treat direct/empty referrer as noise
+        $query = $query->whereNotNull('referrer')->where('referrer', '<>', '');
+
+        // 2) Exclude user-agents indicating scanning/measurement or known noisy agents/refs
+        $query = $query
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%scanner%'")
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%measurement%'")
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%internetmeasurement/1.0%'")
+            ->whereRaw("LOWER(user_agent) NOT LIKE '%lets encrypt validation server%'")
+            ->whereRaw("LOWER(referrer) NOT LIKE '%cypex.ai/scanning%'");
+
+        // 3) Exclude known cloud IP prefixes (AWS, Google Cloud, OVH, ...)
+        $prefixes = ['52.', '54.', '35.', '3.', '100.', '34.', '141.95.'];
+        foreach ($prefixes as $p) {
+            $query = $query->where('ip_address', 'NOT LIKE', $p . '%');
+        }
+
+        return $query;
     }
 
     public function scopeBotsOnly(Builder $query): Builder
