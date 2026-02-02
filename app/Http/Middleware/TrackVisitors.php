@@ -75,7 +75,21 @@ class TrackVisitors
                     'ip' => $ip,
                     'user_agent' => substr($userAgent ?? '', 0, 80),
                 ]);
-                
+
+                // Increment page views for this visitor and update last visit / url / referrer
+                $existingVisitor->increment('page_views');
+
+                // If client sends a small header indicating scroll, mark it (future: use JS event)
+                if ($request->header('X-Has-Scroll') === '1') {
+                    $existingVisitor->update(['has_scroll' => true]);
+                }
+
+                // Mark social if UA indicates FB in-app
+                $uaLower = strtolower($userAgent ?? '');
+                if (str_contains($uaLower, 'fb_iab') || str_contains($uaLower, 'fbav')) {
+                    $existingVisitor->update(['is_social' => true]);
+                }
+
                 $existingVisitor->update([
                     'visited_at' => now(),
                     'url' => $request->path() ?? '/',
@@ -102,6 +116,10 @@ class TrackVisitors
                 'code' => $country['code'] ?? 'XX',
             ]);
             
+            // Detect social UA (Facebook in-app) for later acceptance
+            $uaLower = strtolower($userAgent ?? '');
+            $isSocial = (str_contains($uaLower, 'fb_iab') || str_contains($uaLower, 'fbav')) ? 1 : 0;
+
             $visitorData = [
                 'ip_address' => $ip,
                 'user_agent' => $userAgent ?? 'Unknown',
@@ -112,6 +130,9 @@ class TrackVisitors
                 'country_code' => $country['code'] ?? 'XX',
                 'session_id' => $sessionId,
                 'session_duration' => 0,
+                'page_views' => 1,
+                'has_scroll' => false,
+                'is_social' => $isSocial,
                 'user_id' => auth()->check() ? auth()->id() : null,
                 'visited_at' => now(),
                 'is_bot' => 0,

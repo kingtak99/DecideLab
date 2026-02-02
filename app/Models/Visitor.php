@@ -19,6 +19,9 @@ class Visitor extends Model
         'country_code',
         'session_id',
         'session_duration',
+        'page_views',
+        'has_scroll',
+        'is_social',
         'page_title',
         'referrer',
     ];
@@ -86,6 +89,17 @@ class Visitor extends Model
         foreach ($extraPrefixes as $p) {
             $query = $query->where('ip_address', 'NOT LIKE', $p . '%');
         }
+
+        // Behavioral heuristics — require at least one sign of real interaction
+        // session_duration >= 5 seconds OR page_views >= 2 OR has_scroll = true OR social UA (FB in-app)
+        $query = $query->where(function ($q) {
+            $q->where('session_duration', '>=', 5)
+              ->orWhere('page_views', '>=', 2)
+              ->orWhere('has_scroll', true)
+              ->orWhereRaw("LOWER(user_agent) LIKE '%fb_iab%'")
+              ->orWhereRaw("LOWER(user_agent) LIKE '%fbav%'")
+              ->orWhereRaw("LOWER(user_agent) LIKE '%facebook%iab%'");
+        });
 
         return $query;
     }

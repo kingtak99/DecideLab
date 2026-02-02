@@ -10,7 +10,7 @@
 
     <div class="filter-note" style="margin:10px 0;padding:8px;border-left:4px solid #3b82f6;background:#f0f9ff;color:#0f172a;">
         <strong>ملاحظة:</strong>
-        الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95.
+        الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95. كما تُطبّق الآن قواعد سلوكية: تحسب الزيارة إن تحقّق أحد الشروط: <code>session_duration &gt;= 5s</code>، أو <code>page_views &gt;= 2</code>، أو <code>has_scroll</code> = true، أو أن تكون زيارة من Facebook In-App (Social).
     </div>
 
     <!-- Stats Cards Row 1 - Humans Today -->
@@ -21,7 +21,7 @@
             <div class="card-content">
                 <h3>الزيارات اليوم</h3>
                 <p class="stat-number">{{ $humanToday['total_visits'] }}</p>
-                <p class="stat-label">زوار حقيقيون (بعد تحليل السلوك)</p>
+                <p class="stat-label">زوار مرجَّحون بشريًا (بعد تحليل السلوك)</p>
             </div>
             <div class="card-footer">
                 <span class="badge success">✓ حقيقي</span>
