@@ -80,29 +80,68 @@ class Visitor extends Model
     {
         $botPatterns = [
             // Crawlers & Scanners
-            'bot', 'crawler', 'spider', 'scraper',
-            'curl', 'wget', 'python', 'java(?!script)',
-            'php', 'ruby', 'perl', 'go-http',
-            
+            'bot',
+            'crawler',
+            'spider',
+            'scraper',
+            'curl',
+            'wget',
+            'python',
+            'java(?!script)',
+            'php',
+            'ruby',
+            'perl',
+            'go-http',
+
             // Security & Network Tools
-            'zgrab', 'nmap', 'nikto', 'masscan',
-            'censys', 'shodan', 'qualys', 'nessus',
-            'palo alto', 'cortex', 'nuclei', 'metasploit',
-            
+            'zgrab',
+            'nmap',
+            'nikto',
+            'masscan',
+            'censys',
+            'shodan',
+            'qualys',
+            'nessus',
+            'palo alto',
+            'cortex',
+            'nuclei',
+            'metasploit',
+
             // SEO Tools
-            'googlebot', 'bingbot', 'yandex', 'baidu',
-            'facebook', 'twitter', 'linkedin', 'whatsapp',
-            'telegram', 'slack', 'discord',
-            
+            'googlebot',
+            'bingbot',
+            'yandex',
+            'baidu',
+            'facebook',
+            'twitter',
+            'linkedin',
+            'whatsapp',
+            'telegram',
+            'slack',
+            'discord',
+
             // Monitoring & APM
-            'datadog', 'newrelic', 'elastic', 'prometheus',
-            'grafana', 'pingdom', 'uptime',
-            
+            'datadog',
+            'newrelic',
+            'elastic',
+            'prometheus',
+            'grafana',
+            'pingdom',
+            'uptime',
+
             // Other Bots
-            'libredtail', 'genomecrwaler', 'grpc',
-            'headless', 'phantom', 'selenium',
-            'apachebench', 'wrk', 'fasthttp',
-            'libwww', 'httpbanner', 'http banner',
+            'libredtail',
+            'genomecrwaler',
+            'grpc',
+            'headless',
+            'phantom',
+            'selenium',
+            'apachebench',
+            'wrk',
+            'fasthttp',
+            'libwww',
+            'httpbanner',
+            'http banner',
         ];
 
         $userAgentLower = strtolower($userAgent);
@@ -127,12 +166,13 @@ class Visitor extends Model
             $query->thisMonth();
         }
 
-        return [
+        dd([
             'total_visits' => $query->count(),
             'unique_visitors' => $query->distinct('ip_address')->count('ip_address'),
             'with_user_account' => $query->whereNotNull('user_id')->count(),
-        ];
+        ]);
     }
+
 
     // 📊 حساب إحصائيات البوتس (للمراقبة)
     public static function getBotStats(string $period = 'today'): array
