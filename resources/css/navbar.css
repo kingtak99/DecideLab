@@ -193,6 +193,7 @@
         gap: 20px;
     }
 
+    /* Mobile menu: increase gap and padding for comfortable touch targets */
     .nav-links {
         display: none;
         position: absolute;
@@ -201,9 +202,9 @@
         right: 0;
         background: var(--dark);
         flex-direction: column;
-        gap: 0;
-        padding: 20px;
-        border-top: 1px solid rgba(255,255,255,0.1);
+        gap: 6px;
+        padding: 18px;
+        border-top: 1px solid rgba(255,255,255,0.06);
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
@@ -213,8 +214,8 @@
 
     .nav-links li {
         width: 100%;
-        padding: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 14px 0; /* increased for touch */
+        border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .nav-links li:last-child {
@@ -223,14 +224,15 @@
 
     .nav-links a {
         display: block;
-        padding: 10px;
+        padding: 12px 8px;
         margin: -10px;
+        line-height: 1.4;
     }
 
     /* Hide right-side inline controls on mobile to prevent overlap; we show mobile equivalents inside .nav-links */
     .nav-right {
         display: none;
-        gap: 10px;
+        gap: 12px;
     }
 
     .user-btn {
@@ -238,24 +240,36 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        padding: 8px 10px;
     }
 
     .drop-btn {
         font-size: 14px;
+        padding: 10px 12px; /* bigger hit area */
     }
 
     /* Mobile-only actions placed inside .nav-links */
     .mobile-actions {
         display: block;
-        padding-top: 10px;
+        padding-top: 14px;
         width: 100%;
+        border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     .mobile-actions .mobile-btn {
         display: block;
         width: 100%;
-        margin: 6px 0;
+        margin: 8px 0;
         text-align: center;
+        padding: 10px 12px; /* comfortable touch */
+        font-size: 15px;
+        border-radius: 8px;
+    }
+
+    .mobile-actions .mobile-link {
+        display: block;
+        padding: 10px 12px;
+        font-size: 15px;
     }
 
     /* Allow buttons to shrink if needed inside small containers */
@@ -293,7 +307,7 @@
     }
 
     .nav-left {
-        gap: 15px;
+        gap: 14px;
     }
 
     .nav-right {
@@ -303,17 +317,22 @@
     .user-btn {
         max-width: 100px;
         font-size: 14px;
+        padding: 8px 10px;
     }
 
     .drop-btn {
         font-size: 13px;
-        padding: 6px 8px;
+        padding: 8px 10px;
     }
 
     .btn {
-        padding: 6px 12px;
+        padding: 8px 12px;
         font-size: 14px;
     }
+
+    /* ensure mobile menu items stay roomy */
+    .nav-links li { padding: 14px 0; }
+    .mobile-actions .mobile-btn { padding: 10px 12px; font-size: 15px; }
 }
 
 @media (max-width: 480px) {
@@ -322,28 +341,33 @@
     }
 
     .logo {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     .nav-right {
-        gap: 5px;
+        gap: 6px;
     }
 
     .user-btn {
         max-width: 80px;
         font-size: 13px;
-        padding: 6px 8px;
+        padding: 8px 10px; /* slightly larger for touch */
     }
 
     .drop-btn {
-        padding: 5px 6px;
+        padding: 8px 10px;
         font-size: 12px;
     }
 
     .btn {
-        padding: 5px 10px;
+        padding: 8px 10px;
         font-size: 13px;
     }
+
+    /* mobile menu spacing */
+    .nav-links { padding: 12px; }
+    .nav-links li { padding: 12px 0; }
+    .mobile-actions .mobile-btn { padding: 10px 12px; font-size: 14px; }
 
     .dropdown-menu {
         min-width: 140px;
