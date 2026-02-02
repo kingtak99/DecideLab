@@ -237,8 +237,9 @@
     .nav-links a {
         display: block;
         padding: 12px 8px;
-        margin: -10px;
+        margin: 0;
         line-height: 1.4;
+        box-sizing: border-box; /* prevent padding from causing overflow */
     }
 
     /* Hide right-side inline controls on mobile to prevent overlap; we show mobile equivalents inside .nav-links */
