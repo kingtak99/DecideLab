@@ -2,13 +2,13 @@
 
 @section('content')
     <div
-        class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
+        class="min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
         <!-- Glow Effects -->
         <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-3xl"></div>
         <div class="absolute top-40 -left-40 w-[400px] h-[400px] bg-emerald-600/20 rounded-full blur-3xl"></div>
 
         <div class="relative flex items-center justify-center min-h-screen px-6 py-12">
-            <div class="w-[500px]">
+            <div class="w-full max-w-[500px]">
                 <!-- Auth Card -->
                 <div class="bg-slate-900/50 backdrop-blur-sm rounded-3xl p-6 border border-white/10 shadow-2xl">
                     <!-- Header -->
