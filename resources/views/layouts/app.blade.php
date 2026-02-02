@@ -5,9 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     {{-- Hreflang tags for SEO --}}
-    @if(request()->is('/') || request()->is('*/'))
+    @if (request()->is('/') || request()->is('*/'))
         <link rel="alternate" hreflang="en" href="{{ url('en') }}" />
         <link rel="alternate" hreflang="ar" href="{{ url('ar') }}" />
     @elseif(request()->is('*/about'))
@@ -30,7 +31,9 @@
         <link rel="alternate" hreflang="ar" href="{{ url('ar/countries-data-sources') }}" />
     @endif
 
-    <title>DecideLab | {{ app()->getLocale() === 'ar' ? 'جرّب القرار قبل ما تعيش عواقبه' : 'Try the Decision Before You Live Its Consequences' }}</title>
+    <title>DecideLab |
+        {{ app()->getLocale() === 'ar' ? 'جرّب القرار قبل ما تعيش عواقبه' : 'Try the Decision Before You Live Its Consequences' }}
+    </title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/navbar.css', 'resources/js/navbar.js'])
 </head>
@@ -38,10 +41,10 @@
 <body class="bg-slate-950 text-slate-100 antialiased pt-16">
 
     {{-- Navbar --}}
-   
+
     @include('layouts.navbar')
 
-    
+
 
     {{-- Page Content --}}
     <main>
