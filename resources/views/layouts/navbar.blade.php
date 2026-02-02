@@ -1,4 +1,15 @@
 <nav class="navbar">
+    <style>
+        /* Temporary mobile overrides (force immediate effect without rebuilding assets) */
+        @media (max-width: 900px) {
+            .nav-links { gap: 6px !important; padding: 18px !important; }
+            .nav-links li { padding: 14px 0 !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+            .nav-links a { padding: 12px 8px !important; font-size: 15px !important; line-height: 1.4 !important; }
+            .mobile-actions { padding-top: 14px !important; width: 100% !important; border-top: 1px solid rgba(255,255,255,0.06) !important; }
+            .mobile-actions .mobile-btn { display: block !important; width: 100% !important; margin: 8px 0 !important; padding: 10px 12px !important; font-size: 15px !important; border-radius: 8px !important; }
+        }
+    </style>
+
     <div class="nav-left">
         <a href="{{ url('/') }}" class="logo">DecideLab</a>
 
