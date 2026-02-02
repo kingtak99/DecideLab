@@ -7,6 +7,16 @@
             .nav-links a { padding: 12px 8px !important; font-size: 15px !important; line-height: 1.4 !important; }
             .mobile-actions { padding-top: 14px !important; width: 100% !important; border-top: 1px solid rgba(255,255,255,0.06) !important; }
             .mobile-actions .mobile-btn { display: block !important; width: 100% !important; margin: 8px 0 !important; padding: 10px 12px !important; font-size: 15px !important; border-radius: 8px !important; }
+
+            /* Force logo switch on small viewports (high priority) */
+            .logo .logo-full { display: none !important; }
+            .logo .logo-short { display: inline-block !important; }
+        }
+
+        /* Desktop: ensure full logo visible (in case other CSS interferes) */
+        @media (min-width: 901px) {
+            .logo .logo-full { display: inline-block !important; }
+            .logo .logo-short { display: none !important; }
         }
     </style>
 
