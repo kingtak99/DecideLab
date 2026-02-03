@@ -192,7 +192,7 @@ function loadCountries(search = "") {
                 countryItem.href = "#";
                 countryItem.className = "country-item";
                 // console.log(country.name);
-                
+
                 countryItem.innerHTML = `
                     <img src="${country.flag_url}" alt="${country.name}" class="flag">
                     <span>${country.name}</span>
@@ -213,9 +213,10 @@ function loadCountries(search = "") {
 }
 
 function changeLocation(countryId, country, flagUrl) {
-    const locationBtn = document.getElementById('location-btn');
+    console.log("changeLocation called with", countryId);
+    const locationBtn = document.getElementById("location-btn");
     // Show loading state
-    locationBtn?.classList.add('loading');
+    locationBtn?.classList.add("loading");
 
     // Use AbortController to enforce a timeout
     const controller = new AbortController();
@@ -223,9 +224,9 @@ function changeLocation(countryId, country, flagUrl) {
 
     fetch(`/location/change/${countryId}`, {
         method: "POST",
-        credentials: 'same-origin',
+        credentials: "same-origin",
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": document
                 .querySelector('meta[name="csrf-token"]')
@@ -235,12 +236,15 @@ function changeLocation(countryId, country, flagUrl) {
     })
         .then((response) => {
             clearTimeout(timeoutId);
-            console.log('changeLocation: response status', response.status);
-            if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+            console.log("changeLocation: response status", response.status);
+            if (!response.ok)
+                throw new Error(
+                    "Network response was not ok: " + response.status,
+                );
             return response.json();
         })
         .then((data) => {
-            console.log('changeLocation: server returned', data);
+            console.log("changeLocation: server returned", data);
             if (data.success) {
                 updateCurrentLocation(data.country, data.flag_url);
                 // Close dropdown
@@ -258,29 +262,43 @@ function changeLocation(countryId, country, flagUrl) {
                     countryId,
                     country: data.country,
                 });
-
+                window.location.reload;
                 // Force a cache-bypassing reload (works even if browser caches)
-                const forcedUrl = window.location.origin + window.location.pathname + window.location.search + (window.location.search ? '&' : '?') + '_=' + Date.now();
-                console.log('changeLocation: reloading to', forcedUrl);
-                // Small delay so session write has time to commit on server
-                setTimeout(() => {
-                    window.location.href = forcedUrl;
-                }, 250);
+                // const forcedUrl =
+                //     window.location.origin +
+                //     window.location.pathname +
+                //     window.location.search +
+                //     (window.location.search ? "&" : "?") +
+                //     "_=" +
+                //     Date.now();
+                // console.log("changeLocation: reloading to", forcedUrl);
+                // // Small delay so session write has time to commit on server
+                // setTimeout(() => {
+                //     window.location.href = forcedUrl;
+                // }, 250);
             } else {
-                console.error('Change location failed (server returned success=false):', data);
-                alert('Could not change country. Please try again.');
+                
+                console.error(
+                    "Change location failed (server returned success=false):",
+                    data,
+                );
+                alert("Could not change country. Please try again.");
             }
         })
         .catch((error) => {
             console.error("Error changing location:", error);
-            if (error.name === 'AbortError') {
-                alert('Request timed out. Please check your connection and try again.');
+            if (error.name === "AbortError") {
+                alert(
+                    "Request timed out. Please check your connection and try again.",
+                );
             } else {
-                alert('An error occurred while changing country. Please try again.');
+                alert(
+                    "An error occurred while changing country. Please try again.",
+                );
             }
         })
         .finally(() => {
-            locationBtn?.classList.remove('loading');
+            locationBtn?.classList.remove("loading");
         });
 }
 
@@ -313,7 +331,12 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             const lang = e.currentTarget.getAttribute("data-lang");
             // Force absolute URL to avoid any relative path issues
-            window.location.href = window.location.protocol + "//" + window.location.host + "/lang/" + lang;
+            window.location.href =
+                window.location.protocol +
+                "//" +
+                window.location.host +
+                "/lang/" +
+                lang;
         });
     });
 
@@ -335,23 +358,23 @@ function debounce(fn, wait) {
 }
 
 function updateLogoForViewport() {
-    const full = document.querySelector('.logo .logo-full');
-    const short = document.querySelector('.logo .logo-short');
+    const full = document.querySelector(".logo .logo-full");
+    const short = document.querySelector(".logo .logo-short");
     if (!full || !short) return;
 
     if (window.innerWidth <= 900) {
-        full.style.display = 'none';
-        full.setAttribute('aria-hidden', 'true');
-        short.style.display = 'inline-block';
-        short.setAttribute('aria-hidden', 'false');
+        full.style.display = "none";
+        full.setAttribute("aria-hidden", "true");
+        short.style.display = "inline-block";
+        short.setAttribute("aria-hidden", "false");
     } else {
-        full.style.display = 'inline-block';
-        full.setAttribute('aria-hidden', 'false');
-        short.style.display = 'none';
-        short.setAttribute('aria-hidden', 'true');
+        full.style.display = "inline-block";
+        full.setAttribute("aria-hidden", "false");
+        short.style.display = "none";
+        short.setAttribute("aria-hidden", "true");
     }
 }
 
 // Run on initial load and on resize
-document.addEventListener('DOMContentLoaded', updateLogoForViewport);
-window.addEventListener('resize', debounce(updateLogoForViewport, 120));
+document.addEventListener("DOMContentLoaded", updateLogoForViewport);
+window.addEventListener("resize", debounce(updateLogoForViewport, 120));
