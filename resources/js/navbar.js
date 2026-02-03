@@ -67,12 +67,12 @@ function initializeLocation() {
         // Close other dropdowns
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
             if (menu !== dropdownMenu) {
-                menu.classList.remove("active");
+                menu.closest(".dropdown")?.classList.remove("active");
             }
         });
 
         // Toggle this dropdown
-        dropdownMenu.classList.toggle("active");
+        locationDropdown.classList.toggle("active");
 
         // Load countries if not already loaded
         if (countriesList.children.length === 0) {
@@ -213,14 +213,13 @@ function loadCountries(search = "") {
 }
 
 function changeLocation(countryId, country, flagUrl) {
-    console.log("changeLocation called with", countryId);
+    const locationDropdown = document.querySelector(".location-dropdown");
     const locationBtn = document.getElementById("location-btn");
-    // Show loading state
-    locationBtn?.classList.add("loading");
 
-    // Use AbortController to enforce a timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    // 🔒 سكّر dropdown فورًا (100% مضمون)
+    locationDropdown?.classList.remove("active");
+
+    locationBtn?.classList.add("loading");
 
     fetch(`/location/change/${countryId}`, {
         method: "POST",
@@ -232,70 +231,18 @@ function changeLocation(countryId, country, flagUrl) {
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content"),
         },
-        signal: controller.signal,
     })
-        .then((response) => {
-            clearTimeout(timeoutId);
-            console.log("changeLocation: response status", response.status);
-            if (!response.ok)
-                throw new Error(
-                    "Network response was not ok: " + response.status,
-                );
-            return response.json();
-        })
+        .then((res) => res.json())
         .then((data) => {
-            console.log("changeLocation: server returned", data);
-            if (data.success) {
-                updateCurrentLocation(data.country, data.flag_url);
-                // Close dropdown
-                document
-                    .querySelector(".location-dropdown .dropdown-menu")
-                    .classList.remove("active");
+            if (!data.success) throw new Error();
 
-                // Dispatch custom event for other components to listen
-                window.dispatchEvent(
-                    new CustomEvent("countryChanged", {
-                        detail: { countryId: countryId, country: data.country },
-                    }),
-                );
-                console.log("🌍 Navbar dispatched countryChanged event:", {
-                    countryId,
-                    country: data.country,
-                });
-                window.location.reload;
-                // Force a cache-bypassing reload (works even if browser caches)
-                // const forcedUrl =
-                //     window.location.origin +
-                //     window.location.pathname +
-                //     window.location.search +
-                //     (window.location.search ? "&" : "?") +
-                //     "_=" +
-                //     Date.now();
-                // console.log("changeLocation: reloading to", forcedUrl);
-                // // Small delay so session write has time to commit on server
-                // setTimeout(() => {
-                //     window.location.href = forcedUrl;
-                // }, 250);
-            } else {
-                
-                console.error(
-                    "Change location failed (server returned success=false):",
-                    data,
-                );
-                alert("Could not change country. Please try again.");
-            }
-        })
-        .catch((error) => {
-            console.error("Error changing location:", error);
-            if (error.name === "AbortError") {
-                alert(
-                    "Request timed out. Please check your connection and try again.",
-                );
-            } else {
-                alert(
-                    "An error occurred while changing country. Please try again.",
-                );
-            }
+            updateCurrentLocation(data.country, data.flag_url);
+
+            window.dispatchEvent(
+                new CustomEvent("countryChanged", {
+                    detail: { countryId, country: data.country },
+                }),
+            );
         })
         .finally(() => {
             locationBtn?.classList.remove("loading");
@@ -317,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Close other dropdowns
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
             if (menu !== languageMenu) {
-                menu.classList.remove("active");
+                menu.closest(".dropdown")?.classList.remove("active");
             }
         });
 

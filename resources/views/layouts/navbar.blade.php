@@ -175,10 +175,13 @@
         <!-- Country -->
         <div class="dropdown location-dropdown">
             <button class="drop-btn" id="location-btn">
-                <img id="current-flag" src="" alt="" class="flag" style="display: none;">
-                {{-- <span id="current-country">{{ __('messages.jordan') }}</span> --}}
+                <span class="flag-wrapper">
+                    <img id="current-flag" src="" alt="" class="flag" style="display: none;">
+                    <span id="flag-spinner" class="flag-spinner hidden"></span>
+                </span>
                 <span class="arrow">▾</span>
             </button>
+
             <div class="dropdown-menu location-menu">
                 <div class="search-container">
                     <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
