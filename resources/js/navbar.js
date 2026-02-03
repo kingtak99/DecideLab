@@ -121,6 +121,7 @@ function loadCurrentLocation() {
 
                 window.dispatchEvent(new CustomEvent("navbarReady"));
                 console.log("🌍 Navbar dispatched navbarReady event");
+                initializeLocation();
             }
         })
         .catch(() => {
@@ -151,7 +152,7 @@ function loadCurrentLocation() {
 
 function updateCurrentLocation(country, flagUrl) {
     console.log("Updating current location:", country, flagUrl);
-    
+
     const flagImg = document.getElementById("current-flag");
 
     if (flagImg && flagUrl) {
