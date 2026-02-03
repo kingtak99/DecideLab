@@ -121,7 +121,7 @@ function loadCurrentLocation() {
 
                 window.dispatchEvent(new CustomEvent("navbarReady"));
                 // console.log("🌍 Navbar dispatched222 navbarReady event");
-                initializeLocation();
+initializeLocation();
             }
         })
         .catch(() => {
@@ -241,6 +241,8 @@ function changeLocation(countryId) {
                     },
                 }),
             );
+            // Refresh immediately so the whole page reflects the new country
+            window.location.reload();
             initializeLocation();
         })
         .catch(() => {
@@ -330,3 +332,6 @@ function updateLogoForViewport() {
 // Run on initial load and on resize
 document.addEventListener("DOMContentLoaded", updateLogoForViewport);
 window.addEventListener("resize", debounce(updateLogoForViewport, 120));
+
+
+
