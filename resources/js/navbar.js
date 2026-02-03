@@ -120,7 +120,7 @@ function loadCurrentLocation() {
                 );
 
                 window.dispatchEvent(new CustomEvent("navbarReady"));
-                console.log("🌍 Navbar dispatched navbarReady event");
+                console.log("🌍 Navbar dispatched222 navbarReady event");
                 initializeLocation();
             }
         })
