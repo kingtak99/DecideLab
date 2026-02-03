@@ -152,6 +152,27 @@
     display: none;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
+
+/* Loading indicator for location/language buttons */
+.drop-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+.drop-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    animation: spinner 0.8s linear infinite;
+}
+@keyframes spinner { to { transform: rotate(360deg); } }
 .dropdown-menu a,
 .dropdown-menu button {
     display: flex;          /* inline flag + text */

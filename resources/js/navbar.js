@@ -213,17 +213,34 @@ function loadCountries(search = "") {
 }
 
 function changeLocation(countryId, country, flagUrl) {
+    const locationBtn = document.getElementById('location-btn');
+    // Show loading state
+    locationBtn?.classList.add('loading');
+
+    // Use AbortController to enforce a timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     fetch(`/location/change/${countryId}`, {
         method: "POST",
+        credentials: 'same-origin',
         headers: {
+            "Accept": "application/json",
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": document
                 .querySelector('meta[name="csrf-token"]')
                 .getAttribute("content"),
         },
+        signal: controller.signal,
     })
-        .then((response) => response.json())
+        .then((response) => {
+            clearTimeout(timeoutId);
+            console.log('changeLocation: response status', response.status);
+            if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+            return response.json();
+        })
         .then((data) => {
+            console.log('changeLocation: server returned', data);
             if (data.success) {
                 updateCurrentLocation(data.country, data.flag_url);
                 // Close dropdown
@@ -242,12 +259,28 @@ function changeLocation(countryId, country, flagUrl) {
                     country: data.country,
                 });
 
-                // Immediately reload the page so the chosen country is applied site-wide
-                window.location.reload();
+                // Force a cache-bypassing reload (works even if browser caches)
+                const forcedUrl = window.location.origin + window.location.pathname + window.location.search + (window.location.search ? '&' : '?') + '_=' + Date.now();
+                console.log('changeLocation: reloading to', forcedUrl);
+                // Small delay so session write has time to commit on server
+                setTimeout(() => {
+                    window.location.href = forcedUrl;
+                }, 250);
+            } else {
+                console.error('Change location failed (server returned success=false):', data);
+                alert('Could not change country. Please try again.');
             }
         })
         .catch((error) => {
             console.error("Error changing location:", error);
+            if (error.name === 'AbortError') {
+                alert('Request timed out. Please check your connection and try again.');
+            } else {
+                alert('An error occurred while changing country. Please try again.');
+            }
+        })
+        .finally(() => {
+            locationBtn?.classList.remove('loading');
         });
 }
 
