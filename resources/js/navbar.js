@@ -108,7 +108,7 @@ function loadCurrentLocation() {
             if (data.country) {
                 updateCurrentLocation(data.country, data.flag_url);
 
-                console.log("Navbar loaded initial country:", data.country);
+                console.log("Navbar loaded2222 initial country:", data.country);
 
                 window.dispatchEvent(
                     new CustomEvent("countryChanged", {
