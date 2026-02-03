@@ -150,6 +150,8 @@ function loadCurrentLocation() {
 =========================== */
 
 function updateCurrentLocation(country, flagUrl) {
+    console.log("Updating current location:", country, flagUrl);
+    
     const flagImg = document.getElementById("current-flag");
 
     if (flagImg && flagUrl) {
@@ -229,7 +231,7 @@ function changeLocation(countryId) {
             if (!data.success) throw new Error();
 
             updateCurrentLocation(data.country, data.flag_url);
-
+            initializeLocation();
             window.dispatchEvent(
                 new CustomEvent("countryChanged", {
                     detail: {
