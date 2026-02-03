@@ -61,7 +61,10 @@ function initializeLocation() {
         e.stopPropagation();
 
         const isOpen = dropdownMenu.style.display === "block";
-
+        console.log(
+            "🌍 Location dropdown toggled:",
+            isOpen ? "closing" : "opening",
+        );
         // سكّر كل dropdowns ثانية
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
             menu.style.display = "none";
