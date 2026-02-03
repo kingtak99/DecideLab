@@ -29,88 +29,84 @@ document.querySelectorAll(".nav-links a").forEach((link) => {
         links?.classList.remove("active");
     });
 });
-
 // Handle long user names and initialize location
 document.addEventListener("DOMContentLoaded", () => {
     const userBtn = document.querySelector(".user-btn");
     if (userBtn) {
         const userName = userBtn.textContent.trim();
         if (userName.length > 15) {
-            userBtn.title = userName; // Show full name on hover
+            userBtn.title = userName;
         }
     }
 
-    // Initialize location functionality
     initializeLocation();
 });
 
-// Location functionality
+/* ===========================
+   LOCATION DROPDOWN
+=========================== */
+
 function initializeLocation() {
     const locationBtn = document.getElementById("location-btn");
     const locationDropdown = document.querySelector(".location-dropdown");
-    const dropdownMenu = document.querySelector(
-        ".location-dropdown .dropdown-menu",
-    );
-    const currentFlag = document.getElementById("current-flag");
-    const currentCountry = document.getElementById("current-country");
+    const dropdownMenu = locationDropdown?.querySelector(".dropdown-menu");
     const countrySearch = document.getElementById("country-search");
     const countriesList = document.getElementById("countries-list");
 
-    // Load current location
     loadCurrentLocation();
 
-    // Handle location button click to toggle dropdown
+    // 🔽 فتح / إغلاق dropdown (inline style فقط)
     locationBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        // Close other dropdowns
+        const isOpen = dropdownMenu.style.display === "block";
+
+        // سكّر كل dropdowns ثانية
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-            if (menu !== dropdownMenu) {
-                menu.closest(".dropdown")?.classList.remove("active");
-            }
+            menu.style.display = "none";
         });
 
-        // Toggle this dropdown
-        locationDropdown.classList.toggle("active");
+        // toggle الحالي
+        dropdownMenu.style.display = isOpen ? "none" : "block";
 
-        // Load countries if not already loaded
-        if (countriesList.children.length === 0) {
+        if (!isOpen && countriesList.children.length === 0) {
             loadCountries();
         }
 
-        // Focus search input
-        if (dropdownMenu.classList.contains("active")) {
+        if (!isOpen) {
             setTimeout(() => countrySearch?.focus(), 100);
         }
     });
 
-    // Handle search
+    // بحث
     countrySearch?.addEventListener("input", (e) => {
         loadCountries(e.target.value);
     });
 
-    // Prevent dropdown from closing when clicking on search input
     countrySearch?.addEventListener("click", (e) => {
         e.stopPropagation();
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-        if (!locationDropdown.contains(e.target)) {
-            dropdownMenu.classList.remove("active");
-        }
+    // إغلاق عند الضغط خارجها
+    document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
     });
 }
 
+/* ===========================
+   LOAD CURRENT LOCATION
+=========================== */
+
 function loadCurrentLocation() {
     fetch("/location/current")
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => {
             if (data.country) {
                 updateCurrentLocation(data.country, data.flag_url);
-                // Dispatch initial country state event immediately
+
                 console.log("Navbar loaded initial country:", data.country);
+
                 window.dispatchEvent(
                     new CustomEvent("countryChanged", {
                         detail: {
@@ -120,24 +116,19 @@ function loadCurrentLocation() {
                     }),
                 );
 
-                // Dispatch navbar ready event
                 window.dispatchEvent(new CustomEvent("navbarReady"));
                 console.log("🌍 Navbar dispatched navbarReady event");
             }
         })
-        .catch((error) => {
-            console.error("Error loading current location:", error);
-            // Default to Jordan
+        .catch(() => {
             const defaultCountry = {
-                id: 1, // Assuming Jordan has ID 1
-                name:
-                    document.documentElement.lang === "ar"
-                        ? "الأردن"
-                        : "Jordan",
-                code: "JOR",
+                id: 1,
+                name_en: "Jordan",
+                name_ar: "الأردن",
             };
+
             updateCurrentLocation(defaultCountry, "https://flagcdn.com/jo.svg");
-            // Dispatch default country event
+
             window.dispatchEvent(
                 new CustomEvent("countryChanged", {
                     detail: {
@@ -147,79 +138,77 @@ function loadCurrentLocation() {
                 }),
             );
 
-            // Dispatch navbar ready event even in error case
             window.dispatchEvent(new CustomEvent("navbarReady"));
-            console.log("🌍 Navbar dispatched navbarReady event (fallback)");
         });
 }
 
+/* ===========================
+   UPDATE FLAG + NAME
+=========================== */
+
 function updateCurrentLocation(country, flagUrl) {
-    const currentFlag = document.getElementById("current-flag");
-    const currentCountry = document.getElementById("current-country");
+    const flagImg = document.getElementById("current-flag");
 
-    if (currentFlag && flagUrl) {
-        currentFlag.src = flagUrl;
-        currentFlag.style.display = "inline-block";
-    }
-
-    if (currentCountry) {
-        currentCountry.textContent =
-            country.name ||
-            (document.documentElement.lang === "ar"
-                ? country.name_ar
-                : country.name_en) ||
-            country.name_en;
+    if (flagImg && flagUrl) {
+        flagImg.src = flagUrl;
+        flagImg.style.display = "inline-block";
     }
 }
+
+/* ===========================
+   LOAD COUNTRIES
+=========================== */
 
 function loadCountries(search = "") {
     const countriesList = document.getElementById("countries-list");
 
     fetch(`/location/countries?search=${encodeURIComponent(search)}`)
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((countries) => {
             countriesList.innerHTML = "";
 
-            const seen = new Set(); // لتخزين الأسماء اللي ظهرت
+            const seen = new Set();
 
             countries.forEach((country) => {
-                // إذا الاسم موجود بالفعل، تجاهل هذا العنصر
                 if (seen.has(country.name)) return;
-
                 seen.add(country.name);
 
-                const countryItem = document.createElement("a");
-                countryItem.href = "#";
-                countryItem.className = "country-item";
-                // console.log(country.name);
+                const item = document.createElement("a");
+                item.href = "#";
+                item.className = "country-item";
 
-                countryItem.innerHTML = `
-                    <img src="${country.flag_url}" alt="${country.name}" class="flag">
+                item.innerHTML = `
+                    <img src="${country.flag_url}" class="flag">
                     <span>${country.name}</span>
                 `;
 
-                countryItem.addEventListener("click", (e) => {
+                item.addEventListener("click", (e) => {
                     e.preventDefault();
-                    e.stopPropagation();
-                    changeLocation(country.id, country, country.flag_url);
+                    changeLocation(country.id);
                 });
 
-                countriesList.appendChild(countryItem);
+                countriesList.appendChild(item);
             });
-        })
-        .catch((error) => {
-            console.error("Error loading countries:", error);
         });
 }
 
-function changeLocation(countryId, country, flagUrl) {
-    const locationDropdown = document.querySelector(".location-dropdown");
+/* ===========================
+   CHANGE LOCATION (🔥 CORE)
+=========================== */
+
+function changeLocation(countryId) {
+    console.log("🌍 changeLocation", countryId);
+
+    const dropdownMenu = document.querySelector(
+        ".location-dropdown .dropdown-menu",
+    );
     const locationBtn = document.getElementById("location-btn");
 
-    // 🔒 سكّر dropdown فورًا (100% مضمون)
-    locationDropdown?.classList.remove("active");
+    // ✅ سكّر dropdown فورًا (غصب)
+    dropdownMenu.style.display = "none";
 
-    locationBtn?.classList.add("loading");
+    // ⏳ spinner
+    locationBtn.classList.add("loading");
 
     fetch(`/location/change/${countryId}`, {
         method: "POST",
@@ -240,12 +229,18 @@ function changeLocation(countryId, country, flagUrl) {
 
             window.dispatchEvent(
                 new CustomEvent("countryChanged", {
-                    detail: { countryId, country: data.country },
+                    detail: {
+                        countryId,
+                        country: data.country,
+                    },
                 }),
             );
         })
+        .catch(() => {
+            alert("فشل تغيير الدولة، حاول مرة أخرى");
+        })
         .finally(() => {
-            locationBtn?.classList.remove("loading");
+            locationBtn.classList.remove("loading");
         });
 }
 
@@ -259,7 +254,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle language button click
     languageBtn?.addEventListener("click", (e) => {
         e.preventDefault();
-        e.stopPropagation();
+        countryItem.addEventListener("click", (e) => {
+            e.preventDefault();
+            changeLocation(country.id, country, country.flag_url);
+        });
 
         // Close other dropdowns
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
