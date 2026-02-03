@@ -241,6 +241,9 @@ function changeLocation(countryId, country, flagUrl) {
                     countryId,
                     country: data.country,
                 });
+
+                // Immediately reload the page so the chosen country is applied site-wide
+                window.location.reload();
             }
         })
         .catch((error) => {

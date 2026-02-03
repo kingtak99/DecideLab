@@ -89,10 +89,17 @@ class LocationController extends Controller
             $country = Country::find(Session::get('user_country'));
         }
 
-        // If no country set, try to detect
+        // If no country set, try to detect by IP and store it in session for subsequent visits
         if (!$country) {
-            // Default to Jordan for now
-            $country = Country::where('code', 'JOR')->first();
+            $detected = $this->getCountryFromIP(request()->ip());
+            if ($detected) {
+                $country = $detected;
+                // Save detected country in session so it persists across page navigations
+                Session::put('user_country', $country->id);
+            } else {
+                // Fallback to Jordan if detection fails
+                $country = Country::where('code', 'JOR')->first();
+            }
         }
 
         return response()->json([
