@@ -238,6 +238,7 @@ function changeLocation(countryId) {
                     },
                 }),
             );
+            initializeLocation();
         })
         .catch(() => {
             alert("فشل تغيير الدولة، حاول مرة أخرى");

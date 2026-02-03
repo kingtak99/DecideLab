@@ -174,7 +174,7 @@
         </div>
         <!-- Country -->
         <div class="dropdown location-dropdown">
-            <button class="drop-btn" id="location-btn" onclick="initializeLocation();">
+            <button class="drop-btn" id="location-btn" >
                 <span class="flag-wrapper">
                     <img id="current-flag" src="" alt="" class="flag" style="display: none;">
                     <span id="flag-spinner" class="flag-spinner hidden"></span>
