@@ -188,6 +188,10 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->middleware(['auth', 'is
         ->name('analytics.detected-bots');
 });
 
+// 🫀 Heartbeat endpoint (receives lightweight pings from the front-end)
+Route::post('/analytics/heartbeat', [\App\Http\Controllers\VisitorHeartbeatController::class, 'ping'])
+    ->name('analytics.heartbeat');
+
 // 📊 API Routes
 Route::get('/api/stats', [\App\Http\Controllers\AnalyticsController::class, 'apiStats'])
     ->name('api.stats');

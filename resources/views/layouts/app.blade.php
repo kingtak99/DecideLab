@@ -36,6 +36,12 @@
     </title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/navbar.css', 'resources/js/navbar.js'])
+
+    <script>
+        // Expose the current Laravel session_id for heartbeat usage
+        window.APP = window.APP || {};
+        window.APP.sessionId = "{{ session()->getId() }}";
+    </script>
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased pt-16">
@@ -53,6 +59,81 @@
 
     {{-- Footer --}}
     @include('layouts.footer')
+
+    {{-- Heartbeat script (fires lightweight pings to /analytics/heartbeat) --}}
+    <script>
+        (function(){
+            const INTERVAL = 15; // seconds
+            let lastSent = Date.now();
+            let timer = null;
+            const sessionId = window.APP && window.APP.sessionId ? window.APP.sessionId : null;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            if (!sessionId) return; // nothing to do without a session
+
+            function sendHeartbeat(opts = {}){
+                const payload = {
+                    session_id: sessionId,
+                    page: opts.page || window.location.pathname + window.location.search,
+                    delta: opts.delta || null,
+                    has_scroll: opts.has_scroll || false,
+                };
+
+                // Use navigator.sendBeacon on unload for reliability
+                if (opts.useBeacon && navigator.sendBeacon) {
+                    const blob = new Blob([JSON.stringify(payload)], {type: 'application/json'});
+                    navigator.sendBeacon('/analytics/heartbeat', blob);
+                    return;
+                }
+
+                fetch('/analytics/heartbeat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                }).catch(()=>{});
+            }
+
+            function tick(){
+                if (document.hidden) return; // pause when tab not visible
+                const now = Date.now();
+                if ((now - lastSent) >= INTERVAL * 1000) {
+                    sendHeartbeat();
+                    lastSent = now;
+                }
+            }
+
+            // Start interval
+            timer = setInterval(tick, 5000);
+
+            // Visibility change should trigger an immediate heartbeat when returning
+            document.addEventListener('visibilitychange', function(){
+                if (!document.hidden) {
+                    sendHeartbeat({delta: Math.round((Date.now() - lastSent) / 1000)});
+                    lastSent = Date.now();
+                }
+            });
+
+            // On unload, send a final beacon
+            window.addEventListener('beforeunload', function(){
+                sendHeartbeat({useBeacon: true});
+            });
+
+            // Optional: small listener for scroll events to mark scroll soon
+            let scrollDebounced = false;
+            window.addEventListener('scroll', function(){
+                if (scrollDebounced) return;
+                scrollDebounced = true;
+                // Send a heartbeat marking has_scroll true
+                sendHeartbeat({has_scroll: true});
+                setTimeout(()=> scrollDebounced = false, 10000);
+            }, {passive: true});
+        })();
+    </script>
 
     {{-- Page Scripts --}}
     @yield('scripts')

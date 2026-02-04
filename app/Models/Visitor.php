@@ -24,11 +24,13 @@ class Visitor extends Model
         'is_social',
         'page_title',
         'referrer',
+        'last_heartbeat_at',
     ];
 
-    protected $dates = ['visited_at'];
+    protected $dates = ['visited_at', 'last_heartbeat_at'];
     protected $casts = [
         'is_bot' => 'boolean',
+        'last_heartbeat_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
