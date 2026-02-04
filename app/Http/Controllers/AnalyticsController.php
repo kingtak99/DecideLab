@@ -63,10 +63,11 @@ class AnalyticsController extends Controller
         $botToday = [
             'total_scans' => $botTodayStats->count(),
             'unique_bots' => $botTodayStats->unique('ip_address')->count(),
-            'security_scanners' => $botTodayStats->filter(fn($v) => 
+            'security_scanners' => $botTodayStats->filter(
+                fn($v) =>
                 str_contains(strtolower($v->user_agent), 'censys') ||
-                str_contains(strtolower($v->user_agent), 'palo alto') ||
-                str_contains(strtolower($v->user_agent), 'zgrab')
+                    str_contains(strtolower($v->user_agent), 'palo alto') ||
+                    str_contains(strtolower($v->user_agent), 'zgrab')
             )->count(),
         ];
 
@@ -99,8 +100,10 @@ class AnalyticsController extends Controller
         $sessionStats = Visitor::trustedOnly()
             ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->whereNotNull('session_duration')
+            ->where('session_duration', '>', 0) // هذا السطر للتأكد إن المدة أكبر من صفر
             ->selectRaw('AVG(session_duration) as avg_duration, MAX(session_duration) as max_duration, MIN(session_duration) as min_duration')
             ->first();
+
 
         // 🌍 دول الزوار (trusted)
         $countryStats = Visitor::trustedOnly()
@@ -118,11 +121,11 @@ class AnalyticsController extends Controller
             ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->where(function ($q) {
                 $q->where('session_duration', '<', 5)
-                  ->where('page_views', '<', 2)
-                  ->where('has_scroll', false)
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
+                    ->where('page_views', '<', 2)
+                    ->where('has_scroll', false)
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
             })
             ->distinct('ip_address')
             ->count('ip_address');
@@ -136,11 +139,11 @@ class AnalyticsController extends Controller
             ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->where(function ($q) {
                 $q->where('session_duration', '<', 5)
-                  ->where('page_views', '<', 2)
-                  ->where('has_scroll', false)
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
-                  ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
+                    ->where('page_views', '<', 2)
+                    ->where('has_scroll', false)
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%fb_iab%'")
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%fbav%'")
+                    ->whereRaw("LOWER(user_agent) NOT LIKE '%facebook%iab%'");
             })
             ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
             ->whereNotNull('country')

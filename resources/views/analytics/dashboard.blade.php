@@ -264,7 +264,7 @@
                 <div class="card-content">
                     <h3>أقصر جلسة</h3>
                     <p class="stat-number">{{ gmdate('H:i:s', intval($sessionStats->min_duration)) }}</p>
-                    <p class="stat-label">{{ number_format($sessionStats->min_duration, 1) }} ثانية</p>
+                    <p class="stat-label">{{ number_format($sessionStats->min_duration, 0) }} ثانية</p>
                 </div>
             </div>
         </div>
