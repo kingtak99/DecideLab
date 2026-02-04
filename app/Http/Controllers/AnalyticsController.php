@@ -266,6 +266,8 @@ class AnalyticsController extends Controller
             'visitorsByPage',
             'humanChartData',
             'trustedChartData',
+            'trustedToday',
+            'trustedMonth',
         ));
     }
 

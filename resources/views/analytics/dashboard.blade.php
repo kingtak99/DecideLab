@@ -18,9 +18,9 @@
         <div style="font-size:0.95rem; color:#374151; display:flex; gap:8px; align-items:center;">
             <div>عرض:</div>
             <div class="mode-toggle" style="display:flex; gap:8px;">
-                <button type="button" id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 Human</button>
-                <button type="button" id="modeTrustedBtn" class="btn-secondary" style="padding:6px 12px;">👑 Trusted</button>
-                <button type="button" id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 Raw</button>
+                <button type="button" id="modeHumanBtn" class="btn btn-primary" style="padding:6px 12px;">👤 Human</button>
+                <button type="button" id="modeTrustedBtn" class="btn btn-secondary" style="padding:6px 12px;">👑 Trusted</button>
+                <button type="button" id="modeRawBtn" class="btn btn-secondary" style="padding:6px 12px;">📊 Raw</button>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
     <!-- Stats Cards Row 1 - Humans Today -->
     <div class="stats-grid">
         <!-- اليوم - الزيارات -->
-        <div class="stat-card human-card" data-mode="human">
+        <div class="stat-card human-card mode-human">
             <div class="card-icon">👤</div>
             <div class="card-content">
                 <h3>الزيارات (النطاق المحدد)</h3>
@@ -51,8 +51,21 @@
             </div>
         </div>
 
+        <!-- Trusted stat card (dashboard-grade) -->
+        <div class="stat-card trusted-card mode-trusted" style="display:none;">
+            <div class="card-icon">👑</div>
+            <div class="card-content">
+                <h3>الزيارات الموثوقة (النطاق)</h3>
+                <p class="stat-number">{{ $trustedToday['total_visits'] ?? 0 }}</p>
+                <p class="stat-label">زوار موثوقين ({{ request('start_date', now()->format('Y-m-d')) }} → {{ request('end_date', now()->format('Y-m-d')) }})</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge success">Trusted</span>
+            </div>
+        </div>
+
         <!-- اليوم - Social (FB in-app) -->
-        <div class="stat-card social-card" data-mode="human">
+        <div class="stat-card social-card mode-human">
             <div class="card-icon">🔗</div>
             <div class="card-content">
                 <h3>Social اليوم</h3>
@@ -60,12 +73,12 @@
                 <p class="stat-label">Facebook In-App</p>
             </div>
             <div class="card-footer">
-                <span class="badge info">ترافيك اجتماعي</span>
+                <span class="badge info">ترافيق اجتماعي</span>
             </div>
         </div>
 
         <!-- اليوم - Quick / Incomplete visits -->
-        <div class="stat-card quick-card" data-mode="human" title="زيارات لم تحقق شروط التفاعل (وقت، صفحات، تمرير). تُعرض لأغراض تشخيصية فقط ولا تُحسب كزوار بشريين">
+        <div class="stat-card quick-card mode-human" title="زيارات لم تحقق شروط التفاعل (وقت، صفحات، تمرير). تُعرض لأغراض تشخيصية فقط ولا تُحسب كزوار بشريين">
             <div class="card-icon">⚠️</div>
             <div class="card-content">
                 <h3>زيارات سريعة (غير مكتملة) <small style="color:#92400e; font-weight:600;">🛈</small></h3>
@@ -78,7 +91,7 @@
         </div>
 
         <!-- RAW Stats (hidden by default, shown when Mode=Raw) -->
-        <div class="stat-card" data-mode="raw" style="display:none;">
+        <div class="stat-card mode-raw" style="display:none;">
             <div class="card-icon">📊</div>
             <div class="card-content">
                 <h3>إجمالي الزيارات (Raw)</h3>
@@ -90,7 +103,7 @@
             </div>
         </div>
 
-        <div class="stat-card" data-mode="raw" style="display:none;">
+        <div class="stat-card mode-raw" style="display:none;">
             <div class="card-icon">🌐</div>
             <div class="card-content">
                 <h3>زوار فريدين (Raw)</h3>
@@ -103,7 +116,7 @@
         </div>
 
         <!-- اليوم - الزوار الفريدين -->
-        <div class="stat-card unique-card" data-mode="human">
+        <div class="stat-card unique-card mode-human">
             <div class="card-icon">🌍</div>
             <div class="card-content">
                 <h3>زوار فريدين اليوم</h3>
@@ -116,7 +129,7 @@
         </div>
 
         <!-- اليوم - مع حساب -->
-        <div class="stat-card registered-card" data-mode="human">
+        <div class="stat-card registered-card mode-human">
             <div class="card-icon">✅</div>
             <div class="card-content">
                 <h3>مسجلين النظام</h3>
@@ -317,7 +330,7 @@
 
         <!-- RAW countries (shown only when mode=raw) -->
         @if(isset($rawCountryStats) && $rawCountryStats->count() > 0)
-            <div class="table-wrapper" data-mode="raw" style="margin-top:12px; display:none;">
+            <div class="table-wrapper mode-raw" style="margin-top:12px; display:none;">
                 <h4 style="margin-bottom:6px;">📊 توزيع الدول (Raw)</h4>
                 <table class="countries-table small">
                     <thead>
@@ -830,31 +843,38 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function setMode(mode) {
-        // toggle visibility of elements with data-mode
-        document.querySelectorAll('[data-mode]').forEach(el => {
-            el.style.display = el.dataset.mode === mode ? '' : 'none';
+        const modesList = ['human', 'trusted', 'raw'];
+
+        // toggle visibility by class
+        modesList.forEach(m => {
+            document.querySelectorAll('.mode-' + m).forEach(el => {
+                el.style.display = (mode === m) ? '' : 'none';
+            });
         });
 
-        const dataSet = modes[mode];
-        if (!dataSet) return;
+        // choose data source
+        let source;
+        if (mode === 'trusted') source = trustedChartData;
+        else if (mode === 'raw') source = rawChartData;
+        else source = humanChartData;
 
-        // Top pages (horizontal bars)
-        if (dataSet.pages.labels.length) {
-            if (topPagesChart) updateChart(topPagesChart, dataSet.pages.labels, dataSet.pages.data);
-            else topPagesChart = safeInitChart('topPagesChart', dataSet.pages.labels, dataSet.pages.data, colors[0], 'bar');
-        }
+        // Top pages
+        if (topPagesChart)
+            updateChart(topPagesChart, source.pages.labels, source.pages.data);
+        else if (source.pages.labels.length)
+            topPagesChart = createBarChart(document.getElementById('topPagesChart'), source.pages.labels, source.pages.data, colors[0]);
 
         // Visitors per page
-        if (dataSet.visitors_by_page.labels.length) {
-            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, dataSet.visitors_by_page.labels, dataSet.visitors_by_page.data);
-            else visitorsPerPageChart = safeInitChart('visitorsPerPageChart', dataSet.visitors_by_page.labels, dataSet.visitors_by_page.data, colors[1], 'bar');
-        }
+        if (visitorsPerPageChart)
+            updateChart(visitorsPerPageChart, source.visitors_by_page.labels, source.visitors_by_page.data);
+        else if (source.visitors_by_page.labels.length)
+            visitorsPerPageChart = createBarChart(document.getElementById('visitorsPerPageChart'), source.visitors_by_page.labels, source.visitors_by_page.data, colors[1]);
 
-        // Countries (doughnut)
-        if (dataSet.countries.labels.length) {
-            if (countriesChart) updateChart(countriesChart, dataSet.countries.labels, dataSet.countries.data);
-            else countriesChart = safeInitChart('countriesChart', dataSet.countries.labels, dataSet.countries.data, null, 'doughnut');
-        }
+        // Countries
+        if (countriesChart)
+            updateChart(countriesChart, source.countries.labels, source.countries.data);
+        else if (source.countries.labels.length)
+            countriesChart = createDoughnutChart(document.getElementById('countriesChart'), source.countries.labels, source.countries.data);
     }
 
     function setActive(activeBtn) {
