@@ -25,12 +25,14 @@ class Visitor extends Model
         'page_title',
         'referrer',
         'last_heartbeat_at',
+        'confidence_score',
     ];
 
     protected $dates = ['visited_at', 'last_heartbeat_at'];
     protected $casts = [
         'is_bot' => 'boolean',
         'last_heartbeat_at' => 'datetime',
+        'confidence_score' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -176,6 +178,72 @@ class Visitor extends Model
             'unique_visitors' => $query->distinct('ip_address')->count('ip_address'),
             'with_user_account' => $query->whereNotNull('user_id')->count(),
         ];
+    }
+
+    /**
+     * Calculate a lightweight confidence score (0–100) based on behavioral signals.
+     * This can be called frequently (e.g., on heartbeat) and is intentionally simple and fast.
+     */
+    public function recalculateConfidence(bool $save = true): int
+    {
+        // Base 0
+        $score = 0;
+
+        // Negative points for obvious bot flag
+        if ($this->is_bot) {
+            $score -= 30;
+        }
+
+        // Session duration thresholds
+        if ($this->session_duration >= 90) {
+            $score += 20;
+        } elseif ($this->session_duration >= 30) {
+            $score += 20; // keep same as design — consider stacking if desired
+        }
+
+        // Page views
+        if ($this->page_views >= 2) {
+            $score += 15;
+        }
+
+        // Scroll
+        if ($this->has_scroll) {
+            $score += 15;
+        }
+
+        // Social/referrer
+        if ($this->is_social || ($this->referrer && $this->referrer !== '')) {
+            $score += 10;
+        }
+
+        // Logged-in user
+        if ($this->user_id) {
+            $score += 20;
+        }
+
+        // Boundaries
+        $score = max(0, min(100, (int)$score));
+
+        $this->confidence_score = $score;
+
+        if ($save) {
+            $this->save();
+        }
+
+        return $score;
+    }
+
+    /**
+     * Scopes for confidence levels
+     */
+    public function scopeConfident(Builder $query, int $min = 60): Builder
+    {
+        return $query->where('confidence_score', '>=', $min);
+    }
+
+    public function scopeEngaged(Builder $query, int $min = 75): Builder
+    {
+        return $query->where('confidence_score', '>=', $min);
     }
 
     // 📊 حساب إحصائيات البوتس (للمراقبة)

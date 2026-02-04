@@ -271,6 +271,33 @@
     </div>
     @endif
 
+    <!-- Engaged Stats -->
+    <div class="stats-grid" style="margin-top:16px;">
+        <div class="stat-card engaged-card mode-trusted">
+            <div class="card-icon">🟢</div>
+            <div class="card-content">
+                <h3>Engaged اليوم</h3>
+                <p class="stat-number">{{ $engagedToday ?? 0 }}</p>
+                <p class="stat-label">جلسات قوية (score ≥ 75)</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge success">Engaged</span>
+            </div>
+        </div>
+
+        <div class="stat-card engaged-card mode-trusted">
+            <div class="card-icon">📈</div>
+            <div class="card-content">
+                <h3>Engaged rate</h3>
+                <p class="stat-number">{{ $engagedRate ?? '0' }}%</p>
+                <p class="stat-label">نسبة الجلسات الـ Engaged من الـ Human</p>
+            </div>
+            <div class="card-footer">
+                <span class="badge info">Rate</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Countries Table -->
     @if($countryStats->count() > 0)
     <div class="countries-section">

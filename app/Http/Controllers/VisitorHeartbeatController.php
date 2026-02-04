@@ -64,8 +64,9 @@ class VisitorHeartbeatController extends Controller
             $visitor->has_scroll = true;
         }
 
-        $visitor->save();
+        // Recalculate confidence score (lightweight) and save
+        $newScore = $visitor->recalculateConfidence(true);
 
-        return response()->json(['updated' => true, 'session_duration' => $visitor->session_duration]);
+        return response()->json(['updated' => true, 'session_duration' => $visitor->session_duration, 'confidence_score' => $newScore]);
     }
 }

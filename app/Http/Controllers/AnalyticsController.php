@@ -127,6 +127,10 @@ class AnalyticsController extends Controller
             ->distinct('ip_address')
             ->count('ip_address');
 
+        // Engaged stats (Confidence >= 75)
+        $engagedToday = Visitor::engaged()->whereBetween('visited_at', [$rangeStart, $rangeEnd])->count();
+        $engagedRate = $humanTodayStats->count() ? round(($engagedToday / $humanTodayStats->count()) * 100, 2) : 0;
+
         // Per-country breakdown for quick visits (to show where quick traffic comes from)
         $quickCountryStats = Visitor::humanOnly()
             ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
