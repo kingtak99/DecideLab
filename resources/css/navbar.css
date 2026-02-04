@@ -272,6 +272,7 @@
         padding: 18px;
         border-top: 1px solid rgba(255,255,255,0.06);
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        z-index: 1100; /* ensure mobile menu sits above hero/content */
     }
 
     .nav-links.active {
