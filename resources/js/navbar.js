@@ -1,34 +1,6 @@
-// Mobile menu toggle
-document.getElementById("burger")?.addEventListener("click", () => {
-    const burger = document.getElementById("burger");
-    const links = document.querySelector(".nav-links");
+// Mobile menu handlers moved into DOMContentLoaded so they attach when JS is inlined in the <head>.
+// See below inside the DOMContentLoaded handler.
 
-    burger.classList.toggle("active");
-    links.classList.toggle("active");
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener("click", (e) => {
-    const burger = document.getElementById("burger");
-    const links = document.querySelector(".nav-links");
-    const navbar = document.querySelector(".navbar");
-
-    if (!navbar.contains(e.target)) {
-        burger?.classList.remove("active");
-        links?.classList.remove("active");
-    }
-});
-
-// Close mobile menu when clicking on a link
-document.querySelectorAll(".nav-links a").forEach((link) => {
-    link.addEventListener("click", () => {
-        const burger = document.getElementById("burger");
-        const links = document.querySelector(".nav-links");
-
-        burger?.classList.remove("active");
-        links?.classList.remove("active");
-    });
-});
 // Handle long user names and initialize location
 document.addEventListener("DOMContentLoaded", () => {
     const userBtn = document.querySelector(".user-btn");
@@ -38,6 +10,31 @@ document.addEventListener("DOMContentLoaded", () => {
             userBtn.title = userName;
         }
     }
+
+    // Mobile menu toggle (attach after DOM ready so inlined scripts work)
+    const burger = document.getElementById("burger");
+    const links = document.querySelector(".nav-links");
+    burger?.addEventListener("click", () => {
+        burger.classList.toggle("active");
+        links.classList.toggle("active");
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener("click", (e) => {
+        const navbar = document.querySelector(".navbar");
+        if (!navbar.contains(e.target)) {
+            burger?.classList.remove("active");
+            links?.classList.remove("active");
+        }
+    });
+
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+            burger?.classList.remove("active");
+            links?.classList.remove("active");
+        });
+    });
 
     initializeLocation();
 });
