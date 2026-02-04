@@ -38,8 +38,8 @@ class TrackVisitors
         $userAgent = $request->userAgent();
         $sessionId = session()->getId();
 
-        // Ignore bot requests
-        if ($this->isBot($userAgent)) {
+        // Ignore bot requests (use single source-of-truth in Visitor model)
+        if (Visitor::isBot($userAgent ?? '')) {
             return $next($request);
         }
 
@@ -168,36 +168,7 @@ class TrackVisitors
         return $next($request);
     }
 
-    /**
-     * Check if user agent is a bot
-     */
-    private function isBot($userAgent): bool
-    {
-        if (!$userAgent) {
-            return false;
-        }
 
-        $botPatterns = [
-            'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python',
-            'java', 'golang', 'perl', 'ruby', 'php', 'nodejs', 'requests',
-            'httpclient', 'axiosbot', 'scrapy', 'selenium', 'headless',
-            'googlebot', 'bingbot', 'yandexbot', 'slurp', 'duckduckbot',
-            'baiduspider', 'sogoubot', 'exabot', 'facebookexternalhit',
-            'twitterbot', 'linkedinbot', 'whatsapp', 'telegrambot', 'slackbot',
-            'censys', 'zgrab', 'palo alto', 'shodan', 'nessus',
-            'nmap', 'metasploit', 'masscan', 'zmap'
-        ];
-
-        $userAgentLower = strtolower($userAgent);
-        
-        foreach ($botPatterns as $pattern) {
-            if (strpos($userAgentLower, $pattern) !== false) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
 
     /**
      * Get country from IP address

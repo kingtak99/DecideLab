@@ -42,9 +42,6 @@ class Visitor extends Model
         // Start with not flagged as bot
         $query = $query->where('is_bot', false);
 
-        // 1) Exclude visits which have empty referrer in DB — treat direct/empty referrer as noise
-        $query = $query->whereNotNull('referrer')->where('referrer', '<>', '');
-
         // 2) Exclude user-agents indicating scanning/measurement or known noisy agents/refs
         $query = $query
             ->whereRaw("LOWER(user_agent) NOT LIKE '%scanner%'")
@@ -53,13 +50,7 @@ class Visitor extends Model
             ->whereRaw("LOWER(user_agent) NOT LIKE '%lets encrypt validation server%'")
             ->whereRaw("LOWER(referrer) NOT LIKE '%cypex.ai/scanning%'");
 
-        // 3) Exclude known cloud IP prefixes (AWS, Google Cloud, OVH, ...)
-        $prefixes = ['52.', '54.', '35.', '3.', '100.', '34.', '141.95.'];
-        foreach ($prefixes as $p) {
-            $query = $query->where('ip_address', 'NOT LIKE', $p . '%');
-        }
-
-        return $query;
+        return $query; 
     }
 
     public function scopeBotsOnly(Builder $query): Builder
@@ -85,20 +76,18 @@ class Visitor extends Model
             ->whereRaw("NOT (LOWER(user_agent) LIKE '%ubuntu%' AND LOWER(user_agent) LIKE '%firefox%')");
 
         // Additional IP ranges discovered as bot farms / proxies
-        $extraPrefixes = ['91.231.89.', '192.175.111.', '64.15.129.'];
+        $extraPrefixes = ['52.', '54.', '35.', '3.', '91.231.89.', '192.175.111.', '64.15.129.'];
         foreach ($extraPrefixes as $p) {
             $query = $query->where('ip_address', 'NOT LIKE', $p . '%');
         }
 
         // Behavioral heuristics — require at least one sign of real interaction
-        // session_duration >= 5 seconds OR page_views >= 2 OR has_scroll = true OR social UA (FB in-app)
+        // session_duration >= 5 seconds OR page_views >= 2 OR has_scroll = true OR flagged social
         $query = $query->where(function ($q) {
             $q->where('session_duration', '>=', 5)
               ->orWhere('page_views', '>=', 2)
               ->orWhere('has_scroll', true)
-              ->orWhereRaw("LOWER(user_agent) LIKE '%fb_iab%'")
-              ->orWhereRaw("LOWER(user_agent) LIKE '%fbav%'")
-              ->orWhereRaw("LOWER(user_agent) LIKE '%facebook%iab%'");
+              ->orWhere('is_social', true);
         });
 
         return $query;
