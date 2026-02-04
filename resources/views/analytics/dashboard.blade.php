@@ -216,7 +216,7 @@
         </div>
 
         <!-- Row 2: Countries -->
-        @if($chartData['countries']['labels'] && count($chartData['countries']['labels']) > 0)
+        @if(!empty($humanChartData['countries']['labels']) && count($humanChartData['countries']['labels']) > 0)
         <div class="charts-grid">
             <div class="chart-card full-width">
                 <h3>🌍 توزيع الزوار حسب الدول</h3>
