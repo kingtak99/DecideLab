@@ -297,10 +297,19 @@
         box-sizing: border-box; /* prevent padding from causing overflow */
     }
 
-    /* Hide right-side inline controls on mobile to prevent overlap; we show mobile equivalents inside .nav-links */
+    /* Keep right-side controls visible on mobile (small screens) so language / country / auth
+       buttons remain accessible like the design. Use a higher z-index so they sit above the
+       mobile menu when it opens. */
     .nav-right {
-        display: none;
+        display: flex;
         gap: 12px;
+        align-items: center;
+        z-index: 1200; /* sits above the mobile menu */
+    }
+
+    /* Ensure burger sits above everything so it's always clickable */
+    .burger {
+        z-index: 1300;
     }
 
     .user-btn {
