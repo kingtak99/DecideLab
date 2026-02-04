@@ -10,7 +10,7 @@
 
     <div class="filter-note" style="margin:10px 0;padding:8px;border-left:4px solid #3b82f6;background:#f0f9ff;color:#0f172a;">
         <strong>ملاحظة:</strong>
-        الأرقام تستثني الزيارات ذات <code>referrer</code> الفارغ، وتستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>، وأي IP يبدأ بـ 52., 54., 35., 3., 100., 34. أو 141.95. كما تُطبّق الآن قواعد سلوكية: تحسب الزيارة إن تحقّق أحد الشروط: <code>session_duration &gt;= 5s</code>، أو <code>page_views &gt;= 2</code>، أو <code>has_scroll</code> = true، أو أن تكون زيارة من Facebook In-App (Social).
+        تُعرض ثلاث طرق للعرض: <code>Human</code> (أوسع مرشح بشري)، <code>Trusted</code> (فلترة أقوى للـ dashboard)، و<code>Raw</code> (كل الزيارات). تُستبعد User-Agent التي تحتوي على <em>Scanner</em> أو <em>Measurement</em>، وروابط مثل <code>cypex.ai/scanning</code> و<code>InternetMeasurement/1.0</code> و<em>Let&#039;s Encrypt validation server</em>. قواعد السلوك المطبّقة في الوضع الموثوق: <code>session_duration &gt;= 5s</code>، أو <code>page_views &gt;= 2</code>، أو <code>has_scroll</code> = true، أو أن تكون زيارة من Facebook In-App (Social).
     </div>
 
     <!-- Mode Toggle: Human-Qualified vs Raw and Date Range -->
@@ -18,8 +18,9 @@
         <div style="font-size:0.95rem; color:#374151; display:flex; gap:8px; align-items:center;">
             <div>عرض:</div>
             <div class="mode-toggle" style="display:flex; gap:8px;">
-                <button type="button" id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 زوار مرجَّحون بشريًا</button>
-                <button type="button" id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 كل الزيارات (Raw)</button>
+                <button type="button" id="modeHumanBtn" class="btn-primary" style="padding:6px 12px;">👤 Human</button>
+                <button type="button" id="modeTrustedBtn" class="btn-secondary" style="padding:6px 12px;">👑 Trusted</button>
+                <button type="button" id="modeRawBtn" class="btn-secondary" style="padding:6px 12px;">📊 Raw</button>
             </div>
         </div>
 
@@ -38,7 +39,7 @@
     <!-- Stats Cards Row 1 - Humans Today -->
     <div class="stats-grid">
         <!-- اليوم - الزيارات -->
-        <div class="stat-card human-card">
+        <div class="stat-card human-card" data-mode="human">
             <div class="card-icon">👤</div>
             <div class="card-content">
                 <h3>الزيارات (النطاق المحدد)</h3>
@@ -51,7 +52,7 @@
         </div>
 
         <!-- اليوم - Social (FB in-app) -->
-        <div class="stat-card social-card">
+        <div class="stat-card social-card" data-mode="human">
             <div class="card-icon">🔗</div>
             <div class="card-content">
                 <h3>Social اليوم</h3>
@@ -64,7 +65,7 @@
         </div>
 
         <!-- اليوم - Quick / Incomplete visits -->
-        <div class="stat-card quick-card" title="زيارات لم تحقق شروط التفاعل (وقت، صفحات، تمرير). تُعرض لأغراض تشخيصية فقط ولا تُحسب كزوار بشريين">
+        <div class="stat-card quick-card" data-mode="human" title="زيارات لم تحقق شروط التفاعل (وقت، صفحات، تمرير). تُعرض لأغراض تشخيصية فقط ولا تُحسب كزوار بشريين">
             <div class="card-icon">⚠️</div>
             <div class="card-content">
                 <h3>زيارات سريعة (غير مكتملة) <small style="color:#92400e; font-weight:600;">🛈</small></h3>
@@ -77,7 +78,7 @@
         </div>
 
         <!-- RAW Stats (hidden by default, shown when Mode=Raw) -->
-        <div class="stat-card mode-raw" style="display:none;">
+        <div class="stat-card" data-mode="raw" style="display:none;">
             <div class="card-icon">📊</div>
             <div class="card-content">
                 <h3>إجمالي الزيارات (Raw)</h3>
@@ -89,7 +90,7 @@
             </div>
         </div>
 
-        <div class="stat-card mode-raw" style="display:none;">
+        <div class="stat-card" data-mode="raw" style="display:none;">
             <div class="card-icon">🌐</div>
             <div class="card-content">
                 <h3>زوار فريدين (Raw)</h3>
@@ -102,7 +103,7 @@
         </div>
 
         <!-- اليوم - الزوار الفريدين -->
-        <div class="stat-card unique-card">
+        <div class="stat-card unique-card" data-mode="human">
             <div class="card-icon">🌍</div>
             <div class="card-content">
                 <h3>زوار فريدين اليوم</h3>
@@ -115,7 +116,7 @@
         </div>
 
         <!-- اليوم - مع حساب -->
-        <div class="stat-card registered-card">
+        <div class="stat-card registered-card" data-mode="human">
             <div class="card-icon">✅</div>
             <div class="card-content">
                 <h3>مسجلين النظام</h3>
@@ -316,7 +317,7 @@
 
         <!-- RAW countries (shown only when mode=raw) -->
         @if(isset($rawCountryStats) && $rawCountryStats->count() > 0)
-            <div class="table-wrapper mode-raw" style="margin-top:12px; display:none;">
+            <div class="table-wrapper" data-mode="raw" style="margin-top:12px; display:none;">
                 <h4 style="margin-bottom:6px;">📊 توزيع الدول (Raw)</h4>
                 <table class="countries-table small">
                     <thead>
@@ -724,19 +725,19 @@ document.addEventListener('DOMContentLoaded', function() {
         'rgba(245, 158, 11, 0.8)',
     ];
 
-    // Prepare data containers for human & raw charts
+    // Prepare data containers for human, trusted & raw charts
     const humanChartData = {
         pages: {
-            labels: {!! json_encode($chartData['pages']['labels'] ?? []) !!},
-            data: {!! json_encode($chartData['pages']['data'] ?? []) !!}
+            labels: {!! json_encode($humanChartData['pages']['labels'] ?? []) !!},
+            data: {!! json_encode($humanChartData['pages']['data'] ?? []) !!}
         },
         visitors_by_page: {
-            labels: {!! json_encode($chartData['visitors_by_page']['labels'] ?? []) !!},
-            data: {!! json_encode($chartData['visitors_by_page']['data'] ?? []) !!}
+            labels: {!! json_encode($humanChartData['visitors_by_page']['labels'] ?? []) !!},
+            data: {!! json_encode($humanChartData['visitors_by_page']['data'] ?? []) !!}
         },
         countries: {
-            labels: {!! json_encode($chartData['countries']['labels'] ?? []) !!},
-            data: {!! json_encode($chartData['countries']['data'] ?? []) !!}
+            labels: {!! json_encode($humanChartData['countries']['labels'] ?? []) !!},
+            data: {!! json_encode($humanChartData['countries']['data'] ?? []) !!}
         }
     };
 
@@ -752,6 +753,21 @@ document.addEventListener('DOMContentLoaded', function() {
         countries: {
             labels: {!! json_encode($rawChartData['countries']['labels'] ?? []) !!},
             data: {!! json_encode($rawChartData['countries']['data'] ?? []) !!}
+        }
+    };
+
+    const trustedChartData = {
+        pages: {
+            labels: {!! json_encode($trustedChartData['pages']['labels'] ?? []) !!},
+            data: {!! json_encode($trustedChartData['pages']['data'] ?? []) !!}
+        },
+        visitors_by_page: {
+            labels: {!! json_encode($trustedChartData['visitors_by_page']['labels'] ?? []) !!},
+            data: {!! json_encode($trustedChartData['visitors_by_page']['data'] ?? []) !!}
+        },
+        countries: {
+            labels: {!! json_encode($trustedChartData['countries']['labels'] ?? []) !!},
+            data: {!! json_encode($trustedChartData['countries']['data'] ?? []) !!}
         }
     };
 
@@ -792,39 +808,76 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Mode toggle behavior
+    // Mode toggle behavior (supports: human, trusted, raw)
+    function safeInitChart(ctxId, labels, data, color, type = 'bar') {
+        if (!labels || !labels.length) return null;
+        if (type === 'bar') return createBarChart(document.getElementById(ctxId), labels, data, color);
+        return createDoughnutChart(document.getElementById(ctxId), labels, data);
+    }
+
+    function createDoughnutChart(ctx, labels, data) {
+        return new Chart(ctx, {
+            type: 'doughnut',
+            data: { labels: labels, datasets: [{ data: data, backgroundColor: [ 'rgba(102, 126, 234, 0.8)','rgba(118, 75, 162, 0.8)','rgba(16, 185, 129, 0.8)','rgba(59, 130, 246, 0.8)','rgba(245, 158, 11, 0.8)','rgba(239, 68, 68, 0.8)','rgba(139, 92, 246, 0.8)','rgba(14, 165, 233, 0.8)'], borderRadius: 4 }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', rtl: true } } }
+        });
+    }
+
+    const modes = {
+        human: humanChartData,
+        trusted: trustedChartData,
+        raw: rawChartData,
+    };
+
     function setMode(mode) {
-        const humanEls = document.querySelectorAll('.mode-human');
-        const rawEls = document.querySelectorAll('.mode-raw');
+        // toggle visibility of elements with data-mode
+        document.querySelectorAll('[data-mode]').forEach(el => {
+            el.style.display = el.dataset.mode === mode ? '' : 'none';
+        });
 
-        humanEls.forEach(el => el.style.display = (mode === 'human') ? '' : 'none');
-        rawEls.forEach(el => el.style.display = (mode === 'raw') ? '' : 'none');
+        const dataSet = modes[mode];
+        if (!dataSet) return;
 
-        // Update charts
-        if (mode === 'raw') {
-            if (topPagesChart) updateChart(topPagesChart, rawChartData.pages.labels, rawChartData.pages.data);
-            else if (rawChartData.pages.labels.length) topPagesChart = createBarChart(document.getElementById('topPagesChart'), rawChartData.pages.labels, rawChartData.pages.data, colors[0]);
-
-            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, rawChartData.visitors_by_page.labels, rawChartData.visitors_by_page.data);
-            else if (rawChartData.visitors_by_page.labels.length) visitorsPerPageChart = createBarChart(document.getElementById('visitorsPerPageChart'), rawChartData.visitors_by_page.labels, rawChartData.visitors_by_page.data, colors[1]);
-
-            if (countriesChart) updateChart(countriesChart, rawChartData.countries.labels, rawChartData.countries.data);
-        } else {
-            if (topPagesChart) updateChart(topPagesChart, humanChartData.pages.labels, humanChartData.pages.data);
-            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, humanChartData.visitors_by_page.labels, humanChartData.visitors_by_page.data);
-            if (countriesChart) updateChart(countriesChart, humanChartData.countries.labels, humanChartData.countries.data);
+        // Top pages (horizontal bars)
+        if (dataSet.pages.labels.length) {
+            if (topPagesChart) updateChart(topPagesChart, dataSet.pages.labels, dataSet.pages.data);
+            else topPagesChart = safeInitChart('topPagesChart', dataSet.pages.labels, dataSet.pages.data, colors[0], 'bar');
         }
+
+        // Visitors per page
+        if (dataSet.visitors_by_page.labels.length) {
+            if (visitorsPerPageChart) updateChart(visitorsPerPageChart, dataSet.visitors_by_page.labels, dataSet.visitors_by_page.data);
+            else visitorsPerPageChart = safeInitChart('visitorsPerPageChart', dataSet.visitors_by_page.labels, dataSet.visitors_by_page.data, colors[1], 'bar');
+        }
+
+        // Countries (doughnut)
+        if (dataSet.countries.labels.length) {
+            if (countriesChart) updateChart(countriesChart, dataSet.countries.labels, dataSet.countries.data);
+            else countriesChart = safeInitChart('countriesChart', dataSet.countries.labels, dataSet.countries.data, null, 'doughnut');
+        }
+    }
+
+    function setActive(activeBtn) {
+        [modeHumanBtn, modeTrustedBtn, modeRawBtn].forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
+        });
+        activeBtn.classList.remove('btn-secondary');
+        activeBtn.classList.add('btn-primary');
     }
 
     // Hook toggle buttons
     const modeHumanBtn = document.getElementById('modeHumanBtn');
+    const modeTrustedBtn = document.getElementById('modeTrustedBtn');
     const modeRawBtn = document.getElementById('modeRawBtn');
 
-    modeHumanBtn.addEventListener('click', function() { setMode('human'); modeHumanBtn.classList.add('btn-primary'); modeRawBtn.classList.remove('btn-primary'); modeRawBtn.classList.add('btn-secondary'); });
-    modeRawBtn.addEventListener('click', function() { setMode('raw'); modeRawBtn.classList.add('btn-primary'); modeHumanBtn.classList.remove('btn-primary'); modeHumanBtn.classList.add('btn-secondary'); });
+    modeHumanBtn.addEventListener('click', function() { setMode('human'); setActive(modeHumanBtn); });
+    modeTrustedBtn.addEventListener('click', function() { setMode('trusted'); setActive(modeTrustedBtn); });
+    modeRawBtn.addEventListener('click', function() { setMode('raw'); setActive(modeRawBtn); });
 
     // Default mode
     setMode('human');
+    setActive(modeHumanBtn);
 });
 </script>
 

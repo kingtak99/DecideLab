@@ -16,9 +16,17 @@ class AnalyticsController extends Controller
         $start = $request->query('start_date') ? \Carbon\Carbon::parse($request->query('start_date'))->startOfDay() : now()->startOfDay();
         $end = $request->query('end_date') ? \Carbon\Carbon::parse($request->query('end_date'))->endOfDay() : now()->endOfDay();
 
-        // 👤 إحصائيات الزوار الموثوقين (نطاق التاريخ المحدد)
-        $trustedTodayStats = Visitor::trustedOnly()->whereBetween('visited_at', [$start, $end])->get();
+        // 👤 إحصائيات الزوار (humanOnly) — نطاق التاريخ المحدد
+        $humanTodayStats = Visitor::humanOnly()->whereBetween('visited_at', [$start, $end])->get();
         $humanToday = [
+            'total_visits' => $humanTodayStats->count(),
+            'unique_visitors' => $humanTodayStats->unique('ip_address')->count(),
+            'with_account' => $humanTodayStats->whereNotNull('user_id')->count(),
+        ];
+
+        // 👑 إحصائيات الزوار الموثوقين (trustedOnly) — نطاق التاريخ المحدد (لـ dashboard-grade)
+        $trustedTodayStats = Visitor::trustedOnly()->whereBetween('visited_at', [$start, $end])->get();
+        $trustedToday = [
             'total_visits' => $trustedTodayStats->count(),
             'unique_visitors' => $trustedTodayStats->unique('ip_address')->count(),
             'with_account' => $trustedTodayStats->whereNotNull('user_id')->count(),
@@ -27,9 +35,17 @@ class AnalyticsController extends Controller
         // Social traffic (FB in-app) — show separately (within date range)
         $socialToday = Visitor::social()->whereBetween('visited_at', [$start, $end])->distinct('ip_address')->count('ip_address');
 
-        // 👤 إحصائيات الزوار الموثوقين (هذا الشهر) — تبقى متاحة للمقارنة
-        $trustedMonthStats = Visitor::trustedOnly()->thisMonth()->get();
+        // 👤 إحصائيات الزوار هذا الشهر (humanOnly)
+        $humanMonthStats = Visitor::humanOnly()->thisMonth()->get();
         $humanMonth = [
+            'total_visits' => $humanMonthStats->count(),
+            'unique_visitors' => $humanMonthStats->unique('ip_address')->count(),
+            'with_account' => $humanMonthStats->whereNotNull('user_id')->count(),
+        ];
+
+        // Trusted month stats for dashboard comparison
+        $trustedMonthStats = Visitor::trustedOnly()->thisMonth()->get();
+        $trustedMonth = [
             'total_visits' => $trustedMonthStats->count(),
             'unique_visitors' => $trustedMonthStats->unique('ip_address')->count(),
             'with_account' => $trustedMonthStats->whereNotNull('user_id')->count(),
@@ -61,9 +77,9 @@ class AnalyticsController extends Controller
             'unique_bots' => $botMonthStats->unique('ip_address')->count(),
         ];
 
-        // 📈 أعلى الصفحات بين الزوار الموثوقين
+        // 📈 أعلى الصفحات بين الزوار (trusted) — respect selected range
         $topPages = Visitor::trustedOnly()
-            ->thisMonth()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('url, COUNT(*) as visits')
             ->groupBy('url')
             ->orderByDesc('visits')
@@ -72,7 +88,7 @@ class AnalyticsController extends Controller
 
         // 🔄 Unique visitors per page (trusted)
         $visitorsByPage = Visitor::trustedOnly()
-            ->thisMonth()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
             ->groupBy('url')
             ->orderByDesc('unique_count')
@@ -81,14 +97,14 @@ class AnalyticsController extends Controller
 
         // ⏱️ Session duration stats (trusted)
         $sessionStats = Visitor::trustedOnly()
-            ->thisMonth()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->whereNotNull('session_duration')
             ->selectRaw('AVG(session_duration) as avg_duration, MAX(session_duration) as max_duration, MIN(session_duration) as min_duration')
             ->first();
 
         // 🌍 دول الزوار (trusted)
         $countryStats = Visitor::trustedOnly()
-            ->thisMonth()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
             ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
             ->whereNotNull('country')
             ->where('country', '!=', 'Unknown')
@@ -174,7 +190,7 @@ class AnalyticsController extends Controller
         ];
 
         // 📊 Data for Chart.js (trusted)
-        $chartData = [
+        $trustedChartData = [
             'pages' => [
                 'labels' => $topPages->pluck('url')->toArray(),
                 'data' => $topPages->pluck('visits')->toArray(),
@@ -186,6 +202,47 @@ class AnalyticsController extends Controller
             'visitors_by_page' => [
                 'labels' => $visitorsByPage->pluck('url')->toArray(),
                 'data' => $visitorsByPage->pluck('unique_count')->toArray(),
+            ],
+        ];
+
+        // 📊 Data for Chart.js (human — lighter filters)
+        $humanTopPages = Visitor::humanOnly()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
+            ->selectRaw('url, COUNT(*) as visits')
+            ->groupBy('url')
+            ->orderByDesc('visits')
+            ->limit(10)
+            ->get();
+
+        $humanVisitorsByPage = Visitor::humanOnly()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
+            ->selectRaw('url, COUNT(DISTINCT ip_address) as unique_count')
+            ->groupBy('url')
+            ->orderByDesc('unique_count')
+            ->limit(5)
+            ->get();
+
+        $humanCountryStats = Visitor::humanOnly()
+            ->whereBetween('visited_at', [$rangeStart, $rangeEnd])
+            ->selectRaw('country, country_code, COUNT(DISTINCT ip_address) as visitors')
+            ->whereNotNull('country')
+            ->where('country', '!=', 'Unknown')
+            ->groupBy('country', 'country_code')
+            ->orderByDesc('visitors')
+            ->get();
+
+        $humanChartData = [
+            'pages' => [
+                'labels' => $humanTopPages->pluck('url')->toArray(),
+                'data' => $humanTopPages->pluck('visits')->toArray(),
+            ],
+            'countries' => [
+                'labels' => $humanCountryStats->pluck('country')->toArray(),
+                'data' => $humanCountryStats->pluck('visitors')->toArray(),
+            ],
+            'visitors_by_page' => [
+                'labels' => $humanVisitorsByPage->pluck('url')->toArray(),
+                'data' => $humanVisitorsByPage->pluck('unique_count')->toArray(),
             ],
         ];
 
@@ -207,7 +264,8 @@ class AnalyticsController extends Controller
             'countryStats',
             'sessionStats',
             'visitorsByPage',
-            'chartData',
+            'humanChartData',
+            'trustedChartData',
         ));
     }
 
