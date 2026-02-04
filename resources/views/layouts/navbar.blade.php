@@ -149,7 +149,7 @@
             </div>
         @endauth
         <!-- Language -->
-        <div class="dropdown">
+        <div class="dropdown language-dropdown">
             <button class="drop-btn" id="language-btn">
                 @if (app()->getLocale() === 'ar')
                     {{-- <img src="https://flagcdn.com/sa.svg" class="flag" alt="Saudi Arabia"> --}}

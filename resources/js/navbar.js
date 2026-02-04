@@ -257,26 +257,40 @@ function changeLocation(countryId) {
 document.addEventListener("DOMContentLoaded", () => {
     // Language dropdown functionality
     const languageBtn = document.getElementById("language-btn");
-    const languageDropdown = document.querySelector(".dropdown");
+    const languageDropdown = document.querySelector(".language-dropdown");
     const languageMenu = languageDropdown?.querySelector(".dropdown-menu");
+
+    // User dropdown (toggle)
+    const userBtn = document.querySelector(".user-btn");
+    const userDropdown = document.querySelector(".user-dropdown");
+    const userMenu = userDropdown?.querySelector(".dropdown-menu");
 
     // Handle language button click
     languageBtn?.addEventListener("click", (e) => {
         e.preventDefault();
-        countryItem.addEventListener("click", (e) => {
-            e.preventDefault();
-            changeLocation(country.id, country, country.flag_url);
-        });
+        e.stopPropagation();
 
-        // Close other dropdowns
+        // close all dropdown menus first
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-            if (menu !== languageMenu) {
-                menu.closest(".dropdown")?.classList.remove("active");
-            }
+            menu.style.display = "none";
         });
 
-        // Toggle language dropdown
-        languageMenu?.classList.toggle("active");
+        const isOpen = languageMenu?.style.display === "block";
+        languageMenu && (languageMenu.style.display = isOpen ? "none" : "block");
+    });
+
+    // Handle user button click
+    userBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // close all dropdown menus first
+        document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+            menu.style.display = "none";
+        });
+
+        const isOpen = userMenu?.style.display === "block";
+        userMenu && (userMenu.style.display = isOpen ? "none" : "block");
     });
 
     // Handle language selection - ensure links work correctly
@@ -294,10 +308,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Close language dropdown when clicking outside
+    // Close language & user dropdowns when clicking outside
     document.addEventListener("click", (e) => {
         if (!languageDropdown?.contains(e.target)) {
-            languageMenu?.classList.remove("active");
+            languageMenu && (languageMenu.style.display = "none");
+        }
+        if (!userDropdown?.contains(e.target)) {
+            userMenu && (userMenu.style.display = "none");
         }
     });
 });

@@ -35,7 +35,35 @@
         {{ app()->getLocale() === 'ar' ? 'جرّب القرار قبل ما تعيش عواقبه' : 'Try the Decision Before You Live Its Consequences' }}
     </title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/navbar.css', 'resources/js/navbar.js'])
+    {{-- Main app assets (always) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{--
+        During local development or when NAVBAR_USE_SOURCE=true we inline the
+        navbar source CSS/JS so changes in resources/* are reflected immediately
+        without rebuilding Vite. In production we keep using the built assets
+        (via @vite) to avoid regressions.
+    --}}
+    @if (app()->environment('local') || env('NAVBAR_USE_SOURCE') == 'true')
+        @php
+            $navbarCss = resource_path('css/navbar.css');
+            $navbarJs = resource_path('js/navbar.js');
+        @endphp
+
+        @if (file_exists($navbarCss))
+            <style>
+                {!! file_get_contents($navbarCss) !!}
+            </style>
+        @endif
+
+        @if (file_exists($navbarJs))
+            <script>
+                {!! file_get_contents($navbarJs) !!}
+            </script>
+        @endif
+    @else
+        @vite(['resources/css/navbar.css', 'resources/js/navbar.js'])
+    @endif
 
     <script>
         // Expose the current Laravel session_id for heartbeat usage
