@@ -70,6 +70,9 @@
         window.APP = window.APP || {};
         window.APP.sessionId = "{{ session()->getId() }}";
     </script>
+    <!-- Google AdSense: ضعه هنا قبل إغلاق head -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7083265796244493"
+        crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased pt-16">
@@ -90,7 +93,7 @@
 
     {{-- Heartbeat script (fires lightweight pings to /analytics/heartbeat) --}}
     <script>
-        (function(){
+        (function() {
             const INTERVAL = 15; // seconds
             let lastSent = Date.now();
             let timer = null;
@@ -99,7 +102,7 @@
 
             if (!sessionId) return; // nothing to do without a session
 
-            function sendHeartbeat(opts = {}){
+            function sendHeartbeat(opts = {}) {
                 const payload = {
                     session_id: sessionId,
                     page: opts.page || window.location.pathname + window.location.search,
@@ -109,7 +112,9 @@
 
                 // Use navigator.sendBeacon on unload for reliability
                 if (opts.useBeacon && navigator.sendBeacon) {
-                    const blob = new Blob([JSON.stringify(payload)], {type: 'application/json'});
+                    const blob = new Blob([JSON.stringify(payload)], {
+                        type: 'application/json'
+                    });
                     navigator.sendBeacon('/analytics/heartbeat', blob);
                     return;
                 }
@@ -123,10 +128,10 @@
                     },
                     credentials: 'same-origin',
                     body: JSON.stringify(payload)
-                }).catch(()=>{});
+                }).catch(() => {});
             }
 
-            function tick(){
+            function tick() {
                 if (document.hidden) return; // pause when tab not visible
                 const now = Date.now();
                 if ((now - lastSent) >= INTERVAL * 1000) {
@@ -139,27 +144,35 @@
             timer = setInterval(tick, 5000);
 
             // Visibility change should trigger an immediate heartbeat when returning
-            document.addEventListener('visibilitychange', function(){
+            document.addEventListener('visibilitychange', function() {
                 if (!document.hidden) {
-                    sendHeartbeat({delta: Math.round((Date.now() - lastSent) / 1000)});
+                    sendHeartbeat({
+                        delta: Math.round((Date.now() - lastSent) / 1000)
+                    });
                     lastSent = Date.now();
                 }
             });
 
             // On unload, send a final beacon
-            window.addEventListener('beforeunload', function(){
-                sendHeartbeat({useBeacon: true});
+            window.addEventListener('beforeunload', function() {
+                sendHeartbeat({
+                    useBeacon: true
+                });
             });
 
             // Optional: small listener for scroll events to mark scroll soon
             let scrollDebounced = false;
-            window.addEventListener('scroll', function(){
+            window.addEventListener('scroll', function() {
                 if (scrollDebounced) return;
                 scrollDebounced = true;
                 // Send a heartbeat marking has_scroll true
-                sendHeartbeat({has_scroll: true});
-                setTimeout(()=> scrollDebounced = false, 10000);
-            }, {passive: true});
+                sendHeartbeat({
+                    has_scroll: true
+                });
+                setTimeout(() => scrollDebounced = false, 10000);
+            }, {
+                passive: true
+            });
         })();
     </script>
 
