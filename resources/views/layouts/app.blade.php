@@ -35,15 +35,16 @@
         {{ app()->getLocale() === 'ar' ? 'جرّب القرار قبل ما تعيش عواقبه' : 'Try the Decision Before You Live Its Consequences' }}
     </title>
 
-    {{-- Main app assets (always) --}}
+    {{-- CMP Google: يجب أن يكون قبل أي إعلان --}}
+    <script async src="https://www.gstatic.com/cmp/<CMP-SCRIPT>.js"></script>
+    <script>
+        window.__cmp = window.__cmp || function(){(window.__cmp.q=window.__cmp.q||[]).push(arguments)};
+    </script>
+
+    {{-- Main app assets --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{--
-        During local development or when NAVBAR_USE_SOURCE=true we inline the
-        navbar source CSS/JS so changes in resources/* are reflected immediately
-        without rebuilding Vite. In production we keep using the built assets
-        (via @vite) to avoid regressions.
-    --}}
+    {{-- Inline navbar assets for development --}}
     @if (app()->environment('local') || env('NAVBAR_USE_SOURCE') == 'true')
         @php
             $navbarCss = resource_path('css/navbar.css');
@@ -65,23 +66,22 @@
         @vite(['resources/css/navbar.css', 'resources/js/navbar.js'])
     @endif
 
+    {{-- Expose Laravel session ID --}}
     <script>
-        // Expose the current Laravel session_id for heartbeat usage
         window.APP = window.APP || {};
         window.APP.sessionId = "{{ session()->getId() }}";
     </script>
-    <!-- Google AdSense: ضعه هنا قبل إغلاق head -->
+
+    {{-- Google AdSense: بعد CMP --}}
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7083265796244493"
         crossorigin="anonymous"></script>
+
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased pt-16">
 
     {{-- Navbar --}}
-
     @include('layouts.navbar')
-
-
 
     {{-- Page Content --}}
     <main>
@@ -91,16 +91,16 @@
     {{-- Footer --}}
     @include('layouts.footer')
 
-    {{-- Heartbeat script (fires lightweight pings to /analytics/heartbeat) --}}
+    {{-- Heartbeat analytics --}}
     <script>
         (function() {
-            const INTERVAL = 15; // seconds
+            const INTERVAL = 15;
             let lastSent = Date.now();
             let timer = null;
             const sessionId = window.APP && window.APP.sessionId ? window.APP.sessionId : null;
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            if (!sessionId) return; // nothing to do without a session
+            if (!sessionId) return;
 
             function sendHeartbeat(opts = {}) {
                 const payload = {
@@ -110,11 +110,8 @@
                     has_scroll: opts.has_scroll || false,
                 };
 
-                // Use navigator.sendBeacon on unload for reliability
                 if (opts.useBeacon && navigator.sendBeacon) {
-                    const blob = new Blob([JSON.stringify(payload)], {
-                        type: 'application/json'
-                    });
+                    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
                     navigator.sendBeacon('/analytics/heartbeat', blob);
                     return;
                 }
@@ -132,7 +129,7 @@
             }
 
             function tick() {
-                if (document.hidden) return; // pause when tab not visible
+                if (document.hidden) return;
                 const now = Date.now();
                 if ((now - lastSent) >= INTERVAL * 1000) {
                     sendHeartbeat();
@@ -140,39 +137,26 @@
                 }
             }
 
-            // Start interval
             timer = setInterval(tick, 5000);
 
-            // Visibility change should trigger an immediate heartbeat when returning
             document.addEventListener('visibilitychange', function() {
                 if (!document.hidden) {
-                    sendHeartbeat({
-                        delta: Math.round((Date.now() - lastSent) / 1000)
-                    });
+                    sendHeartbeat({ delta: Math.round((Date.now() - lastSent) / 1000) });
                     lastSent = Date.now();
                 }
             });
 
-            // On unload, send a final beacon
             window.addEventListener('beforeunload', function() {
-                sendHeartbeat({
-                    useBeacon: true
-                });
+                sendHeartbeat({ useBeacon: true });
             });
 
-            // Optional: small listener for scroll events to mark scroll soon
             let scrollDebounced = false;
             window.addEventListener('scroll', function() {
                 if (scrollDebounced) return;
                 scrollDebounced = true;
-                // Send a heartbeat marking has_scroll true
-                sendHeartbeat({
-                    has_scroll: true
-                });
+                sendHeartbeat({ has_scroll: true });
                 setTimeout(() => scrollDebounced = false, 10000);
-            }, {
-                passive: true
-            });
+            }, { passive: true });
         })();
     </script>
 
@@ -180,5 +164,4 @@
     @yield('scripts')
 
 </body>
-
 </html>
