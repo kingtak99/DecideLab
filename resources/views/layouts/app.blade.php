@@ -36,9 +36,31 @@
     </title>
 
     {{-- CMP Google: يجب أن يكون قبل أي إعلان --}}
-    <script async src="https://www.gstatic.com/cmp/<CMP-SCRIPT>.js"></script>
+    <script async src="https://www.gstatic.com/cmp/cmp_latest.js"></script>
     <script>
-        window.__cmp = window.__cmp || function(){(window.__cmp.q=window.__cmp.q||[]).push(arguments)};
+      window.__cmp = window.__cmp || function() {
+        (window.__cmp.q = window.__cmp.q || []).push(arguments);
+      };
+
+      // إعداد CMP للالتزام بلوائح GDPR الأوروبية
+      window.__cmp('init', {
+        language: 'en',                  // لغة الرسالة (يمكن تغييرها إلى ar إذا أردت)
+        initialConsentStatus: 'unknown', // حالة الموافقة المبدئية
+        displayOptions: {
+          consentNotice: {
+            position: 'bottom',          // مكان ظهور نافذة الموافقة
+            layout: 'bar',               // شكل النافذة (bar / modal)
+            buttons: ['accept', 'reject', 'options'] // 3 خيارات: قبول، رفض، إدارة الخيارات
+          }
+        },
+        ui: {
+          theme: {
+            primaryColor: '#4f46e5',
+            backgroundColor: '#ffffff',
+            textColor: '#000000'
+          }
+        }
+      });
     </script>
 
     {{-- Main app assets --}}
@@ -141,7 +163,9 @@
 
             document.addEventListener('visibilitychange', function() {
                 if (!document.hidden) {
-                    sendHeartbeat({ delta: Math.round((Date.now() - lastSent) / 1000) });
+                    sendHeartbeat({
+                        delta: Math.round((Date.now() - lastSent) / 1000)
+                    });
                     lastSent = Date.now();
                 }
             });
@@ -164,4 +188,5 @@
     @yield('scripts')
 
 </body>
+
 </html>
