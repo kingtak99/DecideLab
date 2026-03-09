@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-
+                <br>
                 <!-- All Articles -->
                 <div>
                     <h2 class="text-3xl font-bold text-white mb-8">{!! __('messages.all_articles') !!}</h2>
@@ -221,8 +221,8 @@
                 </div>
                 <br>
                 <!-- CTA Section -->
-                <div
-                    class="mt-20 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 rounded-2xl p-12 text-center border border-indigo-500/30" style="padding: 50px;">
+                <div class="mt-20 bg-gradient-to-r from-indigo-900/30 to-purple-900/30 rounded-2xl p-12 text-center border border-indigo-500/30"
+                    style="padding: 50px;">
                     <h2 class="text-3xl font-bold text-white mb-4">
                         {!! __('messages.ready_transform_financial') !!}
                     </h2>
