@@ -166,7 +166,7 @@
                 <div class="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-2xl p-8 text-center">
                     <h2 class="text-3xl font-bold text-white mb-6">{{ __('messages.articles.try_calculator') ?? 'Try Our Loan Calculator' }}</h2>
                     <p class="text-slate-300 mb-8">{{ __('messages.articles.calculator_description') ?? 'See exactly how different interest rates affect your loan payments and total cost:' }}</p>
-                    <a href="{{ route('loan.simulation', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold py-4 px-8 rounded-xl hover:from-emerald-500 hover:to-emerald-400 transition">
+                    <a href="{{ url(app()->getLocale() . '/loan/simulation') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold py-4 px-8 rounded-xl hover:from-emerald-500 hover:to-emerald-400 transition">
                         {{ __('messages.articles.calculate_now') ?? 'Calculate Now' }}
                         <span>🧮</span>
                     </a>

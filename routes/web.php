@@ -23,6 +23,12 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->group(function () {
         return view('home', compact('locale'));
     })->name('home.locale');
 
+    // Articles landing page
+    Route::get('/articles', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.index', compact('locale'));
+    })->name('articles.index');
+
     // Loan Simulation Routes
     Route::get('/loan/simulation', [LoanSimulationController::class, 'showLoanSimulation'])->name('loan.simulation');
     Route::post('/loan/simulation/calculate', [LoanSimulationController::class, 'calculateLoan'])->name('loan.simulation.calculate');
@@ -128,6 +134,16 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->group(function () {
         return view('articles.life-insurance-guide');
     })->name('article.life-insurance-guide');
 
+    Route::get('/psychology-of-debt', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.psychology-of-debt');
+    })->name('article.psychology-of-debt');
+
+    Route::get('/hidden-costs-housing-loans', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.hidden-costs-housing-loans');
+    })->name('article.hidden-costs-housing-loans');
+
     Route::get('/privacy-policy', function ($locale) {
         App::setLocale($locale);
         return view('footer.privacy-policy');
@@ -137,6 +153,11 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->group(function () {
         App::setLocale($locale);
         return view('footer.terms-of-service');
     })->name('footer.terms-of-service.locale');
+
+    Route::get('/disclaimer', function ($locale) {
+        App::setLocale($locale);
+        return view('footer.disclaimer');
+    })->name('footer.disclaimer.locale');
 
     Route::get('/contact-us', function ($locale) {
         App::setLocale($locale);

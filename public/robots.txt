@@ -1,2 +1,21 @@
 User-agent: *
 Disallow:
+Allow: /
+
+# Sitemap location
+Sitemap: https://decidelabtools.com/sitemap.xml
+
+# Specific rules for crawlers
+User-agent: Googlebot
+Disallow:
+Allow: /
+
+User-agent: Bingbot
+Disallow:
+Allow: /
+
+# Disable crawling of certain paths if needed
+Disallow: /admin/
+Disallow: /profile/
+Disallow: /dashboard/
+

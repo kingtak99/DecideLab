@@ -5,8 +5,39 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    {{-- SEO Meta Tags --}}
+    <meta name="description" content="@yield('meta_description', 'DecideLab - Your financial decision laboratory. Simulate loans, jobs, housing decisions and life choices with real data before you live their consequences.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'financial decision, loan calculator, job comparison, housing calculator, financial planning, decision simulator')">
+    <meta name="author" content="ZAYANIX TECHNOLOGY">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#030712">
+    
+    {{-- Open Graph Tags for Social Media --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('og_title', 'DecideLab - Try the Decision Before You Live Its Consequences')">
+    <meta property="og:description" content="@yield('og_description', 'DecideLab is a financial decision laboratory. Simulate loans, jobs, housing, and lifestyle with real numbers.')">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ asset('favicon.png') }}">
+    <meta property="og:site_name" content="DecideLab">
+    
+    {{-- Twitter Card Tags --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', 'DecideLab - Try the Decision Before You Live Its Consequences')">
+    <meta name="twitter:description" content="@yield('twitter_description', 'DecideLab is a financial decision laboratory. Simulate loans, jobs, housing, and lifestyle with real numbers.')">
+    <meta name="twitter:image" content="{{ asset('favicon.png') }}">
+    
+    {{-- Canonical URL --}}
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    
+    {{-- Security Headers --}}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
     {{-- Hreflang tags for SEO --}}
     @if (request()->is('/') || request()->is('*/'))
         <link rel="alternate" hreflang="en" href="{{ url('en') }}" />
@@ -31,9 +62,51 @@
         <link rel="alternate" hreflang="ar" href="{{ url('ar/countries-data-sources') }}" />
     @endif
 
-    <title>DecideLab |
-        {{ app()->getLocale() === 'ar' ? 'جرّب القرار قبل ما تعيش عواقبه' : 'Try the Decision Before You Live Its Consequences' }}
-    </title>
+    <title>@yield('page_title', 'DecideLab - Try the Decision Before You Live Its Consequences')</title>
+
+    {{-- Schema Markup - Organization --}}
+    @php
+        $organizationSchema = [
+            "@context" => "https://schema.org",
+            "@type" => "Organization",
+            "name" => "DecideLab",
+            "url" => url('/'),
+            "logo" => asset('favicon.png'),
+            "description" => "DecideLab is a financial decision laboratory that helps people simulate major life decisions including loans, job changes, housing, and lifestyle choices.",
+            "sameAs" => [
+                "https://www.decidelabtools.com"
+            ],
+            "contactPoint" => [
+                "@type" => "ContactPoint",
+                "contactType" => "Customer Support",
+                "email" => "info.zaynix@gmail.com"
+            ]
+        ];
+    @endphp
+    <script type="application/ld+json">
+        {{ json_encode($organizationSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) }}
+    </script>
+
+    {{-- Schema Markup - Website --}}
+    @php
+        $websiteSchema = [
+            "@context" => "https://schema.org",
+            "@type" => "WebSite",
+            "name" => "DecideLab",
+            "url" => url('/'),
+            "potentialAction" => [
+                "@type" => "SearchAction",
+                "target" => [
+                    "@type" => "EntryPoint",
+                    "urlTemplate" => url('/') . "?s={search_term_string}"
+                ],
+                "query-input" => "required name=search_term_string"
+            ]
+        ];
+    @endphp
+    <script type="application/ld+json">
+        {{ json_encode($websiteSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) }}
+    </script>
 
     {{-- CMP Google: يجب أن يكون قبل أي إعلان --}}
     <script async src="https://www.gstatic.com/cmp/cmp_latest.js"></script>
@@ -44,13 +117,13 @@
 
       // إعداد CMP للالتزام بلوائح GDPR الأوروبية
       window.__cmp('init', {
-        language: 'en',                  // لغة الرسالة (يمكن تغييرها إلى ar إذا أردت)
-        initialConsentStatus: 'unknown', // حالة الموافقة المبدئية
+        language: 'en',
+        initialConsentStatus: 'unknown',
         displayOptions: {
           consentNotice: {
-            position: 'bottom',          // مكان ظهور نافذة الموافقة
-            layout: 'bar',               // شكل النافذة (bar / modal)
-            buttons: ['accept', 'reject', 'options'] // 3 خيارات: قبول، رفض، إدارة الخيارات
+            position: 'bottom',
+            layout: 'bar',
+            buttons: ['accept', 'reject', 'options']
           }
         },
         ui: {

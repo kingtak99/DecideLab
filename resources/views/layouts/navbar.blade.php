@@ -75,35 +75,21 @@
 
         <ul class="nav-links">
             <li>
-                <a href="{{ route('loan.housing', ['locale' => session('locale', 'ar')]) }}">
+                <a href="{{ url(session('locale', 'ar') . '/loan/housing') }}">
                     {{ __('messages.loan_Housing_simulation_nav') }}
                 </a>
             </li>
             <li><a
-                    href="{{ route('loan.simulation', ['locale' => session('locale', 'ar')]) }}">{{ __('messages.loan_simulation_nav') }}</a>
+                    href="{{ url(session('locale', 'ar') . '/loan/simulation') }}">{{ __('messages.loan_simulation_nav') }}</a>
             </li>
 
             <li><a
-                    href="{{ route('job.change.simulation', ['locale' => session('locale', 'ar')]) }}">{{ __('messages.job_change_nav') }}</a>
+                    href="{{ url(session('locale', 'ar') . '/job-change/simulation') }}">{{ __('messages.job_change_nav') }}</a>
             </li>
 
             <li><a
-                    href="{{ route('life.shock.simulation', ['locale' => session('locale', 'ar')]) }}">{{ __('messages.life_shock_nav') }}</a>
+                    href="{{ url(session('locale', 'ar') . '/life-shock/simulation') }}">{{ __('messages.life_shock_nav') }}</a>
             </li>
-
-            <!-- Mobile-only actions (shown inside the mobile menu to avoid overlap) -->
-            {{-- <li class="mobile-actions">
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-login mobile-btn">{{ __('messages.login') }}</a>
-                    <a href="{{ route('register') }}" class="btn btn-register mobile-btn">{{ __('messages.register') }}</a>
-                @else
-                    <a href="{{ route('profile.edit') }}" class="mobile-link">{{ Auth::user()->name }}</a>
-                    <form method="POST" action="{{ route('logout') }}" style="margin-top:8px;">
-                        @csrf
-                        <button type="submit" class="btn btn-login mobile-btn">{{ __('messages.logout') }}</button>
-                    </form>
-                @endguest
-            </li>  --}}
         </ul>
 
     </div>
@@ -133,9 +119,9 @@
                     @if (in_array(auth()->user()->email, $adminEmails))
                         <a
                             href="{{ route('admin.dashboard') }}">{{ __('messages.admin_dashboard') ?? 'Admin Dashboard' }}</a>
-                        <a href="{{ route('analytics.dashboard', ['locale' => session('locale', 'ar')]) }}">📊 Analytics
+                        <a href="{{ url(session('locale', 'ar') . '/analytics/dashboard') }}">📊 Analytics
                             Dashboard</a>
-                        <a href="{{ route('analytics.detected-bots', ['locale' => session('locale', 'ar')]) }}">🤖 Detected
+                        <a href="{{ url(session('locale', 'ar') . '/analytics/bots') }}">🤖 Detected
                             Bots</a>
                         <hr style="margin: 5px 0; border: none; border-top: 1px solid #ddd;">
                     @endif
@@ -184,7 +170,7 @@
 
             <div class="dropdown-menu location-menu">
                 <div class="search-container">
-                    <input type="text" id="country-search" placeholder="Search countries..." class="country-search">
+                    <input type="text" id="country-search" placeholder="{{ __('messages.country_search_placeholder') }}" class="country-search">
                 </div>
                 <div id="countries-list" class="countries-list">
                     <!-- Countries will be loaded here -->

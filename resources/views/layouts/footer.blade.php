@@ -41,6 +41,10 @@
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_terms') }}
                     </a>
+                    <a href="{{ url(app()->getLocale() . '/disclaimer') }}"
+                        class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
+                        {{ __('messages.footer_disclaimer') }}
+                    </a>
                     <a href="{{ url(app()->getLocale() . '/countries-data-sources') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_countries') }}
@@ -52,15 +56,19 @@
             <div>
                 <h3 class="text-slate-300 font-medium text-sm mb-4">{{ __('messages.footer_articles') ?? 'Articles' }}</h3>
                 <div class="space-y-3">
-                    <a href="{{ route('article.financial-planning', ['locale' => app()->getLocale()]) }}"
+                    <a href="{{ url(app()->getLocale() . '/articles') }}"
+                        class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
+                        {{ __('messages.footer_all_articles') }}
+                    </a>
+                    <a href="{{ url(app()->getLocale() . '/articles/financial-planning') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_financial_planning') ?? 'Financial Planning' }}
                     </a>
-                    <a href="{{ route('article.understanding-interest-rates', ['locale' => app()->getLocale()]) }}"
+                    <a href="{{ url(app()->getLocale() . '/articles/understanding-interest-rates') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_interest_rates') ?? 'Understanding Interest Rates' }}
                     </a>
-                    <a href="{{ route('article.housing-loan-tips', ['locale' => app()->getLocale()]) }}"
+                    <a href="{{ url(app()->getLocale() . '/articles/housing-loan-tips') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_housing_tips') ?? 'Housing Loan Tips' }}
                     </a>

@@ -34,6 +34,67 @@
         </div>
     </section>
 
+    <!-- WHY FINANCIAL SIMULATIONS MATTER -->
+    <section class="py-24 bg-slate-900">
+        <div class="max-w-4xl mx-auto px-6">
+
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold mb-6 text-white">
+                    {!! __('messages.why_simulations_title') !!}
+                </h2>
+                <p class="text-slate-400 text-lg">
+                    {!! __('messages.why_simulations_subtitle') !!}
+                </p>
+            </div>
+
+            <div class="prose prose-lg prose-invert mx-auto">
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.simulations_intro') !!}
+                </p>
+
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.simulations_power') !!}
+                </p>
+
+                <h3 class="text-2xl font-bold text-white mb-4 mt-8">{!! __('messages.hidden_costs_title') !!}</h3>
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.hidden_costs_text') !!}
+                </p>
+                <ul class="text-slate-300 space-y-2 mb-6 ml-6">
+                    <li>• {!! __('messages.opportunity_cost') !!}</li>
+                    <li>• {!! __('messages.maintenance_costs') !!}</li>
+                    <li>• {!! __('messages.lifestyle_restrictions') !!}</li>
+                    <li>• {!! __('messages.rate_changes_impact') !!}</li>
+                    <li>• {!! __('messages.savings_impact') !!}</li>
+                </ul>
+
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.simulation_advantage') !!}
+                </p>
+
+                <h3 class="text-2xl font-bold text-white mb-4 mt-8">{!! __('messages.decidelab_difference_title') !!}</h3>
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.decidelab_difference_text') !!}
+                </p>
+                <ul class="text-slate-300 space-y-2 mb-6 ml-6">
+                    <li>• {!! __('messages.life_cost_calculation') !!}</li>
+                    <li>• {!! __('messages.job_change_real_cost') !!}</li>
+                    <li>• {!! __('messages.home_decision_alignment') !!}</li>
+                    <li>• {!! __('messages.stress_lifestyle_impact') !!}</li>
+                </ul>
+
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.decidelab_benefit') !!}
+                </p>
+
+                <p class="text-slate-300 leading-relaxed mb-6">
+                    {!! __('messages.final_thought') !!}
+                </p>
+            </div>
+
+        </div>
+    </section>
+
     <!-- TOOLS -->
     <section id="job-change" class="py-24 bg-slate-950">
         <div class="max-w-7xl mx-auto px-6">
@@ -60,7 +121,7 @@
                         <p class="text-slate-400 leading-relaxed mb-6">
                             {!! __('messages.loan_simulation_description') !!}
                         </p>
-                        <a href="{{ route('loan.simulation', ['locale' => $locale]) }}"
+                        <a href="{{ url($locale . '/loan/simulation') }}"
                             class="inline-flex items-center gap-2 text-indigo-400 font-semibold hover:text-indigo-300">
                             {!! __('messages.loan_simulation_button') !!}
                             <span>←</span>
@@ -80,7 +141,7 @@
                         <p class="text-slate-400 leading-relaxed mb-6">
                             {!! __('messages.job_change_description') !!}
                         </p>
-                        <a href="{{ route('job.change.simulation', ['locale' => $locale]) }}"
+                        <a href="{{ url($locale . '/job-change/simulation') }}"
                             class="inline-flex items-center gap-2 text-purple-400 font-semibold hover:text-purple-300">
                             {!! __('messages.job_change_button') !!}
                             <span>←</span>
@@ -101,7 +162,7 @@
                             {!! __('messages.housing_description') !!}
                         </p>
 
-                        <a href="{{ route('loan.housing', ['locale' => $locale]) }}"
+                        <a href="{{ url($locale . '/loan/housing') }}"
                             class="inline-flex items-center gap-2 text-emerald-400 font-semibold hover:text-emerald-300">
                             {!! __('messages.housing_button') !!}
                             <span>←</span>
@@ -120,7 +181,7 @@
                         <p class="text-slate-400 leading-relaxed mb-6">
                             {!! __('messages.life_shock_description') !!}
                         </p>
-                        <a href="{{ route('life.shock.simulation', ['locale' => $locale]) }}"
+                        <a href="{{ url($locale . '/life-shock/simulation') }}"
                             class="inline-flex items-center gap-2 text-red-400 font-semibold hover:text-red-300">
                             {!! __('messages.life_shock_button') !!}
                             <span>←</span>
@@ -128,6 +189,72 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED INSIGHTS -->
+    <section class="py-24 bg-slate-900/50 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold mb-4">{{ __('messages.home_financial_insights_title') }}</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                    {{ __('messages.home_financial_insights_desc') }}
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-10">
+                <!-- Article Card 1 -->
+                <a href="{{ url($locale . '/housing-loan-tips') }}"
+                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-indigo-500 transition">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition mb-2">
+                        {{ __('messages.home_article_rent_vs_buy_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_rent_vs_buy_desc') }}
+                    </p>
+                    <div class="text-indigo-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+
+                <!-- Article Card 2 -->
+                <a href="{{ url($locale . '/job-change-finance') }}"
+                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-purple-500 transition">
+                    <div class="text-4xl mb-4">💼</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition mb-2">
+                        {{ __('messages.home_article_career_changes_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_career_changes_desc') }}
+                    </p>
+                    <div class="text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+
+                <!-- Article Card 3 -->
+                <a href="{{ url($locale . '/understanding-interest-rates') }}"
+                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-emerald-500 transition">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition mb-2">
+                        {{ __('messages.home_article_interest_rates_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_interest_rates_desc') }}
+                    </p>
+                    <div class="text-emerald-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+            </div>
+
+            <div class="text-center">
+                <a href="{{ url($locale . '/articles') }}"
+                   class="inline-block px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition">
+                    {{ __('messages.home_view_all_articles') }}
+                </a>
             </div>
         </div>
     </section>
@@ -142,7 +269,7 @@
             {!! __('messages.shock_description') !!}
         </p>
 
-        <a href="{{ route('life.shock.simulation', ['locale' => $locale]) }}"
+        <a href="{{ url($locale . '/life-shock/simulation') }}"
             class="inline-block px-10 py-4 bg-white text-indigo-700 font-bold rounded-xl text-lg hover:scale-105 transition">
             {!! __('messages.shock_button') !!}
         </a>

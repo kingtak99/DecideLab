@@ -130,19 +130,19 @@
                     <p class="text-slate-300 text-center mb-8">{{ __('messages.articles.tools_description') ?? 'Try our financial calculators to help you create a better financial plan:' }}</p>
 
                     <div class="grid md:grid-cols-3 gap-6">
-                        <a href="{{ route('loan.simulation', ['locale' => app()->getLocale()]) }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
+                        <a href="{{ url(app()->getLocale() . '/loan/simulation') }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
                             <div class="text-3xl mb-4">💰</div>
                             <h3 class="text-lg font-semibold text-white mb-2">{{ __('messages.loan_simulation_nav') }}</h3>
                             <p class="text-slate-400 text-sm">{{ __('messages.articles.loan_sim_desc') ?? 'Calculate loan payments and total interest' }}</p>
                         </a>
 
-                        <a href="{{ route('job.change.simulation', ['locale' => app()->getLocale()]) }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
+                        <a href="{{ url(app()->getLocale() . '/job-change/simulation') }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
                             <div class="text-3xl mb-4">💼</div>
                             <h3 class="text-lg font-semibold text-white mb-2">{{ __('messages.job_change_nav') }}</h3>
                             <p class="text-slate-400 text-sm">{{ __('messages.articles.job_change_desc') ?? 'Compare job offers and career changes' }}</p>
                         </a>
 
-                        <a href="{{ route('loan.housing', ['locale' => app()->getLocale()]) }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
+                        <a href="{{ url(app()->getLocale() . '/loan/housing') }}" class="bg-slate-800/50 hover:bg-slate-800/70 rounded-xl p-6 text-center transition">
                             <div class="text-3xl mb-4">🏠</div>
                             <h3 class="text-lg font-semibold text-white mb-2">{{ __('messages.loan_Housing_simulation_nav') }}</h3>
                             <p class="text-slate-400 text-sm">{{ __('messages.articles.housing_loan_desc') ?? 'Calculate housing loan costs and affordability' }}</p>
@@ -156,7 +156,7 @@
                     <p class="text-slate-300 text-lg leading-relaxed mb-8">
                         {{ __('messages.articles.financial_planning_conclusion') ?? 'Financial planning is not just about numbers—it\'s about creating the life you want. Start small, be consistent, and watch your financial future transform.' }}
                     </p>
-                    <a href="{{ route('home.locale', ['locale' => app()->getLocale()]) }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold py-4 px-8 rounded-xl hover:from-emerald-500 hover:to-emerald-400 transition">
+                    <a href="{{ url(app()->getLocale()) }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold py-4 px-8 rounded-xl hover:from-emerald-500 hover:to-emerald-400 transition">
                         {{ __('messages.articles.start_planning') ?? 'Start Planning Now' }}
                         <span>🚀</span>
                     </a>

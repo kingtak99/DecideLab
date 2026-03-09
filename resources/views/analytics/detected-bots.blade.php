@@ -136,7 +136,7 @@
 
     <!-- Back Button -->
     <div class="back-section">
-        <a href="{{ route('analytics.dashboard', ['locale' => session('locale', 'ar')]) }}" class="btn-back">
+        <a href="{{ url(session('locale', 'ar') . '/analytics/dashboard') }}" class="btn-back">
             ← العودة لوحة التحكم
         </a>
     </div>
