@@ -29,6 +29,22 @@ Route::prefix('{locale}')->where(['locale' => 'en|ar'])->group(function () {
         return view('articles.index', compact('locale'));
     })->name('articles.index');
 
+    // Case Study Routes
+    Route::get('/case-study-250k-mortgage', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.case-study-250k-mortgage', compact('locale'));
+    })->name('case-study.mortgage');
+
+    Route::get('/case-study-job-trap', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.case-study-job-trap', compact('locale'));
+    })->name('case-study.job-trap');
+
+    Route::get('/case-study-interest-rate', function ($locale) {
+        App::setLocale($locale);
+        return view('articles.case-study-interest-rate', compact('locale'));
+    })->name('case-study.interest-rate');
+
     // Loan Simulation Routes
     Route::get('/loan/simulation', [LoanSimulationController::class, 'showLoanSimulation'])->name('loan.simulation');
     Route::post('/loan/simulation/calculate', [LoanSimulationController::class, 'calculateLoan'])->name('loan.simulation.calculate');

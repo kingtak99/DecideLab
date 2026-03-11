@@ -60,17 +60,17 @@
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_all_articles') }}
                     </a>
-                    <a href="{{ url(app()->getLocale() . '/articles/financial-planning') }}"
+                    <a href="{{ url(app()->getLocale() . '/case-study-250k-mortgage') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
-                        {{ __('messages.footer_financial_planning') ?? 'Financial Planning' }}
+                        Case Study: $250k Mortgage
                     </a>
-                    <a href="{{ url(app()->getLocale() . '/articles/understanding-interest-rates') }}"
+                    <a href="{{ url(app()->getLocale() . '/case-study-job-trap') }}"
+                        class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
+                        Case Study: Job Change Trap
+                    </a>
+                    <a href="{{ url(app()->getLocale() . '/understanding-interest-rates') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
                         {{ __('messages.footer_interest_rates') ?? 'Understanding Interest Rates' }}
-                    </a>
-                    <a href="{{ url(app()->getLocale() . '/articles/housing-loan-tips') }}"
-                        class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
-                        {{ __('messages.footer_housing_tips') ?? 'Housing Loan Tips' }}
                     </a>
                 </div>
             </div>

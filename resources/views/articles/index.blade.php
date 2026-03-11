@@ -217,6 +217,63 @@
                             </div>
                         </div>
 
+                        <!-- Case Study Card: $250k Mortgage -->
+                        <div
+                            class="bg-slate-900/50 rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition group">
+                            <div class="text-4xl mb-4">📊</div>
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition">
+                                Case Study: $250k Mortgage Over 30 Years
+                            </h3>
+                            <p class="text-slate-300 text-sm mb-4">
+                                Real financial analysis of housing costs with detailed lifetime breakdowns and interest rate impacts.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-400">12 min read</span>
+                                <a href="{{ url(app()->getLocale() . '/case-study-250k-mortgage') }}"
+                                    class="text-blue-400 hover:text-blue-300 font-semibold text-sm">
+                                    Read →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Case Study Card: Job Salary Trap -->
+                        <div
+                            class="bg-slate-900/50 rounded-xl p-6 border border-white/10 hover:border-orange-500/50 transition group">
+                            <div class="text-4xl mb-4">💼</div>
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-orange-400 transition">
+                                Case Study: The $80k Salary Jump That Lost Money
+                            </h3>
+                            <p class="text-slate-300 text-sm mb-4">
+                                Why a 72% salary increase can actually lower your hourly rate and quality of life.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-400">11 min read</span>
+                                <a href="{{ url(app()->getLocale() . '/case-study-job-trap') }}"
+                                    class="text-orange-400 hover:text-orange-300 font-semibold text-sm">
+                                    Read →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Case Study Card: Interest Rate Impact -->
+                        <div
+                            class="bg-slate-900/50 rounded-xl p-6 border border-white/10 hover:border-red-500/50 transition group">
+                            <div class="text-4xl mb-4">📈</div>
+                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-red-400 transition">
+                                Case Study: How 0.5% Rate Difference Costs $60k
+                            </h3>
+                            <p class="text-slate-300 text-sm mb-4">
+                                Why shopping for mortgage rates for 2 hours is worth $22,720/hour in savings.
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-400">10 min read</span>
+                                <a href="{{ url(app()->getLocale() . '/case-study-interest-rate') }}"
+                                    class="text-red-400 hover:text-red-300 font-semibold text-sm">
+                                    Read →
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <br>
