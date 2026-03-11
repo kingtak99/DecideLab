@@ -11,18 +11,18 @@
         <div class="relative max-w-4xl mx-auto px-6 py-20 text-center">
             <div class="inline-flex items-center gap-2 bg-rose-500/20 text-rose-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
                 <span>📊</span>
-                Case Study
+                {{ __('messages.case_study_badge') }}
             </div>
             <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-                Case Study: How a 0.5% Interest Rate Difference Costs You $60,000
+                {{ __('messages.case_study_interest_rate_title') }}
             </h1>
             <p class="text-lg text-slate-300 max-w-2xl mx-auto">
-                Shopping for the best rate isn't an option—it's a financial necessity
+                {{ __('messages.case_study_interest_rate_header_desc') }}
             </p>
             <div class="mt-8 flex flex-wrap justify-center gap-4 text-sm text-slate-400">
-                <span>📅 Published: March 2026</span>
-                <span>✍️ By: Hasan Takrory, DecideLab</span>
-                <span>⏱️ Reading time: 10 minutes</span>
+                <span>{{ __('messages.case_study_published', ['date' => 'March 2026']) }}</span>
+                <span>{{ __('messages.case_study_by', ['author' => 'Hasan Takrory, DecideLab']) }}</span>
+                <span>{{ __('messages.case_study_reading_time', ['minutes' => '10']) }}</span>
             </div>
         </div>
     </section>
@@ -32,6 +32,9 @@
         <div class="max-w-4xl mx-auto px-6">
 
             <div class="bg-slate-900/50 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10">
+                    @if(app()->getLocale() === 'ar')
+                        {!! __('messages.case_study_interest_rate_body_html') !!}
+                    @else
 
                 <!-- Introduction -->
                 <div class="mb-12">
@@ -306,6 +309,7 @@
                     </a>
                 </div>
 
+                @endif
             </div>
         </div>
     </section>

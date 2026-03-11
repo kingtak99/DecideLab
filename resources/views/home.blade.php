@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
- 
     <!-- HERO -->
     <section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
         <!-- Glow -->
@@ -95,6 +94,148 @@
         </div>
     </section>
 
+
+
+    <!-- FEATURED INSIGHTS -->
+    <section class="py-24 bg-slate-900/50 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold mb-4">{{ __('messages.home_financial_insights_title') }}</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                    {{ __('messages.home_financial_insights_desc') }}
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-10">
+                <!-- Article Card 1 -->
+                <a href="{{ url($locale . '/housing-loan-tips') }}"
+                    class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-indigo-500 transition">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition mb-2">
+                        {{ __('messages.home_article_rent_vs_buy_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_rent_vs_buy_desc') }}
+                    </p>
+                    <div class="text-indigo-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+
+                <!-- Article Card 2 -->
+                <a href="{{ url($locale . '/job-change-finance') }}"
+                    class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-purple-500 transition">
+                    <div class="text-4xl mb-4">💼</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition mb-2">
+                        {{ __('messages.home_article_career_changes_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_career_changes_desc') }}
+                    </p>
+                    <div class="text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+
+                <!-- Article Card 3 -->
+                <a href="{{ url($locale . '/understanding-interest-rates') }}"
+                    class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-emerald-500 transition">
+                    <div class="text-4xl mb-4">📈</div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition mb-2">
+                        {{ __('messages.home_article_interest_rates_title') }}
+                    </h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        {{ __('messages.home_article_interest_rates_desc') }}
+                    </p>
+                    <div class="text-emerald-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {{ __('messages.home_read_article') }}
+                    </div>
+                </a>
+            </div>
+
+            <div class="text-center">
+                <a href="{{ url($locale . '/articles') }}"
+                    class="inline-block px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition">
+                    {{ __('messages.home_view_all_articles') }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASE STUDIES -->
+    <section class="py-24 bg-slate-950 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold mb-4 text-white">{!! __('messages.home_case_studies_title') !!}</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                    {!! __('messages.home_case_studies_subtitle') !!}
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-10">
+                <!-- Case Study 1: $250k Mortgage -->
+                <a href="{{ url($locale . '/case-study-250k-mortgage') }}"
+                    class="group bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-2xl p-8 border border-blue-500/30 hover:border-blue-400 transition">
+                    <div class="text-5xl mb-4">🏠</div>
+                    <div class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4">
+                        {!! __('messages.home_case_mortgage_name') !!}</div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-blue-400 transition mb-3">
+                        {!! __('messages.case_study_mortgage_title') !!}
+
+                    </h3>
+                    <p class="text-slate-300 mb-4">
+                        {!! __('messages.case_study_mortgage_desc') !!}
+                    </p>
+                    <div class="flex items-center text-blue-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {!! __('messages.case_study_mortgage_cta') !!}
+                    </div>
+                </a>
+
+                <!-- Case Study 2: Job Trap -->
+                <a href="{{ url($locale . '/case-study-job-trap') }}"
+                    class="group bg-gradient-to-br from-orange-900/30 to-orange-800/10 rounded-2xl p-8 border border-orange-500/30 hover:border-orange-400 transition">
+                    <div class="text-5xl mb-4">💼</div>
+                    <div
+                        class="inline-block px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold mb-4">
+                        {!! __('messages.home_case_job_trap_name') !!}</div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-orange-400 transition mb-3">
+                        {!! __('messages.case_study_job_trap_title') !!}
+                    </h3>
+                    <p class="text-slate-300 mb-4">
+                        {!! __('messages.case_study_job_trap_desc') !!}
+                    </p>
+                    <div
+                        class="flex items-center text-orange-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {!! __('messages.case_study_job_trap_cta') !!}
+                    </div>
+                </a>
+
+                <!-- Case Study 3: Interest Rate -->
+                <a href="{{ url($locale . '/case-study-interest-rate') }}"
+                    class="group bg-gradient-to-br from-red-900/30 to-red-800/10 rounded-2xl p-8 border border-red-500/30 hover:border-red-400 transition">
+                    <div class="text-5xl mb-4">📈</div>
+                    <div class="inline-block px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-bold mb-4">
+                        {!! __('messages.home_case_interest_rate_name') !!}</div>
+                    <h3 class="text-2xl font-bold text-white group-hover:text-red-400 transition mb-3">
+                        {!! __('messages.case_study_interest_rate_title') !!}
+                    </h3>
+                    <p class="text-slate-300 mb-4">
+                        {!! __('messages.case_study_interest_rate_desc') !!}
+                    </p>
+                    <div class="flex items-center text-red-400 font-semibold text-sm group-hover:translate-x-1 transition">
+                        {!! __('messages.case_study_interest_rate_cta') !!}
+                    </div>
+                </a>
+            </div>
+
+            <div class="text-center">
+                <a href="{{ url($locale . '/articles') }}"
+                    class="inline-block px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition">
+                    {!! __('messages.case_study_button') !!}
+                </a>
+            </div>
+        </div>
+    </section>
     <!-- TOOLS -->
     <section id="job-change" class="py-24 bg-slate-950">
         <div class="max-w-7xl mx-auto px-6">
@@ -153,7 +294,8 @@
                 <!-- Card: Housing -->
                 <div
                     class="relative group bg-slate-900 rounded-3xl p-8 border border-white/10 hover:border-emerald-500 transition">
-                    <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 rounded-3xl transition">
+                    <div
+                        class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 rounded-3xl transition">
                     </div>
                     <div class="relative">
                         <div class="text-5xl mb-6">🏠</div>
@@ -192,142 +334,6 @@
             </div>
         </div>
     </section>
-
-    <!-- FEATURED INSIGHTS -->
-    <section class="py-24 bg-slate-900/50 border-t border-white/10">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold mb-4">{{ __('messages.home_financial_insights_title') }}</h2>
-                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-                    {{ __('messages.home_financial_insights_desc') }}
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 mb-10">
-                <!-- Article Card 1 -->
-                <a href="{{ url($locale . '/housing-loan-tips') }}"
-                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-indigo-500 transition">
-                    <div class="text-4xl mb-4">🏠</div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition mb-2">
-                        {{ __('messages.home_article_rent_vs_buy_title') }}
-                    </h3>
-                    <p class="text-slate-300 text-sm mb-4">
-                        {{ __('messages.home_article_rent_vs_buy_desc') }}
-                    </p>
-                    <div class="text-indigo-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        {{ __('messages.home_read_article') }}
-                    </div>
-                </a>
-
-                <!-- Article Card 2 -->
-                <a href="{{ url($locale . '/job-change-finance') }}"
-                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-purple-500 transition">
-                    <div class="text-4xl mb-4">💼</div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition mb-2">
-                        {{ __('messages.home_article_career_changes_title') }}
-                    </h3>
-                    <p class="text-slate-300 text-sm mb-4">
-                        {{ __('messages.home_article_career_changes_desc') }}
-                    </p>
-                    <div class="text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        {{ __('messages.home_read_article') }}
-                    </div>
-                </a>
-
-                <!-- Article Card 3 -->
-                <a href="{{ url($locale . '/understanding-interest-rates') }}"
-                   class="group bg-slate-800 rounded-2xl p-6 border border-white/5 hover:border-emerald-500 transition">
-                    <div class="text-4xl mb-4">📈</div>
-                    <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition mb-2">
-                        {{ __('messages.home_article_interest_rates_title') }}
-                    </h3>
-                    <p class="text-slate-300 text-sm mb-4">
-                        {{ __('messages.home_article_interest_rates_desc') }}
-                    </p>
-                    <div class="text-emerald-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        {{ __('messages.home_read_article') }}
-                    </div>
-                </a>
-            </div>
-
-            <div class="text-center">
-                <a href="{{ url($locale . '/articles') }}"
-                   class="inline-block px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-lg transition">
-                    {{ __('messages.home_view_all_articles') }}
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- CASE STUDIES -->
-    <section class="py-24 bg-slate-950 border-t border-white/10">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-extrabold mb-4 text-white">📊 Real Case Studies</h2>
-                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-                    See how real financial decisions impact lifetime earnings and quality of life with detailed analysis and numbers.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 mb-10">
-                <!-- Case Study 1: $250k Mortgage -->
-                <a href="{{ url($locale . '/case-study-250k-mortgage') }}"
-                   class="group bg-gradient-to-br from-blue-900/30 to-blue-800/10 rounded-2xl p-8 border border-blue-500/30 hover:border-blue-400 transition">
-                    <div class="text-5xl mb-4">🏠</div>
-                    <div class="inline-block px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-4">MORTGAGE</div>
-                    <h3 class="text-2xl font-bold text-white group-hover:text-blue-400 transition mb-3">
-                        $250,000 Mortgage Over 30 Years
-                    </h3>
-                    <p class="text-slate-300 mb-4">
-                        Complete lifetime cost analysis including hidden expenses, tax impacts, and what happens when interest rates change.
-                    </p>
-                    <div class="flex items-center text-blue-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        Real numbers breakdown →
-                    </div>
-                </a>
-
-                <!-- Case Study 2: Job Trap -->
-                <a href="{{ url($locale . '/case-study-job-trap') }}"
-                   class="group bg-gradient-to-br from-orange-900/30 to-orange-800/10 rounded-2xl p-8 border border-orange-500/30 hover:border-orange-400 transition">
-                    <div class="text-5xl mb-4">💼</div>
-                    <div class="inline-block px-3 py-1 rounded-full bg-orange-500/20 text-orange-300 text-xs font-bold mb-4">JOB CHANGE</div>
-                    <h3 class="text-2xl font-bold text-white group-hover:text-orange-400 transition mb-3">
-                        The $80k Salary Jump That Lost Money
-                    </h3>
-                    <p class="text-slate-300 mb-4">
-                        Why a 72% salary increase actually reduced hourly wage by 6% and destroyed work-life balance.
-                    </p>
-                    <div class="flex items-center text-orange-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        Why it failed →
-                    </div>
-                </a>
-
-                <!-- Case Study 3: Interest Rate -->
-                <a href="{{ url($locale . '/case-study-interest-rate') }}"
-                   class="group bg-gradient-to-br from-red-900/30 to-red-800/10 rounded-2xl p-8 border border-red-500/30 hover:border-red-400 transition">
-                    <div class="text-5xl mb-4">📈</div>
-                    <div class="inline-block px-3 py-1 rounded-full bg-red-500/20 text-red-300 text-xs font-bold mb-4">RATES</div>
-                    <h3 class="text-2xl font-bold text-white group-hover:text-red-400 transition mb-3">
-                        How 0.5% Rate Difference Costs $60k
-                    </h3>
-                    <p class="text-slate-300 mb-4">
-                        Shopping for better rates for 2 hours is worth $22,720/hour. See the exact impact of rate shopping.
-                    </p>
-                    <div class="flex items-center text-red-400 font-semibold text-sm group-hover:translate-x-1 transition">
-                        The math behind it →
-                    </div>
-                </a>
-            </div>
-
-            <div class="text-center">
-                <a href="{{ url($locale . '/articles') }}"
-                   class="inline-block px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition">
-                    View All Case Studies & Articles
-                </a>
-            </div>
-        </div>
-    </section>
-
     <!-- SHOCK -->
     <section class="bg-gradient-to-r from-indigo-700 to-purple-700 py-24 text-center">
         <h2 class="text-3xl md:text-4xl font-extrabold mb-6">
@@ -359,7 +365,7 @@
                     // Get current scroll position and target position
                     const startY = window.scrollY;
                     const targetY = targetElement.getBoundingClientRect().top + startY -
-                    20; // -20 for offset if needed
+                        20; // -20 for offset if needed
 
                     const distance = targetY - startY;
                     const duration = 800; // Duration in ms (800 = 0.8 second)

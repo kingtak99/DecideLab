@@ -51,6 +51,41 @@ return [
     'home_read_article' => 'Read Article →',
     'home_view_all_articles' => 'View All Articles →',
 
+    // Case Studies Section
+    'home_case_studies_title' => '📊 Real Case Studies',
+    'home_case_studies_subtitle' => 'See how real financial decisions affect lifetime income and quality of life with detailed analysis and numbers.',
+    'case_study_mortgage_title' => 'Case Study: $250,000 Mortgage Over 30 Years',
+    'case_study_mortgage_desc' => 'Complete lifetime cost analysis including hidden expenses, tax impacts, and what happens when interest rates change.',
+    'case_study_mortgage_cta' => 'Real numbers breakdown →',
+    'home_case_mortgage_name' => 'MORTGAGE',
+    'home_case_job_trap_name' => 'JOB CHANGE',
+    'home_case_interest_rate_name' => 'RATES',
+    'case_study_job_trap_title' => 'Case Study: The $80,000 Salary Jump That Lost Money',
+    'case_study_job_trap_desc' => 'Why a 72% salary increase actually reduced hourly wage by 6% and destroyed work-life balance.',
+    'case_study_job_trap_cta' => 'Why it failed →',
+    'case_study_interest_rate_title' => 'Case Study: How 0.5% Rate Difference Costs $60k',
+    'case_study_interest_rate_desc' => 'Shopping for better rates for 2 hours is worth $22,720/hour in savings. See the exact impact of rate shopping.',
+    'case_study_interest_rate_cta' => 'The math behind it →',
+    'case_study_button' => 'View All Case Studies & Articles →',
+
+    // Article header translations
+    'case_study_badge' => 'Case Study',
+    'case_study_mortgage_header_desc' => 'A real-world analysis of housing costs and how interest rate changes impact your lifetime financial picture',
+    'case_study_job_trap_header_desc' => 'Why a 45% salary increase didn\'t improve quality of life—and how to avoid the same trap',
+    'case_study_interest_rate_header_desc' => 'How small rate differences add up to tens of thousands over a standard mortgage timeline',
+
+    // Meta labels for articles
+    'case_study_published' => 'Published: :date',
+    'case_study_by' => 'By: :author',
+    'case_study_reading_time' => 'Reading time: :minutes minutes',
+
+    // Article bodies (primarily used for Arabic translations; English kept for parity)
+    'case_study_mortgage_body_html' => '',
+    'case_study_job_trap_body_html' => '',
+    'case_study_interest_rate_body_html' => '',
+    'home_read_article' => 'Read Article →',
+    'home_view_all_articles' => 'View All Articles →',
+
     // Articles - Loan Types Guide
     'articles_loan_types_guide_category' => 'Loan Guides',
     'articles_loan_types_guide_title' => 'Complete Guide to Loan Types',
@@ -500,6 +535,8 @@ return [
     'footer_articles' => 'Articles',
     'footer_financial_planning' => 'Financial Planning',
     'footer_interest_rates' => 'Understanding Interest Rates',
+    'footer_case_study_mortgage' => 'Case Study: $250k Mortgage',
+    'footer_case_study_job_trap' => 'Case Study: Job Change Trap',
     'footer_housing_tips' => 'Housing Loan Tips',
 
     // About Page
@@ -796,7 +833,8 @@ return [
     'life_insurance_title' => 'Life Insurance: Complete Guide',
     'life_insurance_desc' => 'Protect your family\'s future. Understand term, whole, and universal life insurance options.',
     'life_insurance_reading_time' => '11 min read',
-    'view_all_articles' => 'View All Articles →',    'ready_transform_financial' => 'Ready to Transform Your Financial Decisions?',
+    'view_all_articles' => 'View All Articles →',
+    'ready_transform_financial' => 'Ready to Transform Your Financial Decisions?',
     'read_articles_understand' => 'Read these articles to understand the real costs of your financial choices. Then use DecideLab\'s tools to run the numbers for your specific situation.',
     'start_loan_simulation' => 'Start Loan Simulation',
     'compare_job_offers' => 'Compare Job Offers',

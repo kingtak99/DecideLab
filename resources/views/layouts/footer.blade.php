@@ -62,11 +62,11 @@
                     </a>
                     <a href="{{ url(app()->getLocale() . '/case-study-250k-mortgage') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
-                        Case Study: $250k Mortgage
+                        {{ __('messages.footer_case_study_mortgage') }}
                     </a>
                     <a href="{{ url(app()->getLocale() . '/case-study-job-trap') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">
-                        Case Study: Job Change Trap
+                        {{ __('messages.footer_case_study_job_trap') }}
                     </a>
                     <a href="{{ url(app()->getLocale() . '/understanding-interest-rates') }}"
                         class="text-slate-400 hover:text-white transition-colors duration-200 text-sm block">

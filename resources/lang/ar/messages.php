@@ -49,6 +49,24 @@ return [
     'home_read_article' => 'اقرأ المقالة ←',
     'home_view_all_articles' => 'عرض جميع المقالات ←',
 
+    // Case Studies Section
+
+    'case_studies_title' => '📊 دراسات حالة واقعية',
+    'case_studies_desc' => 'اطّلع على كيف تؤثر القرارات المالية الحقيقية على الأرباح مدى الحياة وجودة الحياة من خلال تحليل مفصل بالأرقام.',
+    'case_study_mortgage_title' => 'دراسة حالة: رهن عقاري بقيمة 250,000 دولار لمدة 30 سنة',
+    'case_study_mortgage_desc' => 'تحليل كامل للتكلفة طوال العمر بما في ذلك المصاريف الخفية، التأثيرات الضريبية، وما يحدث عند تغيّر أسعار الفائدة.',
+    'case_study_mortgage_cta' => 'تفصيل الأرقام الحقيقية →',
+    'home_case_mortgage_name' => 'الرهن العقاري',
+    'home_case_job_trap_name' => 'تغيير الوظيفة',
+    'home_case_interest_rate_name' => 'أسعار الفائدة',
+    'case_study_job_trap_title' => 'دراسة حالة: زيادة راتب إلى 80,000 دولار لكنها خسّرت المال',
+    'case_study_job_trap_desc' => 'لماذا أدت زيادة راتب بنسبة 72٪ فعليًا إلى خفض الأجر بالساعة بنسبة 6٪ وتدمير التوازن بين العمل والحياة.',
+    'case_study_job_trap_cta' => 'لماذا فشل ذلك →',
+    'case_study_interest_rate_title' => 'دراسة حالة: كيف يكلف فرق فائدة 0.5٪ مبلغ 60 ألف دولار',
+    'case_study_interest_rate_desc' => 'البحث عن معدل فائدة أفضل لمدة ساعتين قد يساوي 22,720 دولار في الساعة من التوفير. شاهد التأثير الحقيقي لمقارنة الأسعار.',
+    'case_study_interest_rate_cta' => 'الحسابات وراء ذلك →',
+    'case_study_button' => 'عرض جميع دراسات الحالة والمقالات →',
+
     // Articles - Loan Types Guide
     'articles_loan_types_guide_category' => 'دليل القروض',
     'articles_loan_types_guide_title' => 'الدليل الكامل لأنواع القروض',
@@ -758,7 +776,8 @@ return [
     'psychology_debt_desc' => 'فهم الجوانب النفسية والعاطفية للاقتراض وكيف تؤثر على قراراتك المالية.',
     'hidden_costs_housing_title' => 'التكاليف المخفية لقروض السكن',
     'hidden_costs_housing_desc' => 'ما وراء الدفعة الشهرية: فهم التكلفة الحقيقية لملكية المنزل طوال العمر.',
-    'view_all_articles' => 'عرض جميع المقالات ←',    'ready_transform_financial' => 'جاهز لتحويل قراراتك المالية؟',
+    'view_all_articles' => 'عرض جميع المقالات ←',
+    'ready_transform_financial' => 'جاهز لتحويل قراراتك المالية؟',
     'read_articles_understand' => 'اقرأ هذه المقالات لفهم التكاليف الحقيقية لخياراتك المالية. ثم استخدم أدوات DecideLab لتشغيل الأرقام لحالتك المحددة.',
     'start_loan_simulation' => 'ابدأ محاكاة القرض',
     'compare_job_offers' => 'قارن عروض العمل',
@@ -954,4 +973,31 @@ return [
     'articles_job_change_finance_analyze_title' => 'حلل تغيير الوظيفة باستخدام DecideLab',
     'articles_job_change_finance_analyze_text' => 'استخدم أداة مقارنة تغيير الوظيفة لدينا لتحليل التأثير الحقيقي لقرار تغيير وظيفتك. انظر إلى التأثير المالي والحياتي بمرور الوقت، وليس فقط الراتب على الورقة.',
     'articles_job_change_finance_compare_offers' => 'قارن عروض الوظائف',
+
+    // Home Case Studies Section
+    'home_case_studies_title' => '📊 دراسات حالة حقيقية',
+    'home_case_studies_subtitle' => 'شاهد كيف تؤثر القرارات المالية الحقيقية على الدخل مدى الحياة وجودة الحياة مع تحليل مفصل وأرقام.',
+    'home_case_study_mortgage_title' => '🏠 الرهن العقاري قرض 250,000 دولار على 30 عامًا',
+    'home_case_study_mortgage_desc' => 'تحليل التكلفة الإجمالية مدى الحياة بما في ذلك المصاريف المخفية، التأثيرات الضريبية، وما يحدث عند تغير أسعار الفائدة.',
+    'home_case_study_mortgage_cta' => 'التفاصيل الكاملة →',
+    'home_case_study_job_trap_title' => 'فخ الراتب الأعلى بـ80,000 دولار',
+    'home_case_study_job_trap_desc' => 'لماذا يؤدي زيادة الراتب بنسبة 72% إلى انخفاض الأجر بالساعة بنسبة 6% وتدمير التوازن بين العمل والحياة.',
+    'home_case_study_job_trap_cta' => 'لماذا فشل →',
+    'home_case_study_rates_title' => 'فرق سعر الفائدة 0.5% يكلف 60,000 دولار',
+    'home_case_study_rates_desc' => 'البحث عن أسعار أفضل لمدة ساعتين يستحق 22,720 دولار/ساعة. شاهد التأثير الدقيق للتسوق للأسعار.',
+    'home_case_study_rates_cta' => 'الرياضيات وراءه →',
+    'home_view_all_case_studies' => 'عرض جميع دراسات الحالة والمقالات',
+
+    // Case Studies Section
+    'case_studies_title' => '📊 دراسات حالة حقيقية',
+    'case_studies_desc' => 'شاهد كيف تؤثر القرارات المالية الحقيقية على الدخل مدى الحياة وجودة الحياة مع تحليل مفصل وأرقام.',
+    'case_study_mortgage_title' => 'دراسة حالة: رهن عقاري 250,000 دولار على 30 عامًا',
+    'case_study_mortgage_desc' => 'تحليل التكلفة الإجمالية مدى الحياة بما في ذلك المصاريف المخفية، التأثيرات الضريبية، وما يحدث عند تغير أسعار الفائدة.',
+    'case_study_mortgage_cta' => 'التفاصيل الكاملة →',
+    'case_study_job_trap_title' => 'دراسة حالة: قفزة الراتب بـ80,000 دولار التي خسرت المال',
+    'case_study_job_trap_desc' => 'لماذا يؤدي زيادة الراتب بنسبة 72% إلى انخفاض الأجر بالساعة بنسبة 6% وتدمير التوازن بين العمل والحياة.',
+    'case_study_job_trap_cta' => 'لماذا فشل →',
+    'case_study_interest_rate_title' => 'دراسة حالة: كيف يكلف فرق سعر الفائدة 0.5% مبلغ 60,000 دولار',
+    'case_study_interest_rate_desc' => 'البحث عن أسعار أفضل لمدة ساعتين يستحق 22,720 دولار/ساعة في التوفير. شاهد التأثير الدقيق للتسوق للأسعار.',
+    'case_study_interest_rate_cta' => 'الرياضيات وراءه →',
 ];
