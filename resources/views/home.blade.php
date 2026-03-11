@@ -237,7 +237,7 @@
         </div>
     </section>
     <!-- TOOLS -->
-    <section id="job-change" class="py-24 bg-slate-950">
+    <section id="job-change" class="py-24 bg-slate-950" style="background-color: #090f20;">
         <div class="max-w-7xl mx-auto px-6">
 
             <div class="text-center mb-16">
