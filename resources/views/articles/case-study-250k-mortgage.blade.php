@@ -128,8 +128,7 @@
                             <div class="bg-slate-900/50 rounded-lg p-4">
                                 <p class="text-slate-300"><strong>$150-300/month (seasonal variation)</strong></p>
                             </div>
-@endif
-                </div>
+                        </div>
                     </div>
                 </div>
 
@@ -304,6 +303,7 @@
                         <span>🏠</span>
                     </a>
                 </div>
+@endif
 
             </div>
         </div>

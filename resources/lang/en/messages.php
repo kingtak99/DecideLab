@@ -1030,4 +1030,36 @@ return [
     'articles_job_change_finance_analyze_title' => 'Analyze Your Job Change with DecideLab',
     'articles_job_change_finance_analyze_text' => 'Use our Job Change Comparison tool to analyze the real impact of your job change decision. See the financial and lifestyle impact over time, not just the salary on paper.',
     'articles_job_change_finance_compare_offers' => 'Compare Job Offers',
+
+    // Author and Metadata
+    'author' => 'Author',
+    'published' => 'Published',
+    'reading_time' => 'Reading Time',
+    'minutes' => 'minutes',
+    'author_name' => 'Hasan Takrory',
+    'author_title' => 'Financial Decision Analyst',
+    'author_bio' => 'Founder of DecideLab, helping people make better financial decisions with data and clarity.',
+    'published_date' => 'March 2026',
+
+    // Breadcrumbs
+    'home' => 'Home',
+    'articles' => 'Articles',
+    'case_studies' => 'Case Studies',
+    'breadcrumb_separator' => '/',
+
+    // Why Trust DecideLab Section
+    'why_trust_title' => 'Why Trust DecideLab?',
+    'why_trust_intro' => 'When making important financial decisions, trust matters. Here\'s why DecideLab is different:',
+    'why_trust_data_sources' => 'Real Data Sources',
+    'why_trust_data_sources_desc' => 'All simulations are based on real financial formulas used in banking, financial planning, and economic analysis. We don\'t use guesswork.',
+    'why_trust_methodology' => 'Sound Financial Methodology',
+    'why_trust_methodology_desc' => 'Our calculations follow established financial principles and economic models recognized by institutions worldwide.',
+    'why_trust_transparency' => 'Complete Transparency',
+    'why_trust_transparency_desc' => 'We show you exactly how we calculate results. No hidden formulas or black boxes. You understand the numbers.',
+    'why_trust_no_bias' => 'No Product Bias',
+    'why_trust_no_bias_desc' => 'DecideLab doesn\'t recommend specific banks, products, or financial institutions. We analyze scenarios objectively.',
+    'why_trust_independent' => 'Independent & Nonprofit',
+    'why_trust_independent_desc' => 'We don\'t profit from your financial decisions. Our only goal is to help you make informed choices.',
+    'why_trust_educational' => 'Educational Focus',
+    'why_trust_educational_desc' => 'Our tools teach you how financial decisions work, rather than making decisions for you.',
 ];

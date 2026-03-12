@@ -334,6 +334,61 @@
             </div>
         </div>
     </section>
+
+    <!-- WHY TRUST DECIDELAB -->
+    <section class="py-24 bg-slate-900 border-t border-white/10">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold mb-4 text-white">{{ __('messages.why_trust_title') }}</h2>
+                <p class="text-slate-400 text-lg">{{ __('messages.why_trust_intro') }}</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Trust Point 1: Real Data Sources -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-indigo-500/30 hover:border-indigo-400 transition">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_data_sources') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_data_sources_desc') }}</p>
+                </div>
+
+                <!-- Trust Point 2: Sound Methodology -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400 transition">
+                    <div class="text-4xl mb-4">🧮</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_methodology') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_methodology_desc') }}</p>
+                </div>
+
+                <!-- Trust Point 3: Complete Transparency -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-emerald-500/30 hover:border-emerald-400 transition">
+                    <div class="text-4xl mb-4">🔍</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_transparency') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_transparency_desc') }}</p>
+                </div>
+
+                <!-- Trust Point 4: No Bias -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-yellow-500/30 hover:border-yellow-400 transition">
+                    <div class="text-4xl mb-4">⚖️</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_no_bias') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_no_bias_desc') }}</p>
+                </div>
+
+                <!-- Trust Point 5: Independent -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-red-500/30 hover:border-red-400 transition">
+                    <div class="text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_independent') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_independent_desc') }}</p>
+                </div>
+
+                <!-- Trust Point 6: Educational -->
+                <div class="bg-slate-800/50 rounded-2xl p-6 border border-cyan-500/30 hover:border-cyan-400 transition">
+                    <div class="text-4xl mb-4">📚</div>
+                    <h3 class="text-xl font-bold text-white mb-3">{{ __('messages.why_trust_educational') }}</h3>
+                    <p class="text-slate-300 text-sm">{{ __('messages.why_trust_educational_desc') }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- SHOCK -->
     <section class="bg-gradient-to-r from-indigo-700 to-purple-700 py-24 text-center">
         <h2 class="text-3xl md:text-4xl font-extrabold mb-6">

@@ -3,6 +3,19 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 {{ app()->getLocale() === 'ar' ? 'rtl' : '' }}">
 
+    <!-- Breadcrumbs -->
+    <div class="bg-slate-900/30 border-b border-white/10">
+        <div class="max-w-4xl mx-auto px-6 py-3">
+            <nav class="flex items-center gap-2 text-sm text-slate-400">
+                <a href="{{ url('/') }}" class="hover:text-white transition">{{ __('messages.home') }}</a>
+                <span class="text-slate-600">{{ __('messages.breadcrumb_separator') }}</span>
+                <a href="{{ url(app()->getLocale() . '/articles') }}" class="hover:text-white transition">{{ __('messages.articles') }}</a>
+                <span class="text-slate-600">{{ __('messages.breadcrumb_separator') }}</span>
+                <span class="text-slate-300">{{ __('messages.articles.financial_planning_title') }}</span>
+            </nav>
+        </div>
+    </div>
+
     <!-- Article Header -->
     <section class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
         <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-3xl"></div>
@@ -21,6 +34,19 @@
             </p>
             <div class="mt-8 text-sm text-slate-400">
                 {{ __('messages.articles.read_time') ?? 'Reading time' }}: 8 {{ __('messages.articles.minutes') ?? 'minutes' }}
+            </div>
+            
+            <!-- Author and Publication Date -->
+            <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-slate-400">
+                <div class="flex items-center gap-2">
+                    <span class="text-indigo-400">✍️</span>
+                    <span>{{ __('messages.author') }}: <strong class="text-slate-300">{{ __('messages.author_name') }}</strong></span>
+                </div>
+                <div class="hidden sm:block text-slate-600">•</div>
+                <div class="flex items-center gap-2">
+                    <span class="text-indigo-400">📅</span>
+                    <span>{{ __('messages.published') }}: <strong class="text-slate-300">{{ __('messages.published_date') }}</strong></span>
+                </div>
             </div>
         </div>
     </section>

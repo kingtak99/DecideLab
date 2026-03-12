@@ -13,6 +13,29 @@
             <p class="text-slate-300">We believe that every major life decision deserves clear, data-driven analysis. DecideLab was created to eliminate emotional decision-making and replace it with numbers that matter: cost over a lifetime, not just monthly payments.</p>
         </div>
 
+        <div class="bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-500/30 rounded-lg p-8 mb-12">
+            <div class="flex gap-6">
+                <div class="hidden sm:flex items-start">
+                    <div class="text-5xl">👤</div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-2xl font-semibold text-white mb-3">Meet Hasan Takrory — Founder</h2>
+                    <p class="text-slate-300 mb-3">
+                        <strong>Hasan Takrory</strong> is a Financial Decision Analyst and founder of DecideLab. With a passion for data-driven decision-making, Hasan created DecideLab to help people understand the true cost of major life decisions — not just the surface numbers, but the long-term impact on their time, stress, and quality of life.
+                    </p>
+                    <p class="text-slate-300 mb-3">
+                        After witnessing countless people make financial decisions based on incomplete information or emotional factors, Hasan designed DecideLab to fill that gap. The platform transforms complex financial concepts into clear, actionable insights that empower individuals to take control of their financial futures.
+                    </p>
+                    <p class="text-slate-300 mb-3">
+                        Hasan's philosophy: "Every major financial decision is also a life decision. You should understand it fully before committing."
+                    </p>
+                    <p class="text-slate-300 text-sm italic">
+                        📍 Founder of DecideLab | Financial Decision Analyst | Educational Technology Advocate
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <h2 class="text-2xl font-semibold text-white mt-12 mb-4">{{ __('messages.about_problem') }}</h2>
         <p class="text-slate-300 mb-6">{{ __('messages.about_problem_text') }}</p>
 

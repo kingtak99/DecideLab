@@ -147,6 +147,91 @@
         </div>
     </div>
 
+    <!-- Educational Section: What This Tool Calculates -->
+    <section class="bg-slate-950 border-t border-white/10 py-20">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Educational Content -->
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-6">What This Loan Simulation Calculates</h2>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-indigo-400 mb-2">How To Use This Loan Simulator</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Enter your loan amount, duration in years, and the interest rate (auto-filled based on your country). The simulator calculates your monthly payment, total interest paid, and most importantly — how many years of your life this loan represents. It shows you the stress zone: months where your payment exceeds 45% of your income, making financial breathing difficult.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold text-purple-400 mb-2">What the Numbers Mean</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                <strong class="text-white">Total Payment:</strong> Everything you'll pay back (principal + interest). <strong class="text-white">Total Interest:</strong> Pure cost of borrowing — money that goes to the lender, not your asset. <strong class="text-white">Years of Life:</strong> How many years of your income this loan will consume, calculated by dividing total interest by your annual income.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold text-emerald-400 mb-2">Example Scenario</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                $100,000 loan at 5% for 20 years: Monthly payment = $595. Total paid = $142,000. Interest cost = $42,000. If you earn $50,000/year ($4,167/month), that $42,000 in interest represents about 10 months of your entire annual income — effectively 10 months working just to pay interest. This is why understanding total cost, not just monthly payment, matters.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-semibold text-red-400 mb-2">Why This Matters</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Most people focus on "Can I afford the monthly payment?" instead of "What is the true cost of this loan?" A small interest rate difference (1-2%) can cost tens of thousands over the loan life. Using extra payments to pay down the loan faster reduces interest dramatically. This tool helps you see the big picture before committing to decades of payments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-6">Key Insights</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-indigo-900/30 border border-indigo-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-indigo-300 mb-2">💡 Shopping Matters</h3>
+                            <p class="text-slate-300 text-sm">Comparing rates from just 3 lenders can save you thousands in interest. A 0.5% difference on a $300k loan = $60,000+ in savings over 30 years.</p>
+                        </div>
+
+                        <div class="bg-purple-900/30 border border-purple-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-purple-300 mb-2">📈 Extra Payments Work</h3>
+                            <p class="text-slate-300 text-sm">Adding $100-200 extra per month can cut years off your loan and save tens of thousands in interest. Small extra payments compound into huge savings.</p>
+                        </div>
+
+                        <div class="bg-emerald-900/30 border border-emerald-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-emerald-300 mb-2">⏰ Time vs Amount</h3>
+                            <p class="text-slate-300 text-sm">A 30-year loan at 5% costs nearly twice as much in interest than a 15-year loan at the same rate. Your choice of duration dramatically affects total cost.</p>
+                        </div>
+
+                        <div class="bg-red-900/30 border border-red-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-red-300 mb-2">🎯 Affordability Check</h3>
+                            <p class="text-slate-300 text-sm">If your payment exceeds 30% of income, the loan creates stress. Above 45%, it becomes financially suffocating. Use this tool to find your real affordability ceiling.</p>
+                        </div>
+
+                        <div class="bg-yellow-900/30 border border-yellow-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-yellow-300 mb-2">💰 Hidden Costs</h3>
+                            <p class="text-slate-300 text-sm">Interest is direct cost. But remember: maintenance, insurance, taxes, and opportunity cost add more. Use the total interest number as your baseline, not your ceiling.</p>
+                        </div>
+
+                        <div class="bg-cyan-900/30 border border-cyan-500/30 rounded-xl p-4">
+                            <h3 class="font-semibold text-cyan-300 mb-2">🔄 Recalculate Scenarios</h3>
+                            <p class="text-slate-300 text-sm">Try different loan amounts, terms, and rates. See how each changes. This experimentation helps you understand your true options before deciding.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-slate-800/50 border border-slate-700 rounded-xl">
+                        <p class="text-slate-300 text-sm italic">
+                            💭 Remember: This tool shows you the numbers, not financial advice. Your decision should consider your full financial situation, goals, and priorities.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('loan-form');
